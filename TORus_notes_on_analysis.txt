@@ -1,0 +1,6 @@
+NOTAS
+
+210320
+No me gusta el register cómo ha quedado... dm4R queda descentrado
+El ensayo 017A estaba marcado como NaN; habría que repetir el código incial para incluirlo en VSDI.nonanidx y el filtrado de películas... en definitiva, todo el código que se lo haya saltado.
+

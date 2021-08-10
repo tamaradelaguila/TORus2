@@ -1,0 +1,172 @@
+
+SUJETO 1 [210320]
+.Bloque superficial aleatorizado (pulsito 0,3ms)
+#100 (control)
+#101(1mA)
+#102(3mA)
+#103(7mA)
+
+.Bloque intradermal aleatorizado (pulsito 0,3ms)
+#110 (control)
+#111(1mA)
+#112(2mA)
+#113(5mA)
+
+.Bloque no-aleatorizado, pocos ensayos~pruebas (tren largo 10ms, 3pulsos) - no recuerdo si intradermal
+#300 (control)
+#301(0.1mA)
+#302(0.5mA)
+#303(2mA)
+..........................
+
+SUJETO 2 [210323]
+
+.Bloque superficial aleatorizado (trenecito 0.3ms, 3pulsos) 
+#200(control)
+#201(2mA)
+#202(3mA)
+#203(5mA)
+
+.Bloque superficial aleatorizado (tren largo 10ms, 3pulsos) 
+#300(control)
+#301(0.2mA)
+#302(2mA)
+#303(5mA)
+
+.Bloques control inicial y final
+# no extraído
+..........................
+
+SUJETO 3 [210325]
+
+.Bloque superf aleatorizado (pulsito 0,3ms)
+#100(control) 
+#101(1.3mA) 
+#102(1mA)
+#103(6mA) 
+
+.Bloque superf aleatorizado (tren largo 10ms, 3pulsos) 
+#300(control)
+#301(0.1mA)
+#302(0.2mA)
+#303(2mA)
+..........................
+
+SUJETO 4 [210409]*
+
+.Bloque superf aleatorizado (pulsito 0,3ms) - más ensayos
+#100(control) 
+#101(0.2mA) 
+#102(0.6mA)
+#103(1.1mA) 
+..........................
+
+SUJETO 5 [210411]
+.Bloque superf no-aleatorizado (pulsito 0,3ms)
+#1101(2.5mA) ~ver habit (30ensayos)
+
+.Bloque superf aleatorizado (pulsito 0,3ms)
+#2100(control)
+#2101(2.5mA)
+
+.Bloque superf aleatorizado Post-Sobredosis anestesia (pulsito 0,3ms) ~ver si hay sharks
+#3100(control)
+#3101(2.5mA)
+..........................
+
+SUJETO 6 [210412]
+.Bloques no aleatorizados:
+#1100 (control)
+#1101 (pulsito )
+#1401 (tren 4 pulsitos,0.5mA)
+
+.Bloque aleatorizado variando nºpulsos  (de 0,15ms, 0.6mA): *
+#2000(control)
+#2001(1pulsito 0.3ms)
+#2002(2pulsitos 0.3ms)
+#2003(3pulsitos 0.3ms)
+
+.Bloque aleatorizado pre-Morfina:
+#3000(control)
+#3001(tono 10ms)
+#3002 (tren 3 pulsos 10ms, interv 20ms, 0.8mA)
+
+.Bloque aleatorizado post-Morfina:
+#4000(control)
+#4001(tono 10ms)
+#4002 (tren 3 pulsos 10ms, interv 20ms, 0.8mA)
+
+..........................
+
+SUJETO 8 [210430]*
+
+.Bloque aleatorizado. 30 rep, iti~45s
+#1000(control)
+#1001(tono 200ms 600Hz)
+#1002(pulso 150us 0.5mA)
+#1003(pulso 150us 1mA)
+
+.Bloque aleatorizado. 25 rep, iti~45s
+#2000(control)
+#2001(pulso 150us 0.38mA)
+#2002(pulso 150us 0.5mA)
+#2003(pulso 150us 1mA)
+
+Sonset = 590; shutter Delay = 10ms: 300ms of baseline in equal conditions than the rest (that have a shutter delay of 300 and a Sonset of 600ms from then on)
+..........................
+
+SUJETO 9 [210508]
+#1000 (control)
+#1001 (tono 600Hz 200ms)
+#1002(pulso 150us 0.8mA)
+#1003 (pulso 150us 1.5mA)
+
+Sonset = 590; shutter Delay = 10ms: 300ms of baseline in equal conditions than the rest (same as in the 210430)
+
+..........................
+
+SUJETO 10 [210509]
+
+#1000 (control)
+#1001 (tono 600Hz 200ms)
+#1002(pulso 150us 0.8mA)
+#1003 (pulso 150us 1.2mA)
+
+#2000 (control)
+#2001 (tono 600Hz 200ms)
+#2002(pulso 150us 0.6mA)
+#2003 (pulso 150us 1.2mA)
+
+Sonset = 600; shutter Delay = 300ms:
+Bloque 40 aleatorio x3
+..........................
+
+SUJETO 11 [210521] -pulsito 150us
+
+#400 (control)
+#401 (0.4mA)
+#402 (0.6mA)
+#403 (0.7mA)
+#404 (0.8mA)
+
+Sonset = 600; shutter Delay = 300ms:
+Bloque 40 aleatorio x3
+..........................
+
+SUJETO 12 [210522]
+
+#400 (control)
+#401 (0.38mA)
+#402 (0.4mA)
+#403 (0.6mA)
+#404 (0.8mA)
+
+.test pushes
+#1000
+
+.test 1.5mA
+#2001 pre-morphine (intraperitoneal)
+#2002 post-morphine, first 10
+#2003 post-morphine, next 10
+#2004 post-morphine, after 10min rest
+

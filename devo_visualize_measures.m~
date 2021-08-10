@@ -1,0 +1,141 @@
+%% VISUALIZE MEASURES PIXEL-WISE
+
+clear
+user_settings
+
+nfish = 8;%@ SET
+[VSDI] = TORus('load',nfish);
+
+
+temp = TORus('loadmovie',nfish,'_06filt3');
+movies = temp.data;
+
+manual_reject =0;
+%% SELECT CASES: OPTION 1 (manually set specific conditions)
+cond_codes = unique(VSDI.condition(:,1)); cond_codes=  cond_codes(~isnan(cond_codes));
+%cond_codes =[1000 1001 1002 1003 2000 2001 2002 2003];
+
+%% MEASURE: MEAN ACTIVITY IN TIMEWINDOW 
+
+%1. WINDOW
+% wind_ms = [202 502]; %@ SET
+wind_ms = [0 200]; %@ SET
+
+wind_idx = find_closest_timeidx(wind_ms, VSDI.timebase);
+wind_actualms =  VSDI.timebase(wind_idx);
+
+
+%2. GET AVERAGE MOVIE FOR EACH CONDITION AND MEASURE AND SAVE INTO A MATRIX
+ncond= length(cond_codes);
+j = 1;
+
+for condi = makeRow(cond_codes)
+    sel_trials  = find(VSDI.condition(:,1)==condi);
+    if manual_reject
+       sel_trials= setdiff(sel_trials, VSDI.reject.manual);
+    end
+    
+    frame_cond = mean(movies(:,:,wind_idx,sel_trials),4); frame_cond= squeeze(mean(frame_cond,3));
+    frames_meanact(:,:,j) = frame_cond;
+    j = j+1;
+end 
+
+
+%3. GET MAX-MIN AND PLOT THEM WITH THE SAME LIMITS
+frames = frames_meanact;
+maxval= max(abs(frames(:)));
+c_lim = [-maxval maxval];
+BVmap = colormap_loadBV();
+
+figure
+for ploti = 1:length(cond_codes)
+    ax(ploti) = subplot(3,4,ploti);
+    imagesc(frames(:,:,ploti))
+    set (ax(ploti), 'clim', c_lim)
+    colormap(BVmap)
+    colorbar
+    title(['cond=',num2str(cond_codes(ploti))])
+
+end
+
+    if  manual_reject
+        sgtitle([num2str(VSDI.ref), '-mean act in window',num2str(wind_actualms(1)),'to',num2str(wind_actualms(2)),'-for each cond (cl)'])
+    else
+        sgtitle([num2str(VSDI.ref), '-mean act in window',num2str(wind_actualms(1)),'to',num2str(wind_actualms(2)),'-for each cond'])
+
+    end
+
+%% MEASURE: MEAN SLOPE IN TIMEWINDOW
+windows = [0  0 200; 100 200];%@SET
+
+for wi = windows
+%1. WINDOW
+% wind_ms = [202 502]; %@ SET
+wind_ms = wi
+
+wind_idx = find_closest_timeidx(wind_ms, VSDI.timebase);
+wind_actualms =  VSDI.timebase(wind_idx);
+wind_actualms = [wind_actualms(1) wind_actualms(end)]; % keep only extreme values
+
+%2. GET THE FRAGMENT OF THE MOVIE
+
+movieW = movies(:,:,wind_idx,:);
+moviesSlope = diff(movieW, [], 3);
+meanslope = squeeze(mean(moviesSlope,3));%for each trial;
+
+% GET AVERAGED FRAME FOR EACH CONDITION 
+ncond= length(cond_codes);
+j = 1;
+
+for condi = makeRow(cond_codes)
+    
+    sel_trials  = find(VSDI.condition(:,1)==condi);
+    if manual_reject
+       sel_trials= setdiff(sel_trials, VSDI.reject.manual);
+    end
+    frame_cond = mean(meanslope(:,:,sel_trials),3);
+    frames_meanslope(:,:,j) = frame_cond;
+    j = j+1;
+    
+end % condi
+
+
+%3. GET MAX-MIN AND PLOT THEM WITH THE SAME LIMITS
+frames = frames_meanslope;
+maxval= max(abs(frames(:)));
+c_lim = [-maxval maxval];
+BVmap = colormap_loadBV();
+
+figure
+for ploti = 1:length(cond_codes)
+    ax(ploti) = subplot(3,4,ploti);
+    imagesc(frames(:,:,ploti))
+    set (ax(ploti), 'clim', c_lim)
+    colormap(BVmap)
+    colorbar
+    title(['cond=',num2str(cond_codes(ploti))])
+
+end
+
+
+    if  manual_reject
+        sgtitle([num2str(VSDI.ref), '-mean slope in window',num2str(wind_actualms(1)),'to',num2str(wind_actualms(2)),'-for each cond (cl)'])
+    else
+        sgtitle([num2str(VSDI.ref), '-mean slope in window',num2str(wind_actualms(1)),'to',num2str(wind_actualms(2)),'-for each cond'])
+
+    end
+    
+    % save image and close @SET
+    if  manual_reject
+        out.name =[num2str(VSDI.ref), '-mean slope from',num2str(wind_actualms(1)),'to',num2str(wind_actualms(2)),'(clean)'];
+    else
+        sgtitle([num2str(VSDI.ref), '-mean slope from',num2str(wind_actualms(1)),'to',num2str(wind_actualms(2))])
+
+    end
+    
+    out.folder = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/boxplot/' ; %@ SET
+    saveas(gcf,fullfile(out.folder,out.name),'jpg')
+    close
+    
+    end
+   

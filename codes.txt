@@ -1,0 +1,9 @@
+code for stim_type: 
+1 = 0.3ms pulse
+2 = 60ms train of small pulses: 3 x 0.3ms (interval 20ms)
+3 = 60ms train of normal pulses: 3 x 10ms (interval 20ms)
+
+'code': stim_type - intraderm - condition. 
+eg: code = 101 means: (1) 0.3pulse (2)intradermal = 0 (i.e. superficial), (3)condition 1 (whatever corresponds)
+
+
