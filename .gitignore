@@ -1,0 +1,5 @@
+data/
+plot/*.jpg
+plot/*.tiff
+plot/*.pdf
+plot/*.mat
