@@ -1,5 +1,3 @@
 data/
-plot/*.jpg
-plot/*.tiff
-plot/*.pdf
-plot/*.mat
+plot/
+00automatic_extraction.py
