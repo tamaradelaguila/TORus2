@@ -1,0 +1,78 @@
+[1] "ANOVA: ANOVA SUMMARY"
+  Effect DFn DFd      F        p p<.05   ges
+1      2   5 534  4.033 0.001000     2 0.036
+2      1   1 534 17.439 0.000035     2 0.032
+3      3   5 534  1.768 0.118000     1 0.016
+
+   mA    roi    variable     n  mean    sd    se median
+   <fct> <fct>  <chr>    <dbl> <dbl> <dbl> <dbl>  <dbl>
+ 1 0     dldm_R value       47 0.088 0.123 0.018  0.065
+ 2 0.4   dldm_R value       44 0.105 0.146 0.022  0.079
+ 3 0     dm1_R  value       47 0.097 0.088 0.013  0.073
+ 4 0.4   dm1_R  value       44 0.106 0.102 0.015  0.086
+ 5 0     dm2_R  value       47 0.1   0.116 0.017  0.083
+ 6 0.4   dm2_R  value       44 0.143 0.113 0.017  0.125
+ 7 0     dm3_R  value       47 0.114 0.153 0.022  0.086
+ 8 0.4   dm3_R  value       44 0.138 0.154 0.023  0.106
+ 9 0     dm4_R  value       47 0.12  0.137 0.02   0.088
+10 0.4   dm4_R  value       44 0.209 0.133 0.02   0.196
+11 0     dm4m_R value       47 0.107 0.107 0.016  0.084
+12 0.4   dm4m_R value       44 0.193 0.106 0.016  0.18 
+
+[1] "ANOVA: ANOVA TABLE"
+Table: ANOVA Table (type III tests) - lo mismo, mas bonito
+
+|Effect | DFn| DFd|      F|        p|p<.05 |   pes|
+|:------|---:|---:|------:|--------:|:-----|-----:|
+|roi    |   5| 534|  4.195| 9.51e-04|*     | 0.038|
+|mA     |   1| 534| 17.439| 3.47e-05|*     | 0.032|
+|roi:mA |   5| 534|  1.768| 1.18e-01|      | 0.016|
+
+
+[1] "Complete ANOVA object to check Mauchly and Sphericity corrections"
+
+[1] "POST-HOC with Bonferroni adjustment"
+[1] "POST-HOC: PAIRWISE COMPARISONS BETWEEN ROI LEVELS  (non paired)"
+  roi    .y.   group1 group2    n1    n2        p p.signif    p.adj p.adj.signif
+* <fct>  <chr> <chr>  <chr>  <int> <int>    <dbl> <chr>       <dbl> <chr>       
+1 dldm_R value 0      0.4       47    44 0.547    ns       0.547    ns          
+2 dm1_R  value 0      0.4       47    44 0.628    ns       0.628    ns          
+3 dm2_R  value 0      0.4       47    44 0.0765   ns       0.0765   ns          
+4 dm3_R  value 0      0.4       47    44 0.468    ns       0.468    ns          
+5 dm4_R  value 0      0.4       47    44 0.00237  **       0.00237  **          
+6 dm4m_R value 0      0.4       47    44 0.000218 ***      0.000218 ***         
+
+[1] "POST-HOC: PAIRWISE COMPARISONS BETWEEN mA LEVELS (non paired)"
+   mA    .y.   group1 group2    n1    n2        p p.signif   p.adj p.adj.signif
+ * <fct> <chr> <chr>  <chr>  <int> <int>    <dbl> <chr>      <dbl> <chr>       
+ 1 0     value dldm_R dm1_R     47    47 0.717    ns       1       ns          
+ 2 0     value dldm_R dm2_R     47    47 0.631    ns       1       ns          
+ 3 0     value dm1_R  dm2_R     47    47 0.906    ns       1       ns          
+ 4 0     value dldm_R dm3_R     47    47 0.287    ns       1       ns          
+ 5 0     value dm1_R  dm3_R     47    47 0.482    ns       1       ns          
+ 6 0     value dm2_R  dm3_R     47    47 0.559    ns       1       ns          
+ 7 0     value dldm_R dm4_R     47    47 0.195    ns       1       ns          
+ 8 0     value dm1_R  dm4_R     47    47 0.35     ns       1       ns          
+ 9 0     value dm2_R  dm4_R     47    47 0.414    ns       1       ns          
+10 0     value dm3_R  dm4_R     47    47 0.817    ns       1       ns          
+11 0     value dldm_R dm4m_R    47    47 0.434    ns       1       ns          
+12 0     value dm1_R  dm4m_R    47    47 0.675    ns       1       ns          
+13 0     value dm2_R  dm4m_R    47    47 0.763    ns       1       ns          
+14 0     value dm3_R  dm4m_R    47    47 0.777    ns       1       ns          
+15 0     value dm4_R  dm4m_R    47    47 0.606    ns       1       ns 
+         
+16 0.4   value dldm_R dm1_R     44    44 0.948    ns       1       ns          
+17 0.4   value dldm_R dm2_R     44    44 0.161    ns       1       ns          
+18 0.4   value dm1_R  dm2_R     44    44 0.181    ns       1       ns          
+19 0.4   value dldm_R dm3_R     44    44 0.219    ns       1       ns          
+20 0.4   value dm1_R  dm3_R     44    44 0.244    ns       1       ns          
+21 0.4   value dm2_R  dm3_R     44    44 0.863    ns       1       ns          
+22 0.4   value dldm_R dm4_R     44    44 0.000152 ***      0.00228 **          
+23 0.4   value dm1_R  dm4_R     44    44 0.000195 ***      0.00293 **          
+24 0.4   value dm2_R  dm4_R     44    44 0.0154   *        0.231   ns          
+25 0.4   value dm3_R  dm4_R     44    44 0.00951  **       0.143   ns          
+26 0.4   value dldm_R dm4m_R    44    44 0.00125  **       0.0187  *           
+27 0.4   value dm1_R  dm4m_R    44    44 0.00155  **       0.0232  *           
+28 0.4   value dm2_R  dm4m_R    44    44 0.0641   ns       0.962   ns          
+29 0.4   value dm3_R  dm4m_R    44    44 0.0432   *        0.647   ns          
+30 0.4   value dm4_R  dm4m_R    44    44 0.562    ns       1       ns    

@@ -1,0 +1,146 @@
+fish 210521
+
+[1] "ANOVA: ANOVA SUMMARY"
+  Effect DFn  DFd      F       p p<.05   ges
+1      2   5 1050  6.074 0.00001     2 0.028
+2      1   3 1050 37.950 0.00000     2 0.098
+3      3  15 1050  0.548 0.91400     1 0.008
+[1] "ANOVA: ANOVA TABLE"
+ANOVA Table (type III tests)
+
+  Effect DFn  DFd      F        p p<.05   pes
+1    roi   5 1050  6.213 1.09e-05     * 0.029
+2     mA   3 1050 37.950 2.76e-23     * 0.098
+3 roi:mA  15 1050  0.548 9.14e-01       0.008
+
+
+Table: ANOVA Table (type III tests) - lo mismo, mas bonito
+
+|Effect | DFn|  DFd|      F|        p|p<.05 |   pes|
+|:------|---:|----:|------:|--------:|:-----|-----:|
+|roi    |   5| 1050|  6.213| 1.09e-05|*     | 0.029|
+|mA     |   3| 1050| 37.950| 0.00e+00|*     | 0.098|
+|roi:mA |  15| 1050|  0.548| 9.14e-01|      | 0.008|
+[1] "Complete ANOVA object to check Mauchly and Sphericity corrections"
+ANOVA Table (type III tests)
+
+  Effect DFn  DFd      F        p p<.05   pes
+1    roi   5 1050  6.213 1.09e-05     * 0.029
+2     mA   3 1050 37.950 2.76e-23     * 0.098
+3 roi:mA  15 1050  0.548 9.14e-01       0.008
+
+[1] "POST-HOC with Bonferroni adjustment"
+
+[1] "POST-HOC: PAIRWISE COMPARISONS BETWEEN ROI LEVELS  (non paired)"
+   roi    .y.   group1 group2    n1    n2            p p.signif      p.adj p.adj.signif y.position groups        xmin  xmax
+   <fct>  <chr> <chr>  <chr>  <int> <int>        <dbl> <chr>         <dbl> <chr>             <dbl> <named list> <dbl> <dbl>
+ 1 dldm_R value 0      0.4       47    44 0.71         ns       1          ns                0.842 <chr [2]>        1     2
+ 2 dldm_R value 0      0.7       47    44 0.00872      **       0.0523     ns                0.899 <chr [2]>        1     3
+ 3 dldm_R value 0.4    0.7       44    44 0.0261       *        0.157      ns                0.956 <chr [2]>        2     3
+ 4 dldm_R value 0      0.8       47    44 0.00527      **       0.0316     *                 1.01  <chr [2]>        1     4
+ 5 dldm_R value 0.4    0.8       44    44 0.0168       *        0.101      ns                1.07  <chr [2]>        2     4
+ 6 dldm_R value 0.7    0.8       44    44 0.865        ns       1          ns                1.13  <chr [2]>        3     4
+
+ 7 dm1_R  value 0      0.4       47    44 0.755        ns       1          ns                0.649 <chr [2]>        1     2
+ 8 dm1_R  value 0      0.7       47    44 0.0241       *        0.145      ns                0.706 <chr [2]>        1     3
+ 9 dm1_R  value 0.4    0.7       44    44 0.0551       ns       0.33       ns                0.763 <chr [2]>        2     3
+10 dm1_R  value 0      0.8       47    44 0.0163       *        0.0978     ns                0.820 <chr [2]>        1     4
+11 dm1_R  value 0.4    0.8       44    44 0.0391       *        0.234      ns                0.877 <chr [2]>        2     4
+12 dm1_R  value 0.7    0.8       44    44 0.883        ns       1          ns                0.934 <chr [2]>        3     4
+
+13 dm2_R  value 0      0.4       47    44 0.257        ns       1          ns                0.795 <chr [2]>        1     2
+14 dm2_R  value 0      0.7       47    44 0.00104      **       0.00621    **                0.852 <chr [2]>        1     3
+15 dm2_R  value 0.4    0.7       44    44 0.0318       *        0.191      ns                0.909 <chr [2]>        2     3
+16 dm2_R  value 0      0.8       47    44 0.000149     ***      0.000893   ***               0.966 <chr [2]>        1     4
+17 dm2_R  value 0.4    0.8       44    44 0.00767      **       0.046      *                 1.02  <chr [2]>        2     4
+18 dm2_R  value 0.7    0.8       44    44 0.595        ns       1          ns                1.08  <chr [2]>        3     4
+
+19 dm3_R  value 0      0.4       47    44 0.607        ns       1          ns                0.900 <chr [2]>        1     2
+20 dm3_R  value 0      0.7       47    44 0.0036       **       0.0216     *                 0.957 <chr [2]>        1     3
+21 dm3_R  value 0.4    0.7       44    44 0.0176       *        0.106      ns                1.01  <chr [2]>        2     3
+22 dm3_R  value 0      0.8       47    44 0.000472     ***      0.00283    **                1.07  <chr [2]>        1     4
+23 dm3_R  value 0.4    0.8       44    44 0.00311      **       0.0186     *                 1.13  <chr [2]>        2     4
+24 dm3_R  value 0.7    0.8       44    44 0.548        ns       1          ns                1.18  <chr [2]>        3     4
+
+25 dm4_R  value 0      0.4       47    44 0.0123       *        0.0737     ns                0.803 <chr [2]>        1     2
+26 dm4_R  value 0      0.7       47    44 0.00000678   ****     0.0000407  ****              0.860 <chr [2]>        1     3
+27 dm4_R  value 0.4    0.7       44    44 0.0393       *        0.236      ns                0.917 <chr [2]>        2     3
+28 dm4_R  value 0      0.8       47    44 0.00000215   ****     0.0000129  ****              0.974 <chr [2]>        1     4
+29 dm4_R  value 0.4    0.8       44    44 0.0207       *        0.124      ns                1.03  <chr [2]>        2     4
+30 dm4_R  value 0.7    0.8       44    44 0.797        ns       1          ns                1.09  <chr [2]>        3     4
+
+31 dm4m_R value 0      0.4       47    44 0.00527      **       0.0316     *                 0.708 <chr [2]>        1     2
+32 dm4m_R value 0      0.7       47    44 0.00000163   ****     0.00000975 ****              0.765 <chr [2]>        1     3
+33 dm4m_R value 0.4    0.7       44    44 0.0367       *        0.22       ns                0.822 <chr [2]>        2     3
+34 dm4m_R value 0      0.8       47    44 0.0000000884 ****     0.00000053 ****              0.879 <chr [2]>        1     4
+35 dm4m_R value 0.4    0.8       44    44 0.00731      **       0.0439     *                 0.936 <chr [2]>        2     4
+36 dm4m_R value 0.7    0.8       44    44 0.543        ns       1          ns                0.993 <chr [2]>        3     4
+
+[1] "POST-HOC: PAIRWISE COMPARISONS BETWEEN mA LEVELS  (non paired)"
+   mA    .y.   group1 group2    n1    n2        p p.signif   p.adj p.adj.signif y.position groups        xmin  xmax     x
+   <fct> <chr> <chr>  <chr>  <int> <int>    <dbl> <chr>      <dbl> <chr>             <dbl> <named list> <dbl> <dbl> <dbl>
+ 1 0     value dldm_R dm1_R     47    47 0.717    ns       1       ns                0.846 <chr [2]>    0.667 0.8       1
+ 2 0     value dldm_R dm2_R     47    47 0.631    ns       1       ns                0.896 <chr [2]>    0.667 0.933     1
+ 3 0     value dm1_R  dm2_R     47    47 0.906    ns       1       ns                0.947 <chr [2]>    0.8   0.933     1
+ 4 0     value dldm_R dm3_R     47    47 0.287    ns       1       ns                0.998 <chr [2]>    0.667 1.07      1
+ 5 0     value dm1_R  dm3_R     47    47 0.482    ns       1       ns                1.05  <chr [2]>    0.8   1.07      1
+ 6 0     value dm2_R  dm3_R     47    47 0.559    ns       1       ns                1.10  <chr [2]>    0.933 1.07      1
+ 7 0     value dldm_R dm4_R     47    47 0.195    ns       1       ns                1.15  <chr [2]>    0.667 1.2       1
+ 8 0     value dm1_R  dm4_R     47    47 0.35     ns       1       ns                1.20  <chr [2]>    0.8   1.2       1
+ 9 0     value dm2_R  dm4_R     47    47 0.414    ns       1       ns                1.25  <chr [2]>    0.933 1.2       1
+10 0     value dm3_R  dm4_R     47    47 0.817    ns       1       ns                1.30  <chr [2]>    1.07  1.2       1
+11 0     value dldm_R dm4m_R    47    47 0.434    ns       1       ns                1.35  <chr [2]>    0.667 1.33      1
+12 0     value dm1_R  dm4m_R    47    47 0.675    ns       1       ns                1.41  <chr [2]>    0.8   1.33      1
+13 0     value dm2_R  dm4m_R    47    47 0.763    ns       1       ns                1.46  <chr [2]>    0.933 1.33      1
+14 0     value dm3_R  dm4m_R    47    47 0.777    ns       1       ns                1.51  <chr [2]>    1.07  1.33      1
+15 0     value dm4_R  dm4m_R    47    47 0.606    ns       1       ns                1.56  <chr [2]>    1.2   1.33      1
+
+16 0.4   value dldm_R dm1_R     44    44 0.948    ns       1       ns                0.839 <chr [2]>    1.67  1.8       2
+17 0.4   value dldm_R dm2_R     44    44 0.161    ns       1       ns                0.889 <chr [2]>    1.67  1.93      2
+18 0.4   value dm1_R  dm2_R     44    44 0.181    ns       1       ns                0.940 <chr [2]>    1.8   1.93      2
+19 0.4   value dldm_R dm3_R     44    44 0.219    ns       1       ns                0.991 <chr [2]>    1.67  2.07      2
+20 0.4   value dm1_R  dm3_R     44    44 0.244    ns       1       ns                1.04  <chr [2]>    1.8   2.07      2
+21 0.4   value dm2_R  dm3_R     44    44 0.863    ns       1       ns                1.09  <chr [2]>    1.93  2.07      2
+22 0.4   value dldm_R dm4_R     44    44 0.000152 ***      0.00228 **                1.14  <chr [2]>    1.67  2.2       2
+23 0.4   value dm1_R  dm4_R     44    44 0.000195 ***      0.00293 **                1.19  <chr [2]>    1.8   2.2       2
+24 0.4   value dm2_R  dm4_R     44    44 0.0154   *        0.231   ns                1.25  <chr [2]>    1.93  2.2       2
+25 0.4   value dm3_R  dm4_R     44    44 0.00951  **       0.143   ns                1.30  <chr [2]>    2.07  2.2       2
+26 0.4   value dldm_R dm4m_R    44    44 0.00125  **       0.0187  *                 1.35  <chr [2]>    1.67  2.33      2
+27 0.4   value dm1_R  dm4m_R    44    44 0.00155  **       0.0232  *                 1.40  <chr [2]>    1.8   2.33      2
+28 0.4   value dm2_R  dm4m_R    44    44 0.0641   ns       0.962   ns                1.45  <chr [2]>    1.93  2.33      2
+29 0.4   value dm3_R  dm4m_R    44    44 0.0432   *        0.647   ns                1.50  <chr [2]>    2.07  2.33      2
+30 0.4   value dm4_R  dm4m_R    44    44 0.562    ns       1       ns                1.55  <chr [2]>    2.2   2.33      2
+
+31 0.7   value dldm_R dm1_R     44    44 0.368    ns       1       ns                0.900 <chr [2]>    2.67  2.8       3
+32 0.7   value dldm_R dm2_R     44    44 0.717    ns       1       ns                0.950 <chr [2]>    2.67  2.93      3
+33 0.7   value dm1_R  dm2_R     44    44 0.207    ns       1       ns                1.00  <chr [2]>    2.8   2.93      3
+34 0.7   value dldm_R dm3_R     44    44 0.388    ns       1       ns                1.05  <chr [2]>    2.67  3.07      3
+35 0.7   value dm1_R  dm3_R     44    44 0.0786   ns       1       ns                1.10  <chr [2]>    2.8   3.07      3
+36 0.7   value dm2_R  dm3_R     44    44 0.617    ns       1       ns                1.15  <chr [2]>    2.93  3.07      3
+37 0.7   value dldm_R dm4_R     44    44 0.115    ns       1       ns                1.21  <chr [2]>    2.67  3.2       3
+38 0.7   value dm1_R  dm4_R     44    44 0.0136   *        0.205   ns                1.26  <chr [2]>    2.8   3.2       3
+39 0.7   value dm2_R  dm4_R     44    44 0.224    ns       1       ns                1.31  <chr [2]>    2.93  3.2       3
+40 0.7   value dm3_R  dm4_R     44    44 0.474    ns       1       ns                1.36  <chr [2]>    3.07  3.2       3
+41 0.7   value dldm_R dm4m_R    44    44 0.293    ns       1       ns                1.41  <chr [2]>    2.67  3.33      3
+42 0.7   value dm1_R  dm4m_R    44    44 0.0517   ns       0.775   ns                1.46  <chr [2]>    2.8   3.33      3
+43 0.7   value dm2_R  dm4m_R    44    44 0.491    ns       1       ns                1.51  <chr [2]>    2.93  3.33      3
+44 0.7   value dm3_R  dm4m_R    44    44 0.85     ns       1       ns                1.56  <chr [2]>    3.07  3.33      3
+45 0.7   value dm4_R  dm4m_R    44    44 0.597    ns       1       ns                1.61  <chr [2]>    3.2   3.33      3
+
+46 0.8   value dldm_R dm1_R     44    44 0.364    ns       1       ns                0.842 <chr [2]>    3.67  3.8       4
+47 0.8   value dldm_R dm2_R     44    44 0.554    ns       1       ns                0.892 <chr [2]>    3.67  3.93      4
+48 0.8   value dm1_R  dm2_R     44    44 0.135    ns       1       ns                0.943 <chr [2]>    3.8   3.93      4
+49 0.8   value dldm_R dm3_R     44    44 0.227    ns       1       ns                0.994 <chr [2]>    3.67  4.07      4
+50 0.8   value dm1_R  dm3_R     44    44 0.035    *        0.525   ns                1.05  <chr [2]>    3.8   4.07      4
+51 0.8   value dm2_R  dm3_R     44    44 0.537    ns       1       ns                1.10  <chr [2]>    3.93  4.07      4
+52 0.8   value dldm_R dm4_R     44    44 0.134    ns       1       ns                1.15  <chr [2]>    3.67  4.2       4
+53 0.8   value dm1_R  dm4_R     44    44 0.0165   *        0.248   ns                1.20  <chr [2]>    3.8   4.2       4
+54 0.8   value dm2_R  dm4_R     44    44 0.363    ns       1       ns                1.25  <chr [2]>    3.93  4.2       4
+55 0.8   value dm3_R  dm4_R     44    44 0.77     ns       1       ns                1.30  <chr [2]>    4.07  4.2       4
+56 0.8   value dldm_R dm4m_R    44    44 0.23     ns       1       ns                1.35  <chr [2]>    3.67  4.33      4
+57 0.8   value dm1_R  dm4m_R    44    44 0.0356   *        0.534   ns                1.40  <chr [2]>    3.8   4.33      4
+58 0.8   value dm2_R  dm4m_R    44    44 0.541    ns       1       ns                1.45  <chr [2]>    3.93  4.33      4
+59 0.8   value dm3_R  dm4m_R    44    44 0.994    ns       1       ns                1.50  <chr [2]>    4.07  4.33      4
+60 0.8   value dm4_R  dm4m_R    44    44 0.764    ns       1       ns                1.55  <chr [2]>    4.2   4.33      4
+
+

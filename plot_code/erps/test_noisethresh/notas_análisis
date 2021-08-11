@@ -1,0 +1,15 @@
+Aquí van, para dos sets de parámetros (en cada carpeta): 
+
+(1) las curvas individuales de todas las regiones en cada ensayo; no hagáis caso a cuando pone en el título 'out of latency mean' (es de cuando iba a plotear una única región). Se indica en linea azul horizontal el umbral de ruido, y en verde vertical el onset que se ha considerado (latencia máxima para los que no cumplen el criterio)
+
+(2) las curvas de ERPs que salen al promediar sólo aquellos ensayos en que la latencia (del ensayo individual) era menor de 1000ms.A dichas curvas promediadas se le han calculado también las medidas de latencia.
+
+
+Recuerdo que la medida de latencia u onset (línea verde discontinua), era aquel momento en que la actividad superaba el umbral de ruido, y que cumplía el criterio de mantenerse por encima de umbral un determinado número de frames. El umbral de ruido se establece como la media de la l.base + std_factor*std. 
+
+Por tanto, los parámetros son:
+-línea base 
+-std_factor
+-frames por encima de umbral
+- límite de duración de latencia (1000ms) para considerar que la latencia no es infinito o máxima 
+

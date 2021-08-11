@@ -1,0 +1,7 @@
+window.baseline = [-300 0];
+
+noise.fr_abovenoise = 30;
+noise.SDfactor = 2; (con el ue están calculados)
+
+lat_limit = 1000;
+

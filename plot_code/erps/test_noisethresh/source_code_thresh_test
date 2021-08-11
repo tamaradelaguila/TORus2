@@ -1,0 +1,142 @@
+
+clear
+user_settings
+nfish =  12%@ SET
+
+[VSDI] = TORus('load',nfish);
+
+VSDroiTS= TORus('loadwave',nfish);
+waves = VSDroiTS.circ_filt306.data; %@ SET
+
+
+% temp = TORus('loadmovie',nfish,'_06filt3');
+% movies = temp.data(:,:,1:end-1,:);
+idx = VSDI.nonanidx(1:16);
+% idx = setdiff(idx, VSDI.reject.GSabs025);
+% idx = setdiff(idx, VSDI.reject.GSdeviat2sd);
+
+
+% function settings
+
+window.min = [-100 100];
+window.max = [0 600];
+window.movsum = 50;
+
+window.baseline = [-600 0];
+baseidx = find_closest_timeidx(window.baseline, VSDI.timebase);
+
+noise.fr_abovenoise = 30;
+noise.SDfactor = 2.5;
+
+ylimite = [-.05 0.20];
+
+nroi= 3;
+%%
+figure
+sgtitle(['noise threshold + onset (>mean +' num2str(noise.SDfactor) 'Std in' num2str(noise.fr_abovenoise) 'consec.frames). Basel='  num2str(window.baseline(1)) 'to'  num2str(window.baseline(2)) 'ms'])
+for ploti = 1:15
+    subplot(4,4,ploti)
+
+%     wave = squeeze(movies(15,15,:,idx(ploti))); % from movie
+wave = squeeze(waves(:,nroi,idx(ploti)));
+
+    output = devo_peak2peak(wave, VSDI.timebase, window, noise, 'movsum', 0);
+
+    plot(VSDI.timebase, wave, 'linewidth', 1.5); hold on;
+    yline(output.noisethresh, 'g', 'linewidth', 1.5)
+    xline(output.onsetnoise_ms, 'r--', 'linewidth', 1.5)
+    ylim(ylimite)
+    xline(window.baseline(1)); xline(window.baseline(2));
+    yline(mean(wave(baseidx(1):baseidx(2))), 'b');
+%     legend data noise_thresh onset
+    clear wave  output
+end
+
+ploti =16
+    subplot(4,4,ploti)
+
+    wave = squeeze(waves(:,nroi,idx(ploti)));
+
+%     wave = squeeze(movies(15,15,:,idx(ploti)));
+
+    output = devo_peak2peak(wave, VSDI.timebase, window, noise, 'movsum', 0);
+
+    plot(VSDI.timebase, wave, 'linewidth', 1.5); hold on;
+    yline(output.noisethresh, 'g', 'linewidth', 1.5)
+    xline(output.onsetnoise_ms, 'r--', 'linewidth', 1.5)
+    ylim(ylimite)
+    xline(window.baseline(1)); xline(window.baseline(2));
+
+    legend data noise_thresh onset
+    clear wave  output
+
+   %% PLOT BY CONDITION
+   cond_code =[402 ];
+setting.manual_reject =1;
+% SELECT EXCLUDED
+
+rejectidx = [];
+
+    rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+
+
+    rejectidx = [rejectidx  makeRow(VSDI.reject.GSabs025)];
+
+
+
+    rejectidx = [rejectidx makeRow(VSDI.reject.GSdeviat2sd)];
+    rejectidx = setdiff(rejectidx, VSDI.reject.forcein);
+
+
+rejectidx = sort(unique(rejectidx));
+
+
+% SELECT CASES
+
+        sel_trials = makeCol(find(VSDI.condition(:,1)==cond_code));
+
+        sel_trials = setdiff(sel_trials, rejectidx);
+
+
+%%
+figure
+sgtitle(['noise threshold + onset (>mean +' num2str(noise.SDfactor) 'Std in' num2str(noise.fr_abovenoise) 'consec.frames). Basel='  num2str(window.baseline(1)) 'to'  num2str(window.baseline(2)) 'ms'])
+for ploti = 1:15
+    subplot(4,4,ploti)
+
+%     wave = squeeze(movies(15,15,:,idx(ploti))); % from movie
+wave = squeeze(waves(:,nroi,sel_trials(ploti)));
+
+    output = devo_peak2peak(wave, VSDI.timebase, window, noise, 'movsum', 0);
+
+    plot(VSDI.timebase, wave, 'linewidth', 1.5); hold on;
+    yline(output.noisethresh, 'g', 'linewidth', 1.5);
+    xline(output.onsetnoise_ms, 'r--', 'linewidth', 1.5)
+    ylim(ylimite)
+    xline(window.baseline(1)); xline(window.baseline(2));
+    yline(mean(wave(baseidx(1):baseidx(2))), 'b');
+%     legend data noise_thresh onset
+    clear wave  output
+end
+
+ploti =16
+    subplot(4,4,ploti)
+    wave = squeeze(waves(:,nroi,sel_trials));
+    erps = mean(squeeze(waves(:,2,sel_trials)),2);
+
+%     wave = squeeze(movies(15,15,:,idx(ploti)));
+
+    output = devo_peak2peak(erps, VSDI.timebase, window, noise, 'movsum', 0);
+
+    % PLOT
+    plot(VSDI.timebase, wave); hold on;
+
+    plot(VSDI.timebase, erps, 'k', 'linewidth', 1.5); hold on;
+    yline(output.noisethresh, 'g', 'linewidth', 1.5);
+    xline(output.onsetnoise_ms, 'k--', 'linewidth', 1.5)
+    ylim(ylimite)
+    xline(window.baseline(1)); xline(window.baseline(2));
+    title('erps')
+    display(output.onsetnoise_ms)
+    legend data noise_thresh onset
+    clear wave  output

@@ -1,0 +1,393 @@
+%% s06_analysis1: FRAME-WISE STATISTICAL COMPARISON (TFCE CORRECTION)
+clear
+
+%----------------------------------------------------------------
+% @SET: BASIC PARAMETERS
+%----------------------------------------------------------------
+
+nfish =  11;%@ SET
+ref_movie= '_09filt3' ;
+
+savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_plot' ;%@ SET
+load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_condition_list.mat')
+
+outfield = 'peakminusbasel';% @SET: output field with choosen measure
+
+
+%----------------------------------------------------------------
+% @SET: FUNCTION PARAMETERS
+%----------------------------------------------------------------
+feedf.window.min = [-100 100]; % 'feed-function' structure
+feedf.window.max = [0 1000];
+feedf.window.movsum = 50;
+feedf.window.basel = [-100 0];
+feedf.window.slope=50;
+
+feedf.noise.fr_abovenoise = 30;
+feedf.noise.SDfactor = 2;
+
+% Window For average-based analysis
+
+feedf.window_ave = feedf.window;
+
+feedf.noise_ave = feedf.noise;
+feedf.noise_ave.SDfactor = 4;% SET differences
+
+
+feedf.method = 'movsum';
+
+%----------------------------------------------------------------
+% @SET: REJECT SETTINGS
+%----------------------------------------------------------------
+reject_on = [0];  %@ SET
+% Subsettings:
+setting.manual_reject = 0; %@ SET
+setting.GSmethod_reject = 1;  %@ SET
+setting.GSabsthres_reject = 0; %@ SET
+setting.force_include = 1; %@ SET
+
+
+% END OF SETTINGS
+
+
+% USER SETTINGS
+path.rootpath = '/home/tamara/Documents/MATLAB/VSDI/TORus'; %@ SET for each experiment
+tempsep.idcs   = strfind(path.rootpath,'/');
+tempsep.newdir = path.rootpath(1:tempsep.idcs(end));
+
+path.data = fullfile(path.rootpath, 'data');
+path.grouplist = fullfile(path.rootpath);
+path.list =fullfile(path.rootpath, 'data','BVlists');
+
+
+addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
+
+% end of user_settings
+
+
+
+
+%%
+for blocki = 4% 1:length(fast_condition_list)
+    
+    nfish = fast_condition_list{blocki,1};
+    
+    trial_kinds = fast_condition_list{blocki,2};
+    cond_def =fast_condition_list{blocki,3};
+    
+    
+    [VSDI] = TORus('load',nfish);
+    
+    temp = TORus('loadmovie',nfish,ref_movie);
+    movies = temp.data(:,:,1:end-1,:);
+    
+    %--------------------------------------
+    
+    
+    
+    %% CONFIG REJECTION OPTIONS
+    
+    
+    rejectidx = [];
+    
+    if setting.manual_reject
+        rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+    end
+    
+    if setting.GSabsthres_reject
+        rejectidx = [rejectidx  makeRow(VSDI.reject.GSabs025)];
+        
+    end
+    
+    if setting.GSmethod_reject
+        rejectidx = [rejectidx makeRow(VSDI.reject.GSdeviat2sd)];
+    end
+    
+    if setting.force_include
+        rejectidx = setdiff(rejectidx, VSDI.reject.forcein);
+        
+    end
+    
+    rejectidx = sort(unique(rejectidx));
+    
+    %% SELECT CASES
+    sel_trials= [];
+    
+    for condi = cond_codes %to make sure that only the conditions of interest are computed)
+        condtrials = makeCol(find(VSDI.condition(:,1)==condi));
+        sel_trials  = [sel_trials; condtrials];
+    end
+    sel_trials= sort(sel_trials);
+    
+    if reject_on  %@ SET
+        sel_trials = setdiff(sel_trials, rejectidx);
+    end
+    
+    %% 1. PEAK-2-PEAK MEASUREMENTS OF EACH TRIAL MOVIE
+    
+    %----------------------------------------------------------------
+    % CONFIGURATION OF PARAMETERS THAT ARE SPECIFIC FOR EACH MEASURE
+    %----------------------------------------------------------------
+    measureframe= [];
+    localclim = [];
+    
+    
+    switch outfield
+        
+        % ------------------------------------------------------------------------
+        case 'peakminusbasel'
+            
+            %                 measureframe = frames.peakminusbasel;
+            
+            localmap = jet;
+            
+            localtitle = [num2str(VSDI.ref), 'peak-b'];
+            localname = [num2str(VSDI.ref), '-peak-b'];
+            
+            flageslope = 0;
+            
+            % ------------------------------------------------------------------------
+        case 'slopemax'
+            
+            measureframe = frames.slopemax;
+            
+            localmap = jet;
+            
+            localtitle = [num2str(VSDI.ref), 'slopemax'];
+            localname = [num2str(VSDI.ref), '-slopemax'];
+            flageslope = 0;
+            
+            
+            % ------------------------------------------------------------------------
+        case 'onsetnoise_ms'
+            
+            measureframe = frames.onsetnoise_ms;
+            
+            localmap = flipud(jet);
+            
+            localtitle = [num2str(VSDI.ref), 'onsetnoise_m_s'];
+            localname = [num2str(VSDI.ref), '-onsetnoise_ms'];
+            flageslope = 0;
+            
+            % ------------------------------------------------------------------------
+            
+        case 'noisethresh'
+            
+            measureframe = frames.noisethresh;
+            
+            localmap = jet;
+            
+            
+            localtitle = [num2str(VSDI.ref), 'peak-b '];
+            localname = [num2str(VSDI.ref), '-peak-b'];
+            
+            flageslope = 0;
+            % ------------------------------------------------------------------------
+        case 'slopemean' % in this case, the measure has to be computed
+            
+            j = 1;
+            flagslope = 1;
+            
+            %GET MAX AND PLOT THEM WITH THE SAME LIMITS
+            localmax = max(abs(measureframe(:)));
+            
+            
+            % 2. CONFIGURE THE OTHER PARAMETERS
+            localmap = jet;
+            localclim = [0 localmax];
+            
+            localtitle = [num2str(VSDI.ref), 'slopemean '];
+            localname = [num2str(VSDI.ref), '-slopemean'];
+            
+    end %switch outfield
+    
+    
+            %--------------------------------------
+            %2. APPLY FUNCTION TO EACH TRIAL
+            %--------------------------------------
+            
+            % SUBSET SELECTED TRIALS TO COMPUTE
+            sel_trials  = find(VSDI.condition(:,1)==condi);
+            if reject_on  %@ SET
+                sel_trials = setdiff(sel_trials, rejectidx);
+            end
+            
+            % APPLY THE FUNCTION (differently for slopemean and other
+            % measurements)
+            for triali = makeRow(sel_trials) 
+                
+                movtrial = squeeze(movies(:,:,:,triali));
+                
+                for rowi = 1:size(movtrial,1)
+                    for coli = 1:size(movtrial,2)
+                        wave = squeeze(movtrial(rowi, coli, :));
+                        output = devo_peak2peak(wave, VSDI.timebase, window,[], method, 0);
+                        
+                        if flagslope
+                        idx0= dsearchn(VSDI.timebase, 0);%get 0 index
+                        waveW = wave(idx0:output.peakidx(2));
+                        slopemean = mean(diff(waveW));
+                        
+                        mmaps(rowi, coli, j) = slopemean;
+                        
+                        elseif ~flagslope
+                        mmaps(rowi, coli, j) =  output.(outfield); 
+                        end %if flagslope
+                        
+                        clear output slopemean waveW wave 
+                        
+                    end %coli
+                end %rowi
+                
+                display(triali)
+                
+            end %triali
+            
+ 
+              
+                    blob()
+            
+            
+            %2. GET MAX-MIN TO PLOT THEM WITH THE SAME LIMITS (if we want
+            %to plot the maps) 
+%                     maxval= max(abs(mmaps(:)));
+            %
+            %         c_lim= [-mmaps mmaps];
+            %         BVmap = colormap_loadBV();
+            
+            
+            %% PERMUTATION TFCE of the measures from all trials
+            
+            %--------------------------------------
+            % PERMUTATION OF 'mmaps' (measurement map)
+            %--------------------------------------
+            
+            j = 1;
+            
+            for condi = makeRow(trial_kinds)
+                
+                condA = condi;
+                condB = force0ending(condi);
+                
+                if condA == condB
+                    continue %skips computing the control condition
+                end
+                %% SELECT CONDITIONS TO COMPARE AND LOAD MOVIES
+                
+                [idxA] = find(VSDI.condition(:,1)==condA);
+                [idxB] = find(VSDI.condition(:,1)==condB);
+                
+                if reject_on
+                    idxA = setdiff(idxA, rejectidx);
+                    idxB = setdiff(idxB, rejectidx);
+                end
+                
+                % cond_def = ['code',num2str(condA),'-', num2str(VSDI.list(idxA(1)).mA),'mA''minus-control' ];
+                cond_def{j} = ['code',num2str(condA),'-', num2str(condB) ];
+                
+                %--------------------------------------
+                %
+                %--------------------------------------
+                
+                %peakminusbasel
+                %     framesA = peakminusbasel(:,:,idxA);
+                %     framesB =  peakminusbasel(:,:,idxB);
+                
+                
+                framesA = mmaps(:,:,idxA);
+                framesB =  mmaps(:,:,idxB);
+                
+                %% SETTINGS FOR PLOTTING AND SAVING
+                % for saving plots
+                pathplot = fullfile(path.rootpath ,'plot','test_measurements','TFCEperm', outfield); %@ SET
+                savename = fullfile(pathplot,[outfield, num2str(VSDI.ref),':',',cond_def,'.jpg']); %@ SET
+                
+                % For the permutation test:
+                % nchoosek(24, 12)
+                n_perm = 5000;  %@ SET
+                
+                % For Plotting:
+                % act_clim= [-4 4]; %@SET coloraxis of the shown colors
+                p_thresh = 0.05;  %@SET theshold p-value for showing diffmap values
+                
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                
+                
+                %% COMPUTATION:  PERMUTATION + TFCE - Diffmap with p-value based threshold
+                
+                % nA = length(idxA); nB = length(idxB);
+                
+                Data{1} = permute( framesA(:,:,:), [3 1 2]);
+                Data{2} = permute( framesB(:,:,:), [3 1 2]);% control/baseline condition. Trials have to be in the first dimension
+                
+                % APPLY FUNCTION: PERMUTATION + TFCE
+                results = ept_TFCE(Data, 'i', n_perm); % independent trials
+                
+                % Maps to plot
+                TFCEmaps.(outfield).diffmap(:,:,j) = squeeze(mean(Data{1}) - mean(Data{2})); %the first dimension is trials
+                TFCEmaps.(outfield).Tobs(:,:,j) = results.Obs;
+                TFCEmaps.(outfield).Pmap(:,:,j) =results.P_Values;
+                TFCEmaps.(outfield).alphamap(:,:,j) = maps.Pmap(:,:,j) < p_thresh;
+                
+                clear Data results frame
+                
+                if reject_on
+                    name= [num2str(VSDI.ref) outfield ':' num2str(condA) 'minus' num2str(condB) 'n' num2str(n_perm) 'TFCEpermut' 'p' num2str(p_thresh),'(reject)'];
+                else
+                    name= [num2str(VSDI.ref) outfield ':' num2str(condA) 'minus' num2str(condB) 'n' num2str(n_perm) 'TFCEpermut' 'p' num2str(p_thresh)];
+                end
+                
+                j = j+1;
+            end
+            
+            % pathsave = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/frame_perm';
+            % save(fullfile(pathsave,name),'maps')
+            
+            %% PLOT STATISTICAL DIFFERENCE BETWEEN CONDITIONS (P-THRESHOLDED)
+            
+            % for ploti = 1:length(cond_codes)
+            %     subplot (3,3,ploti)
+            %     imagesc(maps.diffmap(:,:,ploti))
+            %     idxcond = find(VSDI.condition(:,1) == cond_codes(ploti)); idxcond = idxcond(1);
+            %     title(['c=',num2str(cond_codes(ploti)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'])
+            %     %     colormap()
+            %     axis image
+            % end
+            
+            for ploti = 1:length(cond_codes)
+                clims= [0 0.05];
+                maps = TFCEmaps.(outfield);
+                
+                ax(ploti) = subplot(3, 3, ploti);
+                logicalpha = maps.Pmap(:,:,ploti)< 0.01;
+                %    imagesc(imtiles(:,:,ploti))
+                test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), logicalpha ,0, ax(ploti), clims, 1, parula);
+                %         test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), maps.alphamap(:,:,ploti) ,0, ax(ploti), clims, 1, parula);
+                
+                
+                idxcond = find(VSDI.condition(:,1) == cond_codes(ploti)); idxcond = idxcond(1);
+                tit= ['c=',num2str(cond_codes(ploti)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
+                
+                set(ax(ploti),'XColor', 'none','YColor','none')
+                ax(ploti).Title.String = tit;
+                %     colormap(parula)
+                
+            end
+            
+            
+            ax(9) = subplot(3,3,9)
+            imagesc(VSDI.backgr(:,:,VSDI.nonanidx(1)))
+            colormap(ax(9), bone)
+            axis image
+            %
+            % title_info = ['diffmap' , name]; %@ CHANGE!!!
+            % %SAVE
+            % saveas(gcf, fullfile(pathsave,[title_info '.jpg']), 'jpg')
+            % close all
+            % clear maps  name pathsave moviesA moviesB idxA idxB nA nB cond_def
+            
+                end % blocki
+            
+            % end %fish loop
+    %% Created: 19/02/21
+    % FROM: Gent2 code 'pipel09_framewise1', updated: 17/11/20
