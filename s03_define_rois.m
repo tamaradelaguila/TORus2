@@ -21,19 +21,19 @@ VSDI.roi.labels = {'dm4_R', 'dm4_L',...
  roi_preview_multiple(VSDI.crop.preview, manual_poly); 
  roi_preview_multiple(VSDI.backgr(:,:,end), manual_poly); %see in a selected frame
 
- % TO REDO A SINGLE ROI, DRAW THEM ALL AND COPY MANUALLY THE COORDINATES
- % AND MASK
-        % [redo_poly, redo_mask] = roi_draw(VSDI.crop.preview,VSDI.roi.labels); 
-        %  roi_preview_multiple(VSDI.backgr(:,:,140), redo_poly); %see in a selected frame
-        % manual_poly{14,1} = redo_poly{14,1}
-        % manual_mask(:,:,13:14) = redo_mask(:,:,13:14);
-        % roi_preview_multiple(VSDI.backgr(:,:,144), manual_poly); %see in a selected frame
+% TO REDO A SINGLE ROI, DRAW THEM ALL AND COPY MANUALLY THE COORDINATES
+... AND MASK
+        [redo_poly, redo_mask] = roi_draw(VSDI.crop.preview,VSDI.roi.labels); 
+         roi_preview_multiple(VSDI.backgr(:,:,140), redo_poly); %see in a selected frame
+        manual_poly{15,1} = redo_poly{1,1}
+        manual_mask(:,:,15:16) = redo_mask(:,:,1:2);
+        roi_preview_multiple(VSDI.backgr(:,:,144), manual_poly); %see in a selected frame
 
 VSDI.roi.manual_poly  = manual_poly;
 VSDI.roi.manual_mask = manual_mask; 
 TORus('save',VSDI);
 
- roi_preview_multiple(VSDI.crop.preview, VSDI.roi.manual_poly); 
+roi_preview_multiple(VSDI.crop.preview, VSDI.roi.manual_poly); 
 
 %% CREATE WAVES STRUCRURE (for extraction in '_extract_ROItimeseries):
 

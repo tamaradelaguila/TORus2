@@ -1,8 +1,8 @@
-%% s05 EXTRACT ROI timeseries
+% s05 EXTRACT ROI timeseries
 clear
 
 user_settings
-for nfish= 5:6
+for nfish= [11:12]
 
 VSDI = TORus('load',nfish);
 VSDroiTS = TORus('loadwave',nfish);
@@ -11,12 +11,13 @@ VSDroiTS = TORus('loadwave',nfish);
 
 % 1. REFERENCES for input movies/output waves (see 'z_notes.txt', point 5 for
 % complete list)
-inputRef =  '_06filt3'; 
+inputRef =  '_12filt5'; 
 fieldref = strcat(inputRef(4:end),inputRef(2:3)); 
 
 %load input movie 
 [inputStruct] = TORus('loadmovie',nfish,inputRef); 
 movies=inputStruct.data;
+
 
 % 2. PERFORM COMPUTATIONS:  EXTRACT WAVES 
 nroi =length(VSDroiTS.roi.labels);
