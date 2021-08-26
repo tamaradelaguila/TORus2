@@ -526,7 +526,7 @@ end
 clear
 user_settings;
 
-for nfish =  [10]
+for nfish =  [3]
 user_settings;
 
 VSDI = TORus('load',nfish);

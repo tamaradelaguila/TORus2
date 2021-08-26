@@ -1,7 +1,8 @@
 
 clear
-ref_wave = 'circ_filt309';
-ref_movie= '_09filt3' ;
+ref_wave= 'filt512' ;
+% ref_wave = 'circ_filt309';
+% ref_movie= '_09filt3' ;
 
 savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_anova' ;%@ SET
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_condition_list.mat')
@@ -52,7 +53,8 @@ end
 
 %%
 
-selroinames = {'dm4_R','dm4m_R', 'dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET
+selroinames = {'dm4m_R', 'dm4l_R','dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET new one with medial and lateral dm4
+% selroinames = {'dm4_R','dm4m_R', 'dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET
 
 for  block = 4%1:length(fast_condition_list)
     
@@ -182,7 +184,7 @@ blob()
 
 %% R format
 
-selroinames = {'dm4_R','dm4m_R', 'dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET
+selroinames = {'dm4m_R','dm4l_R', 'dm2_R', 'dldm_R', 'dm1_R'}; % @SET
 
 for  block = 4%1:length(fast_condition_list)
     
@@ -195,7 +197,10 @@ for  block = 4%1:length(fast_condition_list)
     %     spike = TORus('loadspike', nfish); % ECG
     VSDroiTS =TORus('loadwave',nfish);
     
-    selroi =name2idx(selroinames, VSDI.roi.labels_circ); %idx of selected subset
+%     selroi =name2idx(selroinames, VSDI.roi.labels_circ); %idx of
+%     selected CIRCULAR NAMES 
+    selroi =name2idx(selroinames, VSDI.roi.labels); %idx of selected subset
+
     waves = VSDroiTS.(ref_wave).data(:,selroi,:); %@ SET
     
     
@@ -271,7 +276,7 @@ for  block = 4%1:length(fast_condition_list)
     % WRITE EXCEL
     % ----------------------------------------------
     excelname = fullfile(savein, ['long_format_forR_' outfield 'data' ref_wave '.xls']);
-    csvname = fullfile(savein, ['long_format_forR_' outfield num2str(VSDI.ref) '_' num2str(trial_kinds(1))  'data' ref_wave '.csv']);
+    csvname = fullfile(savein, ['long_format_forR_' outfield num2str(VSDI.ref) '_' num2str(trial_kinds(1))  '_data' ref_wave '.csv']);
     % write output (new sheet for each fish
     data_long = cell2table(data_long);
     writetable (data_long, excelname, 'Sheet', [num2str(VSDI.ref) ])

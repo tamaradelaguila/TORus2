@@ -14,6 +14,9 @@ function [output] = TORus(action, object, object_feature)
 %  [VSDroiTS]= TORus('loadmovie', nfish, moviereference) - uses moviereference
 %  [spike]= TORus('loadspike', nfish, moviereference) - uses moviereference
 
+% nsubject = TORus(     n)
+
+
 datapath = '/home/tamara/Documents/MATLAB/VSDI/TORus/data';
 
 VSDIpath = fullfile(datapath,'dataVSDI');
@@ -102,7 +105,7 @@ switch action
     case 'nsubject'
         load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         nref = object; if  isnumeric(nref); nref = num2str(nref); end
-        name = ['TORus_', num2str(nref)];
+        name = [expref, '_', num2str(nref)];
         output = find(strcmpi([grouplist(:)],name)); %number of fish
         
         

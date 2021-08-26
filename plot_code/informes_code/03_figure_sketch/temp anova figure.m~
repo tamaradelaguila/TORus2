@@ -1,13 +1,14 @@
 
 clear
-ref_wave = 'circ_filt309';
-ref_movie= '_09filt3' ;
+ref_wave= 'filt512' ;
+% ref_wave = 'circ_filt309';
+% ref_movie= '_09filt3' ;
 
-savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_plot' ;%@ SET
+savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_anova' ;%@ SET
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_condition_list.mat')
 
-outfield = 'slopemean';
-% 'peakminusbasel' , 'meanslope'
+outfield = 'wmean';
+% 'peakminusbasel' , 'meanslope', 'wmean'
 
 % COMMON SETTINGS FOR THE FUNCTION
 feedf.window.min = [-100 100]; % 'feed-function' structure
@@ -15,6 +16,7 @@ feedf.window.max = [0 1000];
 feedf.window.movsum = 50;
 feedf.window.basel = [-100 0];
 feedf.window.slope=50;
+feedf.window.wmean=[0 250];
 
 feedf.noise.fr_abovenoise = 30;
 feedf.noise.SDfactor = 2;
@@ -42,10 +44,17 @@ path.list =fullfile(path.rootpath, 'data','BVlists');
 addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 % END OF USER SETTINGS
 
+% Input control
+if strcmpi(outfield, 'slopemean')
+    flagslope = 1;
+else
+    flagslope = 0;
+end
 
+%%
 
-%% 
-selroinames = {'dm4_R','dm4m_R', 'dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET
+selroinames = {'dm4m_R', 'dm4l_R','dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET new one with medial and lateral dm4
+% selroinames = {'dm4_R','dm4m_R', 'dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET
 
 for  block = 4%1:length(fast_condition_list)
     
@@ -60,10 +69,10 @@ for  block = 4%1:length(fast_condition_list)
     
     selroi =name2idx(selroinames, VSDI.roi.labels_circ); %idx of selected subset
     waves = VSDroiTS.(ref_wave).data(:,selroi,:); %@ SET
-
+    
     
     %     output = {'trial', 'spiketime', 'cond','mA','', '%brady(count)','', 'IBIbasel', 'ibi0', 'ibi1','ibi2','ibi3','', 'estimation','dm4','dm4m','dm2','dldm'}; %header first
-        
+    
     % ----------------------------------------------
     % BRAINVISION/WAVE-BASED MEASURES
     % ----------------------------------------------
@@ -73,15 +82,15 @@ for  block = 4%1:length(fast_condition_list)
             wave = squeeze(waves(:, nroi,triali));
             local_output = devo_peak2peak(wave, VSDI.timebase, feedf.window,[], feedf.method, 0);
             
-            msr(triali, nroi) = local_output.(outfield);
             
             if flagslope
                 idx0= dsearchn(VSDI.timebase, 0);%get 0 index
                 waveW = wave(idx0:local_output.peakidx(2));
                 slopemean = mean(diff(waveW));
-                                
+                msr(triali, nroi) = slopemean;
+                
             elseif ~flagslope
-                msr(rowi, nroi) =  local_output.(outfield);
+                msr(triali, nroi) =  local_output.(outfield);
             end %if flagslope
             
             clear wave local_output
@@ -97,8 +106,8 @@ for  block = 4%1:length(fast_condition_list)
     % Find the minimum number of conditions
     j = 1;
     for condi = makeRow( trial_kinds)
-                sel_trials = find(VSDI.condition(:,1) == condi);
-       amount(j) = length(sel_trials);
+        sel_trials = find(VSDI.condition(:,1) == condi);
+        amount(j) = length(sel_trials);
     end
     rept = min(amount); % nºof repetitions (measures of each group and measurement)
     n = rept-1;
@@ -148,11 +157,11 @@ for  block = 4%1:length(fast_condition_list)
     
     [p , tb1 , stats] = anova2(data,rept);
     c = multcompare(stats)
-c = multcompare(stats,'Estimate','row')
-c = multcompare(stats,'Estimate','col')
-
-
-
+    c = multcompare(stats,'Estimate','row')
+    c = multcompare(stats,'Estimate','col')
+    
+    
+    
     % ----------------------------------------------
     % WRITE EXCEL
     % ----------------------------------------------
@@ -162,12 +171,12 @@ c = multcompare(stats,'Estimate','col')
     %         writetable (localoutput, excelname, 'sheet', num2str(VSDI.ref))
     %     end
     
-%     name2save = fullfile(savein,['plot_C_Amplitude_trialwise' num2str(VSDI.ref) num2str(condi(1)) '.jpg']);
-%     set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 8]);
-%     saveas(gcf,name2save,'jpg')
-%     
-%     close
-%     clear mA meanAct stdAct  msr
+    %     name2save = fullfile(savein,['plot_C_Amplitude_trialwise' num2str(VSDI.ref) num2str(condi(1)) '.jpg']);
+    %     set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 8]);
+    %     saveas(gcf,name2save,'jpg')
+    %
+    %     close
+    %     clear mA meanAct stdAct  msr
     
 end %nfish
 
@@ -175,7 +184,7 @@ blob()
 
 %% R format
 
-selroinames = {'dm4_R','dm4m_R', 'dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET
+selroinames = {'dm4m_R','dm4l_R', 'dm2_R', 'dm3_R', 'dldm_R', 'dm1_R'}; % @SET
 
 for  block = 4%1:length(fast_condition_list)
     
@@ -188,30 +197,34 @@ for  block = 4%1:length(fast_condition_list)
     %     spike = TORus('loadspike', nfish); % ECG
     VSDroiTS =TORus('loadwave',nfish);
     
-    selroi =name2idx(selroinames, VSDI.roi.labels_circ); %idx of selected subset
-    waves = VSDroiTS.(ref_wave).data(:,selroi,:); %@ SET
+%     selroi =name2idx(selroinames, VSDI.roi.labels_circ); %idx of
+%     selected CIRCULAR NAMES 
+    selroi =name2idx(selroinames, VSDI.roi.labels); %idx of selected subset
 
+    waves = VSDroiTS.(ref_wave).data(:,selroi,:); %@ SET
+    
     
     %     output = {'trial', 'spiketime', 'cond','mA','', '%brady(count)','', 'IBIbasel', 'ibi0', 'ibi1','ibi2','ibi3','', 'estimation','dm4','dm4m','dm2','dldm'}; %header first
-        
+    
     % ----------------------------------------------
     % BRAINVISION/WAVE-BASED MEASURES
     % ----------------------------------------------
-        for triali =  makeRow (VSDI.nonanidx)
+    for triali =  makeRow (VSDI.nonanidx)
         
         for nroi = 1:size(waves,2)
             wave = squeeze(waves(:, nroi,triali));
             local_output = devo_peak2peak(wave, VSDI.timebase, feedf.window,[], feedf.method, 0);
             
-            msr(triali, nroi) = local_output.(outfield);
             
             if flagslope
                 idx0= dsearchn(VSDI.timebase, 0);%get 0 index
                 waveW = wave(idx0:local_output.peakidx(2));
                 slopemean = mean(diff(waveW));
-                                
+                msr(triali, nroi) = slopemean;
+                
+                
             elseif ~flagslope
-                msr(rowi, nroi) =  local_output.(outfield);
+                msr(triali, nroi) =  local_output.(outfield);
             end %if flagslope
             
             clear wave local_output
@@ -219,7 +232,7 @@ for  block = 4%1:length(fast_condition_list)
         
     end %triali
     
-
+    
     
     % ----------------------------------------------
     % MEAN VALUES FOR EACH CONDITION
@@ -229,9 +242,9 @@ for  block = 4%1:length(fast_condition_list)
     j = 1;
     intrials = [];
     for condi = makeRow( trial_kinds)
-       sel_trials = find(VSDI.condition(:,1) == condi);
-       amount(j) = length(sel_trials);
-       
+        sel_trials = find(VSDI.condition(:,1) == condi);
+        amount(j) = length(sel_trials);
+        
         mA(condi) = VSDI.condition(sel_trials(1),4) ;
         intrials = [intrials; sel_trials]
         clear sel_trials
@@ -247,7 +260,7 @@ for  block = 4%1:length(fast_condition_list)
         
         for roii = 1:length(selroi)
             data_long{j,1} = msr(triali,roii);
-            data_long{j,2} = VSDI.condition(triali,4);            
+            data_long{j,2} = VSDI.condition(triali,4);
             data_long{j,3} = roii;
             data_long{j,4} = selroinames{roii};
             
@@ -258,20 +271,22 @@ for  block = 4%1:length(fast_condition_list)
     
     
     % ADAPT 'mA' (for x-axis labels) if there is a tone
-
+    
     % ----------------------------------------------
     % WRITE EXCEL
     % ----------------------------------------------
-    excelname = fullfile(savein, ['long_format_forR.xls'])
-            % write output (new sheet for each fish
-            data_long = cell2table(data_long);
-            writetable (data_long, excelname, 'Sheet', [num2str(VSDI.ref) outfield '_' num2str(trial_kinds(1))])
+    excelname = fullfile(savein, ['long_format_forR_' outfield 'data' ref_wave '.xls']);
+    csvname = fullfile(savein, ['long_format_forR_' outfield num2str(VSDI.ref) '_' num2str(trial_kinds(1))  'data' ref_wave '.csv']);
+    % write output (new sheet for each fish
+    data_long = cell2table(data_long);
+    writetable (data_long, excelname, 'Sheet', [num2str(VSDI.ref) ])
+    writetable (data_long, csvname)
     
-%     name2save = fullfile(savein,['plot_C_Amplitude_trialwise' num2str(VSDI.ref) num2str(condi(1)) '.jpg']);
-%     set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 8]);
-%     saveas(gcf,name2save,'jpg')
-%     
-%     close
-%     clear mA meanAct stdAct  msr
+    %     name2save = fullfile(savein,['plot_C_Amplitude_trialwise' num2str(VSDI.ref) num2str(condi(1)) '.jpg']);
+    %     set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 8]);
+    %     saveas(gcf,name2save,'jpg')
+    %
+    %     close
+    %     clear mA meanAct stdAct  msr
     
 end %nfish
