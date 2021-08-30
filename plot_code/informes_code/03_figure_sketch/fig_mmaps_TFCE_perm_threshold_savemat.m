@@ -258,6 +258,8 @@ for blocki = 4% 1:length(fast_condition_list)
             continue %skips computing the control condition
         end
         
+        conditions_labels{j} = [num2str(condA) 'minus' num2str(condB)];
+        
         % SELECT CONDITIONS TO COMPARE AND LOAD MOVIES
         
         [idxA] = find(VSDI.condition(:,1)==condA);
@@ -268,8 +270,10 @@ for blocki = 4% 1:length(fast_condition_list)
         idxB = intersect(idxB, sel_trials);
         
         
-        framesA = mmaps(:,:,idxA);
+        framesA = mmaps(:,:,idxA); 
         framesB =  mmaps(:,:,idxB);
+        
+        meanAct(:,:,j) = mean(framesA,3); 
         % cond_def = ['code',num2str(condA),'-', num2str(VSDI.list(idxA(1)).mA),'mA''minus-control' ];
         code_def{j} = ['code',num2str(condA),'-', num2str(condB) ];
         %--------------------------------------
@@ -298,13 +302,15 @@ for blocki = 4% 1:length(fast_condition_list)
         Data{2} = permute( framesB(:,:,:), [3 1 2]);% control/baseline condition. Trials have to be in the first dimension
         
         % APPLY FUNCTION: PERMUTATION + TFCE
-        results = ept_TFCE(Data, 'i', n_perm); % independent trials
+        results = ept_TFCE_VSDI(Data, 'i', n_perm); % independent trials
         
         % Maps to plot
+      
         TFCEmaps.(outfield).diffmap(:,:,j) = squeeze(mean(Data{1}) - mean(Data{2})); %the first dimension is trials
         TFCEmaps.(outfield).Tobs(:,:,j) = results.Obs;
         TFCEmaps.(outfield).Pmap(:,:,j) =results.P_Values;
         TFCEmaps.(outfield).alphamap(:,:,j) = TFCEmaps.(outfield).Pmap(:,:,j) < p_thresh;
+        TFCEmaps.(outfield).conditions = conditions_labels;
         
         clear Data results frame
         
@@ -317,8 +323,9 @@ for blocki = 4% 1:length(fast_condition_list)
         j = j+1;
     end
     
-    % pathsave = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/frame_perm';
-    % save(fullfile(pathsave,name),'maps')
+    savemat = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm';
+    name = [num2str(VSDI.ref),'_TFCE' num2str(n_perm) 'rep_' outfield '_reject' num2str(reject_on), 'data', ref_movie ,'maps'];
+    save(fullfile(savemat,name),'TFCEmaps')
     
     %% PLOT STATISTICAL DIFFERENCE BETWEEN CONDITIONS (P-THRESHOLDED)
     
@@ -331,69 +338,25 @@ for blocki = 4% 1:length(fast_condition_list)
     %     axis image
     % end
 
-    ploti = 1;
-    
-    % PLOT WITH A THRESHOLD OF 0.05 IN THE FIRST ROW
-    pthresh = 0.05; %to threshold out when plotting
-    
-    for condi= 1:length(newkinds) %leave out the blank condition
-        clims= [0 0.05];
-        maps = TFCEmaps.(outfield);
-        
-        ax(ploti) = subplot(3, 3, ploti);
-        %    imagesc(imtiles(:,:,ploti))
-        %plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
-        plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(hot));
-
-        %         test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), maps.alphamap(:,:,ploti) ,0, ax(ploti), clims, 1, parula);
-        
-        
-        idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
-        tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
-        
-        set(ax(ploti),'XColor', 'none','YColor','none')
-        
-        ax(ploti).Title.String = tit;
-        %     colormap(parula)
-        
-        ploti = ploti+1;
-    end
-    
-    % PLOT WITH A THRESHOLD OF 0.005 IN THE second ROW
-    pthresh = 0.005; %to threshold out when plotting
-    
-    for condi= 1:length(newkinds) %leave out the blank condition
-        clims= [0 0.05];
-        maps = TFCEmaps.(outfield);
-        
-        ax(ploti) = subplot(3, 3, ploti);
-        %    imagesc(imtiles(:,:,ploti))
-        plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
-        %         test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), maps.alphamap(:,:,ploti) ,0, ax(ploti), clims, 1, parula);
-        
-        
-        idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
-        tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
-        
-        set(ax(ploti),'XColor', 'none','YColor','none')
-        
-        ax(ploti).Title.String = tit;
-        ploti = ploti+1;
-    end
     
     % PLOT WITH A THRESHOLD OF 0.001 IN THE second ROW
     pthresh = 0.001; %to threshold out when plotting
+%     custom_map = colormap_loadBV();
+    custom_map = jet;
     
+    ploti = 1;
+        clims= [0 0.1];
+
     for condi= 1:length(newkinds) %leave out the blank condition
-        clims= [0 0.05];
         maps = TFCEmaps.(outfield);
         
-        ax(ploti) = subplot(3, 3, ploti);
+        ax(ploti) = subplot(1, 3, ploti); %can plot only 3 activity
+        backgr = VSDI.backgr(:,:,VSDI.nonanidx(1)) .* VSDI.crop.mask;
+        alpha = TFCEmaps.(outfield).Pmap(:,:,ploti)< pthresh; 
         %    imagesc(imtiles(:,:,ploti))
-        plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
-        %         test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), maps.alphamap(:,:,ploti) ,0, ax(ploti), clims, 1, parula);
-        
-        
+%         plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
+        plot_framesoverlaid2(TFCEmaps.(outfield).diffmap(:,:,ploti),backgr, alpha  ,0, ax(ploti), clims, 1, [], custom_map);
+
         idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
         tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
         
@@ -402,8 +365,6 @@ for blocki = 4% 1:length(fast_condition_list)
         ax(ploti).Title.String = tit;
         ploti = ploti+1;
     end
-    savemat = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm';
-    save(fullfile(savemat, [ num2str(VSDI.ref),'_TFCE' num2str(n_perm) 'rep_' outfield '_reject' num2str(reject_on)]), 'data', ref_movie ,'maps')
     %             ax(9) = subplot(3,3,9)
     %             imagesc(VSDI.backgr(:,:,VSDI.nonanidx(1)))
     %             colormap(ax(9), bone)
@@ -428,88 +389,8 @@ blob()
 
 % end %fish loop
 % ----------------------------------------------
-%% TO PLOT STATISTICAL RESULTS FROM SAVED FILE:
-% ----------------------------------------------
-% ----------------------------------------------
-
-% load from:'/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm';
 
 
-ploti = 1;
-
-% PLOT WITH A THRESHOLD OF 0.05 IN THE FIRST ROW
-pthresh = 0.05; %to threshold out when plotting
-nmap = size(maps.Pmap,3);
-
-for condi= 1:nmap %leave out the blank condition
-    clims= [0 0.05];
-%     maps = TFCEmaps.(outfield);
-    
-    ax(ploti) = subplot(3, 3, ploti);
-    %    imagesc(imtiles(:,:,ploti))
-    plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(hot));
-    %         test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), maps.alphamap(:,:,ploti) ,0, ax(ploti), clims, 1, parula);
-    
-    
-    idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
-%     tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
-    
-    set(ax(ploti),'XColor', 'none','YColor','none')
-    
-%     ax(ploti).Title.String = tit;
-    %     colormap(parula)
-    
-    ploti = ploti+1;
-end
-
-% PLOT WITH A THRESHOLD OF 0.005 IN THE second ROW
-pthresh = 0.005; %to threshold out when plotting
-
-for condi= 1:nmap %leave out the blank condition
-    clims= [0 0.05];
-%     maps = TFCEmaps.(outfield);
-    
-    ax(ploti) = subplot(3, 3, ploti);
-    %    imagesc(imtiles(:,:,ploti))
-    plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
-    %         test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), maps.alphamap(:,:,ploti) ,0, ax(ploti), clims, 1, parula);
-    
-    
-%     idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
-%     tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
-%     
-    set(ax(ploti),'XColor', 'none','YColor','none')
-    
-%     ax(ploti).Title.String = tit;
-    ploti = ploti+1;
-end
-
-% PLOT WITH A THRESHOLD OF 0.001 IN THE second ROW
-pthresh = 0.001; %to threshold out when plotting
-
-for condi= 1:nmap %leave out the blank condition
-    clims= [0.001 0.0001];
-%     maps = TFCEmaps.(outfield);
-    
-    ax(ploti) = subplot(3, 3, ploti);
-    %    imagesc(imtiles(:,:,ploti))
-    plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(hot));
-    %         test_plot_framesoverlaid(maps.Pmap(:,:,ploti),VSDI.backgr(:,:,VSDI.nonanidx(1)), maps.alphamap(:,:,ploti) ,0, ax(ploti), clims, 1, parula);
-    
-    
-%     idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
-%     tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
-    
-    set(ax(ploti),'XColor', 'none','YColor','none')
-    
-%     ax(ploti).Title.String = tit;
-    ploti = ploti+1;
-end
-
-name = [num2str(VSDI.ref), ref_movie, 'TFCE', outfield,'_','reject', num2str(reject_on),'_c:', num2str(trial_kinds(1))] ;
-save_currentfig (savein, name)
-close
-
-%% Created: 19/02/21
-% FROM: Gent2 code 'pipel09_framewise1', updated: 17/11/20
-% Uploaded: 18/08/21
+%% Created: 30/08/21
+% FROM: Gent2 code 'fig_mmaps_TFCE_perm'. This is an adaptation to plot the
+% measure p-thresholded
