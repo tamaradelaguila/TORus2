@@ -3,11 +3,14 @@
 clear
 
 % roi to analyze
-roiname1 = 'dm4_R';
+roiname1 = 'dm4m_R';
 roiname2 = 'dm2_R'; % dm2-R
 
-ref_wave = 'circ_filt309';
-ref_movie= '_09filt3' ;
+% ref_wave = 'circ_filt309';
+% ref_movie= '_09filt3' ;
+
+ref_wave = 'filt512';
+ref_movie= '_12filt5' ;
 
 savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_plot' ;%@ SET
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_condition_list.mat')
@@ -18,6 +21,7 @@ feedf.window.max = [0 1000];
 feedf.window.movsum = 50;
 feedf.window.basel = [-100 0];
 feedf.window.slope=50;
+feedf.window.wmean=[0 250];
 
 feedf.noise.fr_abovenoise = 30;
 feedf.noise.SDfactor = 2;
@@ -49,7 +53,7 @@ addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 % end of user_settings
 
 
-%% A: TILES CON CURVITA
+%% A: TILES CON CURVITA -CIRCULAR PLOT
 clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave path ref_movie
 
 for block = 4 %1:length(fast_condition_list)
@@ -107,7 +111,7 @@ for block = 4 %1:length(fast_condition_list)
         tempmA = num2str(VSDI.condition(idxA(1),4));
         titulo = [num2str(VSDI.ref), ':', tempmA,'mA (cod=',num2str(condi),cond_def, ')' ];
         sgtitle(titulo)
-        name2save = fullfile(savein,['plot_A_tiles_simple',num2str(VSDI.ref),'cod' ,num2str(condi) , '.jpg']);
+        name2save = fullfile(savein,['plot_A_tiles_simple',num2str(VSDI.ref),'cod' ,num2str(condi) , 'dataset',ref_movie,'.jpg']);
         set(gcf,'PaperUnits','inches','PaperPosition',[0 0 10 3]);
         saveas(gcf,name2save,'jpg')
         close
@@ -117,6 +121,87 @@ end %block
 
 blob()
 
+%% A2: TILES CON CURVITA -ANATOMICAL PLOT
+clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave path ref_movie
+
+for block = 4 %1:length(fast_condition_list)
+    
+    nfish = fast_condition_list{block,1};
+    
+    trial_kinds = fast_condition_list{block,2};
+    cond_def =fast_condition_list{block,3};
+    
+    VSDI = TORus('load', nfish);
+    VSDmov = TORus('loadmovie',nfish,ref_movie);
+    
+    
+    roi1 = name2idx(roiname1, VSDI.roi.labels);
+    roi2 = name2idx(roiname2, VSDI.roi.labels);
+    
+    for condi = makeRow(trial_kinds)
+        [idxA] = find(VSDI.condition(:,1)==condi);
+        %     [idxB] = find(VSDI.condition(:,1)==force0ending(condi));
+        
+        %to plot single trial
+        movie2plot = mean(VSDmov.data(:,:,:,idxA),4) ;
+        movie2plot(:,:,end) = roi_crop(VSDI.backgr(:,:,VSDI.nonanidx(1)), VSDI.crop.mask); %substitute by non-filtered background
+        
+        % apply crop mask
+        movie2plot = roi_crop(movie2plot, VSDI.crop.mask);
+        
+        % FUNCTION SETTINGS
+        
+        movieset.moviedata =movie2plot;
+        movieset.times = VSDI.timebase;
+        
+        tileset.start_ms = 100;
+        tileset.end_ms = 250;
+        tileset.time2plot = 0; %select time (ms)
+        tileset.clims = [-0.25 0.25];%  values above or below will be saturated
+        tileset.thresh = [-0.1 0.1]; %% values inside this range will be zero-out
+        
+        % ...for anatomical-roi waves
+%         waveset.coord =  VSDI.roi.manual_poly([roi1,roi2],1);
+%         waveset.mask = VSDI.roi.manual_mask(:,:,[roi1,roi2]);
+%         waveset.xlim = [0 600];
+%         waveset.ylim = [-0.5 tileset.clims(2)];
+        
+        % ...for circular samples
+        waveset.coord =  VSDI.roi.circle.center([roi1 roi2],:);
+        waveset.coord(1,1) =  35; % for fish 11
+        waveset.coord(2,2) =  31;
+        
+        waveset.r = VSDI.roi.circle.R;
+        waveset.xlim = [0 600];
+        waveset.ylim = [-0.05 tileset.clims(2)];
+        
+        % END OF FUNCTION SETTINGS
+        
+        % ------------------
+        % APPLY FUNCTION
+        % ------------------
+        devo_plot_tiles_4frames_nwaves(movieset, tileset,waveset)
+%         devo_plot_tiles_4frames_anatomicalwaves(movieset, tileset,waveset)
+
+        % ------------------
+        
+        % ADJUSTMENTS
+        % Plot the threshold and clims:
+        yline(tileset.thresh(2), 'b--')
+        yline(tileset.clims(2), 'r--')
+        
+        tempmA = num2str(VSDI.condition(idxA(1),4));
+        titulo = [num2str(VSDI.ref), ':', tempmA,'mA (cod=',num2str(condi),cond_def, ')' ];
+        sgtitle(titulo)
+        name2save = fullfile(savein,['plot_A_tiles_simple',num2str(VSDI.ref),'cod' ,num2str(condi) , 'dataset',ref_movie,'.jpg']);
+        set(gcf,'PaperUnits','inches','PaperPosition',[0 0 10 3]);
+        saveas(gcf,name2save,'jpg')
+        close
+        
+    end % condi
+end %block
+
+blob()
 %% B1 - PEAKMAP with cropmask
 clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave path ref_movie
 
@@ -351,9 +436,109 @@ for block = 4
     
 end %block
 blob()
-%% C: PLOT mA vs peak
 
-clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave
+%% B3 WMEAN-MAP with cropmask
+clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave path ref_movie
+
+for block = 4
+    
+    nfish = fast_condition_list{block,1};
+    
+    trial_kinds = fast_condition_list{block,2};
+    cond_def =fast_condition_list{block,3};
+    
+    VSDI = TORus('load', nfish);
+    VSDmov = TORus('loadmovie',nfish,ref_movie);
+    movies = VSDmov.data;
+    
+    measure = {'wmean'};
+    
+    peakmap.clims = [-0.1 0.1];%  values above or below will be saturated
+    peakmap.thresh = [-0.01 0.01]; %% values inside this range will be zero-out
+    
+    %--------------------------------------
+    %1. APPLY FUNCTION TO THE AVERAGE-MOVIE FOR EACH CONDITION
+    %--------------------------------------
+    
+    j = 1;
+    
+    for condi = makeRow(trial_kinds)
+        sel_trials  = find(VSDI.condition(:,1)==condi);
+        avemovie = mean(movies(:,:,:,sel_trials),4);
+        
+        for rowi = 1:size(avemovie,1)
+            for coli = 1:size(avemovie,2)
+                wave = squeeze(avemovie(rowi, coli, :));
+                output = devo_peak2peak(wave, VSDI.timebase, feedf.window_ave, [], feedf.method, 0, 0);
+                                
+                measureframe(rowi, coli, j) = output.wmean;
+            end %coli
+        end %rowi
+        j = j+1;
+        clear sel_trials
+    end % condi
+    
+    %GET MAX AND PLOT THEM WITH THE SAME LIMITS
+    localset.max = max(abs(measureframe(:)));
+    
+    
+    % 2. CONFIGURE THE OTHER PARAMETERS
+    localset.map = jet;
+    localset.map(1,:) = [0 0 0];
+    
+    localset.clim = [0 localset.max];
+    
+    localset.title = [num2str(VSDI.ref), 'slopemean for each cond'];
+    
+    
+    % %--------------------------------------
+    % %  PLOT MEASURES
+    % %--------------------------------------
+    
+    figure
+    
+    for ploti = 1:length(trial_kinds) %one plot for each condition
+        
+        ax(ploti) = subplot(3,4,ploti);
+        cropped_im = roi_crop(measureframe(:,:,ploti), VSDI.crop.mask);
+        cropped_back = roi_crop(VSDI.backgr(:,:,VSDI.nonanidx(1)), VSDI.crop.mask);
+        imagesc(cropped_im);
+        set (ax(ploti), 'clim', localset.clim)
+        colormap(localset.map)
+        condidx = find(VSDI.condition(:,1) ==trial_kinds(ploti)); % get idx from condition
+        tempmA = VSDI.condition(condidx(1),4); %get mA from first trial that meet the condition
+        title(['c',num2str(trial_kinds(ploti)), '(', num2str(tempmA),'mA)'])
+        clear cropped_im cropped_back condidx tempmA
+        axis image
+    end
+    
+    % plot colorbar
+    ax(11) = subplot(3,4,11);
+    colorbar
+    set (ax(11), 'clim', localset.clim)
+    colormap(localset.map)
+    
+    %plot brain (background)
+    ax(12) = subplot(3,4,12);
+    imagesc(VSDI.backgr(:,:,VSDI.nonanidx(1)));
+    colormap(ax(12), bone)
+    axis image 
+    sgtitle([localset.title '(' cond_def ')'])
+    
+    
+    name2save = fullfile(savein,['plot_B3_wmean' localset.title '.jpg']);
+    set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 8]);
+    saveas(gcf,name2save,'jpg')
+    
+    close
+    clear localset measureframe maxval c_lim
+    
+    
+end %block
+blob()
+%% C: PLOT mA vs peak (reference from circle roi)
+
+clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave ref_movie
 
 %SETTINGS
 outfolder = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady';
@@ -368,7 +553,7 @@ excelname = fullfile(outfolder,'brady_grouped_bycondition.xlsx');
 % AMPLITUDE TRIAL-WISE TO PLOT BY CONDITION
 % ---------------------------------------------------------------------------
 
-for  block = 1:length(fast_condition_list)
+for  block = 4 % 1:length(fast_condition_list)
     
     nfish = fast_condition_list{block,1};
     
@@ -482,7 +667,7 @@ for  block = 1:length(fast_condition_list)
     %         writetable (localoutput, excelname, 'sheet', num2str(VSDI.ref))
     %     end
     
-    name2save = fullfile(savein,['plot_C_Amplitude_trialwise' num2str(VSDI.ref) num2str(condi(1)) '.jpg']);
+    name2save = fullfile(savein,['plot_C_Amplitude_trialwise' num2str(VSDI.ref) num2str(condi(1)) , 'dataset', ref_movie,'.jpg']);
     set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 8]);
     saveas(gcf,name2save,'jpg')
     
@@ -492,7 +677,148 @@ for  block = 1:length(fast_condition_list)
 end %nfish
 
 blob()
+%% C2: PLOT mA vs peak (anatomical roi)
 
+clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave ref_movie
+ref_wave = 'circ_filt512';
+
+%SETTINGS
+outfolder = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady';
+excelname = fullfile(outfolder,'brady_grouped_bycondition.xlsx');
+
+% set(0,'DefaultFigureVisible','off')
+
+
+%END OF USER SETTINGS
+
+% ---------------------------------------------------------------------------
+% AMPLITUDE TRIAL-WISE TO PLOT BY CONDITION
+% ---------------------------------------------------------------------------
+
+for  block = 4 % 1:length(fast_condition_list)
+    
+    nfish = fast_condition_list{block,1};
+    
+    trial_kinds = fast_condition_list{block,2};
+    cond_def =fast_condition_list{block,3};
+    
+    VSDI = TORus('load',nfish);
+    %     spike = TORus('loadspike', nfish); % ECG
+    VSDroiTS =TORus('loadwave',nfish);
+    waves = VSDroiTS.(ref_wave).data; %@ SET
+    
+    roi1 = name2idx(roiname1, VSDI.roi.labels);
+    roi2 = name2idx(roiname2, VSDI.roi.labels);
+    
+    
+    %     output = {'trial', 'spiketime', 'cond','mA','', '%brady(count)','', 'IBIbasel', 'ibi0', 'ibi1','ibi2','ibi3','', 'estimation','dm4','dm4m','dm2','dldm'}; %header first
+    
+    
+    
+    % ----------------------------------------------
+    % BRAINVISION/WAVE-BASED MEASURES
+    % ----------------------------------------------
+    for triali =  makeRow (VSDI.nonanidx)
+        
+        for nroi = [roi1 roi2]
+            wave = squeeze(waves(:, nroi,triali));
+            local_output = devo_peak2peak(wave, VSDI.timebase, feedf.window,[], feedf.method, 0);
+            
+            peak(triali, nroi) = local_output.peakminusbasel;
+            clear wave local_output
+        end
+        
+    end %triali
+    
+    % ----------------------------------------------
+    % MEAN VALUES FOR EACH CONDITION
+    % ----------------------------------------------
+    
+    % HEADER
+    j = 1;
+    for condi = makeRow( trial_kinds)
+        sel_trials = find(VSDI.condition(:,1) == condi);
+        meanAct(j,1) = mean(peak(sel_trials,roi1));
+        meanAct(j,2) = mean(peak(sel_trials,roi2));
+        
+        
+        semAct(j,1) =  std(peak(sel_trials,roi1))/sqrt(length(peak(sel_trials,roi1)));%dm4
+        semAct(j,2) =  std(peak(sel_trials,roi2))/sqrt(length(peak(sel_trials,roi2))); %dm4m
+        
+        
+        mA(j) = VSDI.condition(sel_trials(1),4) ;
+        
+        j=j+1;
+        clear sel_trials
+    end
+    
+    %         % for the plot
+    %         condlabel(k-1) = which_cond;
+    %         roiactiv(k-1,1) = mean(output(cond_trials,1)); % dm4
+    %         roiactiv(k-1,2) = mean(output(cond_trials,2)); % dm4m
+    %         roiactiv(k-1,3) = mean(output(cond_trials,3)); % dm2
+    %         roiactiv(k-1,4) = mean(output(cond_trials,4)); % dldm
+    
+    % ADAPT 'mA' (for x-axis labels) if there is a tone
+    
+    if mA(2) == 0 || isnan(mA(2)) % if the second condition is NaN or 0, then it is a tone and some adjustements are needed to be plotted
+        flag_adapt =1;
+        mA(1) = -0.5; mA(2) = 0;
+        
+        labels{1} = '0';labels{2} = 'tone';
+        
+        for ii = 3:length(mA)
+            labels{ii} =  num2str(mA(ii));
+        end
+    else
+        
+        flag_adapt =0;
+        
+    end
+    
+    
+    figure
+    errorbar(mA, meanAct(:,1), semAct(:,1), 'o-','linewidth', 1.8)
+    hold on
+    errorbar(mA, meanAct(:,2), semAct(:,2), 'o-','linewidth', 1.8)
+    
+    roinames{1} = roiname1;
+    roinames{2} = roiname2;
+    
+    legend(roinames)
+    
+    
+    xticks(mA);
+    
+    if flag_adapt
+        xticklabels(labels)
+    end
+    
+    
+    xlim([min(mA)-0.5, max(mA)+0.5])
+    ylim([0.05 0.4])
+    xlabel('mA'); ylabel('peak minus baseline mean \pm sem')
+    title (['peak-B:' num2str(VSDI.ref), cond_def, '(', num2str(trial_kinds(1)) , ')'])
+    
+    % ----------------------------------------------
+    % WRITE EXCEL
+    % ----------------------------------------------
+    %     if export.excel == 1
+    %         % write output (new sheet for each fish
+    %         localoutput = cell2table(localoutput);
+    %         writetable (localoutput, excelname, 'sheet', num2str(VSDI.ref))
+    %     end
+    
+    name2save = fullfile(savein,['plot_C_Amplitude_trialwise_' num2str(VSDI.ref) num2str(condi(1)) , 'dataset', ref_wave,'.jpg']);
+    set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 8]);
+    saveas(gcf,name2save,'jpg')
+    
+    close
+    clear mA meanAct stdAct  peak
+    
+end %nfish
+
+blob()
 %% D – CURVAS COND SOLAPADAS POR REGIÓN
 clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein ref_wave path
 
