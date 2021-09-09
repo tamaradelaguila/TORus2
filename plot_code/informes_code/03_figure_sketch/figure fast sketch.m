@@ -44,6 +44,7 @@ addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 % end of user_settings
 
 %% A: TILES CON CURVITA
+ref_movie= '_12filt5' ;
 
 
 %% C: PLOT mA vs peak

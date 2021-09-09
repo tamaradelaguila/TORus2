@@ -2,7 +2,7 @@
 clear
 
 user_settings
-for nfish= [3]
+for nfish= [1 2 10]
 
 VSDI = TORus('load',nfish);
 VSDroiTS = TORus('loadwave',nfish);

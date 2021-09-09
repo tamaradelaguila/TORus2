@@ -318,7 +318,7 @@ blob()
 clear
 user_settings
 
-nfish =3;%@ SET
+nfish =2;%@ SET
 [VSDI] = TORus('load',nfish);
 
 clearvars -except VSDI nfish
