@@ -14,7 +14,7 @@ function [output] = TORus(action, object, object_feature)
 %  [VSDroiTS]= TORus('loadmovie', nfish, moviereference) - uses moviereference
 %  [spike]= TORus('loadspike', nfish, moviereference) - uses moviereference
 
-% nsubject = TORus(     n)
+% nsubject = TORus('nsubject',    ref)
 
 
 datapath = '/home/tamara/Documents/MATLAB/VSDI/TORus/data';
