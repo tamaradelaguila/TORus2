@@ -102,7 +102,7 @@ switch action
         disp(strcat ('Spike structure for fish',grouplist{object}, '_loaded'));
         output= spike;
 
-    case 'nsubject'
+    case 'who'
         load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         nref = object; if  isnumeric(nref); nref = num2str(nref); end
         name = [expref, '_', num2str(nref)];
