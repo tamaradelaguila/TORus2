@@ -1,2 +1,4 @@
 data/
 plot/
+**/*.jpg
+**/*.pdf
