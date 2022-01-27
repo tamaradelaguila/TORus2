@@ -55,3 +55,9 @@ end
 %----------------------------------------------------------------
 [idxA] = find(VSDI.condition(:,1)==condA);
 idxA = intersect(idxA, sel_trials);
+
+
+%----------------------------------------------------------------
+% ALTERNATIVE: EXTRACTING REJECTED (no need of selecting cases)
+%----------------------------------------------------------------
+    sel_trials = setdiff(sel_trials, rejectidx);
