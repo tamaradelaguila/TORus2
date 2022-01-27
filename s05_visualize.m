@@ -214,6 +214,46 @@ user_settings
     titulo2 = ['AVERAGE cond.101 - control', '(',num2str(VSDI.ref) ,')'];
     sgtitle(titulo2)
     
+    
+    %% 6 - OVERLAID ANY NUMBER OF TILES : from a movie
+    
+    movie_ref = '_12filt5'; % input movie
+    VSDmov = TORus('loadmovie',nfish,movie_ref);
+    
+    [idxA] = find(VSDI.condition(:,1)==404);
+    [idxB] = find(VSDI.condition(:,1)==400);
+    
+    
+    %to plot single trial
+    movie2plot = mean(VSDmov.data(:,:,:,idxA),4) ;
+    
+    movie2plot_dif = mean(VSDmov.data(:,:,:,idxA),4) - mean(VSDmov.data(:,:,:,idxB),4) ;
+    movie2plot_dif(:,:,end) = movie2plot(:,:,end); %substitute the substracted background with a normal one
+    
+    % settings
+    tileset.start_ms = -100; % time in ms for first tile
+    tileset.end_ms = 800;
+    %           tileset.clims = [-0.9 0.9];
+    tileset.clims = [-0.3 0.3];
+    tileset.thresh = [-0.1 0.1];
+        
+
+    plot_tilemovie12frames(movie2plot, VSDI.timebase, tileset);
+    plot_tilemovie12frames_devo(movie2plot, VSDI.timebase, tileset);
+    
+roi2draw = VSDI.roi.manual_poly([1,2,7,8,13,14]);
+    plot_tilemovie_custom(movie2plot, VSDI.timebase, tileset, roi2draw);
+    plot_tilemovie_custom(movie2plot, VSDI.timebase, tileset);
+
+    titulo = ['AVERAGE cond.101', '(',num2str(VSDI.ref) ,')'];
+    sgtitle(titulo)
+    
+    
+    plot_tilemovie12frames(movie2plot_dif, VSDI.timebase, tileset);
+    titulo2 = ['AVERAGE cond.101 - control', '(',num2str(VSDI.ref) ,')'];
+    sgtitle(titulo2)
+    
+    
     %%
     clear
     user_settings
