@@ -7,7 +7,7 @@
 clear
 user_settings
 
-nfish = 12;%@ SET
+nfish = 2;%@ SET
 [VSDI] = TORus('load',nfish);
 
 %% PYTHON dml extraction
@@ -88,48 +88,47 @@ end
 
 TORus('save',VSDI,nfish);
 
-% %% 02 - DIFFERENTIAL VALUES
-% clearvars -except VSDI nfish
-%
-% % 1. REFERENCES for input/output movies
-% inputRef =  '_01registered';
-% outputRef = '_02diff';
-%
-% inputStruct = TORus('loadmovie', nfish, inputRef);
-%
-% % 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
-%
-% inputdata = inputStruct.data;
-%
-% baseframe = 1; % @SET! idx of frames to use as F0 in differential formula
-% % Turn into string to save later in History:
-%     baseltext = strcat(num2str(baseframe(1)),'to',num2str(baseframe(end)));
-%
-% % Preallocate in NaN
-% inputdim = size(inputdata);
-% diffmovies = NaN(inputdim(1),inputdim(2),inputdim(3)+1,inputdim(4));
-%
-% for triali = makeRow(VSDI.nonanidx) %import only included trials
-%     inputmovie = squeeze(inputdata(:,:,:,triali));
-%     diffmovies(:,:,:,triali) = raw2diffperc2(inputmovie, baseframe);
-%
-%     VSDI.backgr(:,:,triali) = diffmovies(:,:,end,triali); % store background
-% end
-%
-% % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
-% % structure used to apply new changes in
-% VSDmov.ref = inputStruct.ref;
-% VSDmov.movieref= outputRef;
-% VSDmov.data = diffmovies;
-% VSDmov.times = inputStruct.times;
-% VSDmov.hist = inputStruct.hist;
-% VSDmov.hist{length(VSDmov.hist)+1,1} = 'raw2diffperc2'; %append a new cell with new info
-% TORus('savemovie', VSDmov, VSDmov.movieref);
-%
-% TORus('save', VSDI);
-%
-% % SUGGESTION: if different F0 are ,keep the basic reference + info about the F0, e.g. outputRef = '_02diffbase10';
-%
+%% 02 - DIFFERENTIAL VALUES
+clearvars -except VSDI nfish
+
+% 1. REFERENCES for input/output movies
+inputRef =  '_01registered';
+outputRef = '_02diff';
+
+inputStruct = TORus('loadmovie', nfish, inputRef);
+
+% 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
+
+inputdata = inputStruct.data;
+
+baseframe = 1; % @SET! idx of frames to use as F0 in differential formula
+% Turn into string to save later in History:
+baseltext = strcat(num2str(baseframe(1)),'to',num2str(baseframe(end)));
+
+% Preallocate in NaN
+inputdim = size(inputdata);
+diffmovies = NaN(inputdim(1),inputdim(2),inputdim(3)+1,inputdim(4));
+
+for triali = makeRow(VSDI.nonanidx) %import only included trials
+    inputmovie = squeeze(inputdata(:,:,:,triali));
+    diffmovies(:,:,:,triali) = raw2diff(inputmovie, baseframe);
+    
+    VSDI.backgr(:,:,triali) = diffmovies(:,:,end,triali); % store background
+end
+
+% 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
+% structure used to apply new changes in
+VSDmov.ref = inputStruct.ref;
+VSDmov.movieref= outputRef;
+VSDmov.data = diffmovies;
+VSDmov.times = inputStruct.times;
+VSDmov.hist = inputStruct.hist;
+VSDmov.hist{length(VSDmov.hist)+1,1} = 'raw2diff'; %append a new cell with new info
+TORus('savemovie', VSDmov, VSDmov.movieref);
+
+TORus('save', VSDI);
+
+% SUGGESTION: if different F0 are ,keep the basic reference + info about the F0, e.g. outputRef = '_02diffbase10';
 
 %% 03 - PERCENT DIFFERENTIAL VALUES
 clearvars -except VSDI nfish
@@ -318,7 +317,7 @@ blob()
 clear
 user_settings
 
-nfish =2;%@ SET
+nfish =9;%@ SET
 [VSDI] = TORus('load',nfish);
 
 clearvars -except VSDI nfish
@@ -359,7 +358,7 @@ diffmovie = raw2diffperc2(inputmovie, baseframe);
 cropmovies(:,:,:,triali)= roi_crop(diffmovie, VSDI.crop.mask);
 
 disp(triali)
-    
+
 end
 
 
@@ -378,3 +377,71 @@ TORus('savemovie', VSDmov, VSDmov.movieref);
 TORus('save', VSDI);
 blob()
 % SUGGESTION: if different F0 are ,keep the basic reference + info about the F0, e.g. outputRef = '_02diffbase10';
+
+%% 16 - DIFFERENTIAL VALUES F0= 10 preS
+clear 
+user_settings
+
+for nfish = [9]
+clearvars -except nfish
+
+[VSDI] = TORus('load',nfish);
+
+clearvars -except VSDI nfish
+
+
+% 1. REFERENCES for input/output movies
+inputRef =  '_01registered';
+outputRef = '_16diff_f0pre';
+
+inputStruct = TORus('loadmovie', nfish, inputRef);
+% [VSDmov] = TORus('loadmovie',nfish,outputRef); % BORRAR
+
+% 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
+
+inputdata = inputStruct.data;
+
+n_preSframes = 10;  % @SET! nº of frames pre-Stimulus to use as F0 in differential formula
+
+% Turn into string to save later in History:
+baseltext = strcat(num2str(n_preSframes),'frames_preS');
+
+
+% Preallocate in NaN
+inputdim = size(inputdata);
+diffmovies = NaN(inputdim(1),inputdim(2),inputdim(3)+1,inputdim(4));
+F0 = NaN(inputdim(1),inputdim(2),inputdim(4)); 
+
+for triali = makeRow(VSDI.nonanidx) %import only included trials
+    inputmovie = squeeze(inputdata(:,:,:,triali));
+    
+    idx_preS = dsearchn(VSDI.timeabs,VSDI.info.Sonset); %
+    ...if there are multiple Sonset, change 'VSDI.info.Sonset(:,triali)'
+        
+% GET IDX OF FRAMES PREVIOUS TO THE
+b(1) = idx_preS-n_preSframes;
+b(2) = idx_preS-1;
+baseframe = b(1):b(2);
+
+[diffmovies(:,:,:,triali), F0(:,:,triali)] = raw2diff(inputmovie, baseframe);
+
+% VSDI.backgr(:,:,triali) = diffmovies(:,:,end,triali); % store background
+end
+
+% 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
+% structure used to apply new changes in
+VSDmov.ref = inputStruct.ref;
+VSDmov.movieref= outputRef;
+VSDmov.data = diffmovies;
+VSDmov.times = inputStruct.times;
+VSDmov.hist = inputStruct.hist;
+VSDmov.hist{length(VSDmov.hist)+1,1} = ['raw2diff_' baseltext]; %append a new cell with new info
+VSDmov.F0 = F0;
+
+TORus('savemovie', VSDmov, VSDmov.movieref);
+
+% SUGGESTION: if different F0 are ,keep the basic reference + info about the F0, e.g. outputRef = '_02diffbase10';
+end 
+%% LAST UPDATE: 
+% 21/11/21 - add F0 to the function raw2diff and update the code to save it
+% in the movies VSDmov
