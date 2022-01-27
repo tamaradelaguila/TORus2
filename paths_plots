@@ -1,0 +1,50 @@
+PATHS CODE
+
+PANEL 1 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+TILES:
+(livescript) /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/plot_tiles_mixed.mlx
+
+TILES + CURVAS:
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/plot_tiles_and_waves.m
+
+CURVAS SOLAPADAS DE TODAS LAS REGIONES (al lateral de los tiles):
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_5_justforwaves.m
+
+GRÁFICO LATERALIDAD: dm2 y dm4mR (ipsi y contra)
+
+MAPAS PICO y WMEAN
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working.m
+
+MANTELITO
+get measures: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working.m
+anova: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore/group_barplot_anova_Z_and_norm.R
+
+LATERALIZACIÓN: PICO, ÁREA, LATENCIA
+
+PMAP
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/fig_mmaps_TFCE_perm_threshold_savemat_groupplot.m
+Results matfiles saved in: TORus/plot/informes/03_figure_sketch/fast_TFCEperm/
+Plots saved in : TORus/plot/informes/03_figure_sketch/fast_TFCEperm/pmaps
+
+PANEL 2 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+TILES INTENSIDADES (de 1 pez, todas las intensidades)
+
+CURVAS SOLAPADAS
+
+ALTERNATIVO A TILES (3 sujetos): un fotograma de cada de 3 intensidades; curva latencia, mapa LATENCIA
+
+BOXPLOT bradi + 3 intensidades
+
+PLOT BRADI vs RESPUESTA para cada pez en todas las condiciones juntas
+
+MAPA LATENCIA
+
+PRINTING COMMAND /////////////////////////////////////////////
+set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
+print(['path' name '.svg'],'-r900','-dsvg','-painters') % prints it as you see them
+
+
+SEED-BASED CONNECTIVITY /////////////////////////////////////////////
+PCA first component removal:
