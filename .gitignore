@@ -2,3 +2,9 @@ data/
 plot/
 **/*.jpg
 **/*.pdf
+**/*.nii
+**/*.zip
+**/*.xls
+**/*.mat
+#do not ignore:
+!grouplist.mat
