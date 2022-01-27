@@ -4,7 +4,7 @@ VSDI = TORus('load', 10);
 trials = find(VSDI.condition(:,1) == 2003); 
 VSDmov = TORus('loadmovie',10, '_01registered');
 
-A = VSDmov.data(:,:,:,trials);
+A = VSDmov.data(:,:,:,trials(1));
 A(isnan(A)) = 0;
 image = mean(A,4);
 
