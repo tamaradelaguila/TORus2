@@ -203,7 +203,7 @@ box_m(data[, "value", drop = FALSE], data$roi)
 # which are generally robust to violations of the assumption as long as group sizes are equal
 sink()
 
-#######################################3
+#######################################
 
 # BOXPLOT
 bxp <- ggboxplot(
@@ -383,7 +383,24 @@ postHoc1
 levels(data$roi)
 levels(data$roi)
 
-# DUNN's TEST (PAIWISE COMPARISONS) for each level of mA
+# Kruskal-Wallis test is a non-parametric analog of the one-way ANOVA
+kruskal.test(value ~ roi, data = data)
+kruskal.test(value ~ mA, data = data)
+
+# Kruskal Wallis with rstatix
+
+# Grouped data
+data %>%
+  group_by(mA) %>%
+  kruskal_test(value ~ roi)
+
+data %>%
+  group_by(roi) %>%
+  kruskal_test(value ~ mA)
+
+# DUNN's TEST (PAIWISE COMPARISONS) for each level of mA. Dunn's test for pairwise multiple comparisons of the ranked data. The mean rank of the different groups is compared. Used for post-hoc test following Kruskal-Wallis test.
+
+
 data  %>%
   group_by(mA) %>%
   dunn_test(value ~ roi)

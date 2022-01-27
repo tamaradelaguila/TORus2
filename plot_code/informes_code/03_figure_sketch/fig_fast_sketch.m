@@ -12,6 +12,7 @@ roiname2 = 'dm2_R'; % dm2-R
 ref_wave = 'filt512';
 ref_movie= '_12filt5' ;
 
+
 savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_plot' ;%@ SET
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_condition_list.mat')
 
@@ -52,11 +53,23 @@ addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 
 % end of user_settings
 
+        %----------------------------------------------------------------
+        % @SET: REJECT SETTINGS
+        %----------------------------------------------------------------
+        
+        reject_on = [0];  %@ SET
+        % Subsettings:
+        setting.manual_reject = 0; %@ SET
+        setting.GSmethod_reject = 1;  %@ SET
+        setting.GSabsthres_reject = 1; %@ SET+
+        setting.force_include = 0; %@ SET
+
 
 %% A: TILES CON CURVITA -CIRCULAR PLOT
-clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave path ref_movie
+clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein roinames ref_wave path ref_movie setting reject_on
+reject_on = 0;
 
-for block = 6 %[1:3 6:10]%1:length(fast_condition_list)
+for block = [12] %[1:3 6:10]%1:length(fast_condition_list)
     
     nfish = fast_condition_list{block,1};
     
@@ -70,9 +83,47 @@ for block = 6 %[1:3 6:10]%1:length(fast_condition_list)
     roi1 = name2idx(roiname1, VSDI.roi.labels_circ);
     roi2 = name2idx(roiname2, VSDI.roi.labels_circ);
     
+    
+        %----------------------------------------------------------------
+        % COMPUTE REJECTION 
+        %----------------------------------------------------------------
+        
+        rejectidx = [];
+        
+        if setting.manual_reject
+            rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+        end
+        
+        if setting.GSabsthres_reject
+            rejectidx = [rejectidx  makeRow(VSDI.reject.GSabs025)];
+            
+        end
+        
+        if setting.GSmethod_reject
+            rejectidx = [rejectidx makeRow(VSDI.reject.GSdeviat2sd)];
+        end
+        
+        if setting.force_include
+            rejectidx = setdiff(rejectidx, VSDI.reject.forcein);
+            
+        end
+        
+        rejectidx = sort(unique(rejectidx));
+    
     for condi = makeRow(trial_kinds)
+        
+        
+        %----------------------------------------------------------------
+        % CONTINUE CODE
+        %----------------------------------------------------------------        
+        
         [idxA] = find(VSDI.condition(:,1)==condi);
         %     [idxB] = find(VSDI.condition(:,1)==force0ending(condi));
+        
+        if reject_on 
+            idxA = setdiff(idxA, rejectidx);
+        end
+        
         
         %to plot single trial
         movie2plot = mean(VSDmov.data(:,:,:,idxA),4) ;
@@ -83,17 +134,18 @@ for block = 6 %[1:3 6:10]%1:length(fast_condition_list)
         
         % FUNCTION SETTINGS
         
-        movieset.moviedata =movie2plot,
+        movieset.data =movie2plot;
         movieset.times = VSDI.timebase;
         
         tileset.start_ms = 100;
         tileset.end_ms = 250;
         tileset.time2plot = 0; %select time (ms)
-        tileset.clims = [-0.25 0.25];%  values above or below will be saturated
-        tileset.thresh = [-0.1 0.1]; %% values inside this range will be zero-out
-        %         tileset.clims = [-0.1 0.1];% LOWER values above or below will be saturated
-        %         tileset.thresh = [-0.05 0.05]; %%LOWER values inside this range will be zero-out
-        
+%         tileset.clims = [-0.25 0.25];%  values above or below will be saturated
+%         tileset.thresh = [-0.1 0.1]; %% values inside this range will be zero-out
+% 
+            tileset.clims = [-0.13 0.13];% LOWER values above or below will be saturated
+            tileset.thresh = [-0.035 0.035]; %%LOWER values inside this range will be zero-out
+%         
         waveset.coord =  VSDI.roi.circle.center([roi1 roi2],:);
         waveset.r = VSDI.roi.circle.R;
         waveset.xlim = [0 600];
@@ -107,7 +159,7 @@ for block = 6 %[1:3 6:10]%1:length(fast_condition_list)
         devo_plot_tiles_4frames_nwaves(movieset, tileset,waveset)
         % ------------------
         
-        % ADJUSTMENTS
+        % ADJUSTMENTS FOR THE PLOT 
         % Plot the threshold and clims:
         yline(tileset.thresh(2), 'b--')
         yline(tileset.clims(2), 'r--')
@@ -115,11 +167,11 @@ for block = 6 %[1:3 6:10]%1:length(fast_condition_list)
         tempmA = num2str(VSDI.condition(idxA(1),4));
         titulo = [num2str(VSDI.ref), ':', tempmA,'mA (cod=',num2str(condi),cond_def, ')' ];
         sgtitle(titulo)
-        name2save = fullfile(savein,['plot_A_tiles_simple',num2str(VSDI.ref),'cod' ,num2str(condi) , 'dataset',ref_movie,'.jpg']);
+        name2save = fullfile(savein,['plot_A_tiles_simple',num2str(VSDI.ref),'cod' ,num2str(condi) , 'dataset',ref_movie, '_reject' num2str(reject_on) '.jpg']);
         set(gcf,'PaperUnits','inches','PaperPosition',[0 0 10 3]);
         saveas(gcf,name2save,'jpg')
         close
-        
+%         
     end % condi
 end %block
 
@@ -700,18 +752,17 @@ for  block =  1:length(fast_condition_list)
     %% D – CURVAS COND SOLAPADAS POR REGIÓN
     clearvars -except roi1 roi2 roiname1 roiname2 feedf fast_condition_list savein ref_wave path
     % ref_wave = 'circ_filt512';
-    ref_wave = 'filt512';
+    ref_wave = 'filt517';
     
     %----------------------------------------------------------------
     % @SET: fish + conditions
     %----------------------------------------------------------------
-    for  block = [1 2  6 7]% 1:length(fast_condition_list)
+    for  block = [11 12]% 1:length(fast_condition_list)
         
         % Get selection to be analyzed from structure
         nfish = fast_condition_list{block,1};
         trial_kinds = fast_condition_list{block,2};
         descript = fast_condition_list{block,3};
-        
         
         %----------------------------------------------------------------
         % @SET: MEASURE (OR LOOP THROUGH ALL MEASURES)
@@ -789,6 +840,7 @@ for  block =  1:length(fast_condition_list)
                 %             ylim(waveslim.ave)
                 
                 xlim([-300 600])
+
                 ylabel('%\Delta F (trials ave)');
                 
                 title([ VSDI.roi.labels_circ{nroi}])
