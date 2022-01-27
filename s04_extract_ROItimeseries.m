@@ -2,7 +2,7 @@
 clear
 
 user_settings
-for nfish= [1 2 10]
+for nfish= 11%[8 10 11 12]
 
 VSDI = TORus('load',nfish);
 VSDroiTS = TORus('loadwave',nfish);
@@ -11,13 +11,12 @@ VSDroiTS = TORus('loadwave',nfish);
 
 % 1. REFERENCES for input movies/output waves (see 'z_notes.txt', point 5 for
 % complete list)
-inputRef =  '_12filt5'; 
+inputRef =  '_18filt6'; 
 fieldref = strcat(inputRef(4:end),inputRef(2:3)); 
 
 %load input movie 
 [inputStruct] = TORus('loadmovie',nfish,inputRef); 
 movies=inputStruct.data;
-
 
 % 2. PERFORM COMPUTATIONS:  EXTRACT WAVES 
 nroi =length(VSDroiTS.roi.labels);
@@ -47,7 +46,7 @@ end
 clear
 
 user_settings
-for nfish= [12]
+for nfish=  [8 10 11 12]
     
 VSDI = TORus('load',nfish);
 VSDroiTS = TORus('loadwave',nfish);
@@ -87,7 +86,7 @@ blob()
 clear
 
 user_settings
-for nfish= 11
+for nfish=11% [8 10 11 12]
 
 VSDI = TORus('load',nfish);
 VSDroiTS = TORus('loadwave',nfish);
@@ -96,7 +95,7 @@ VSDroiTS = TORus('loadwave',nfish);
 
 % 1. REFERENCES for input movies/output waves (see 'z_notes.txt', point 5 for
 % complete list)
-inputRef = '_12filt5'; %  '_06filt3';
+inputRef = '_18filt6'; %  '_06filt3';
 fieldref = strcat('circ_', inputRef(4:end),inputRef(2:3)); 
 
 %load input movie 
