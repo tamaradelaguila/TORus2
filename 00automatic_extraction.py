@@ -2,7 +2,19 @@
 """
 Created on Sun Dec 20 23:27:20 2020
 
-@author: Tamara del Águila (test to see if it is tracked by github)
+To make sure it works: 
+    - store this script into the experiment folder
+    - in a 'BVdml' subfolder, make a 'in' and 'out' subfolders, with the name of the reference; e.g.: 
+        - '200616in' : with all the dml to convert into mat-files
+        - '200616out': empty folder where the output mat-files will be stored
+    - In the script: change the 'reference' parameter to match the folders from previous point
+    - Before running the script, make sure that the variable space is empty and that the 'Files' window
+    is in the experiment root folder, and not in any subfolder**
+    - Run each part of the script in one time
+    
+    ** Mind that after running the code, the Files-window will open the ouput folder 
+    If problem persists: make sure that the function that the code calls is stored where the code looks for it
+
 """
 
 import os
