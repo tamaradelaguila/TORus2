@@ -35,7 +35,7 @@ TORus('save',VSDI);
 
 roi_preview_multiple(VSDI.crop.preview, VSDI.roi.manual_poly); 
 
-%% CREATE WAVES STRUCRURE (for extraction in '_extract_ROItimeseries):
+%% STORE IN WAVES-STRUCTURE that we create here (for extraction in '_extract_ROItimeseries):
 
 VSDroiTS.ref = VSDI.ref; 
 VSDroiTS.roi = VSDI.roi; 
@@ -102,3 +102,32 @@ for roi = 1:length(VSDI.roi.labels)
 title([num2str(VSDI.ref) ':' VSDI.roi.labels{roi}])
 pause
 end
+
+%% ADD NEW CIRCULAR ROI TO THE ALREADY COLLECTION - !!! ONE BY ONE
+clear
+user_settings
+nfish = 12;
+VSDI = TORus('load',nfish);
+
+newroi_label = {'dldr_R2'};
+
+% newroi_label = {'dld_rR'};
+newroi_row = numel(VSDI.roi.labels_circ)+1; %make sure it's an empty row
+
+close all
+r = VSDI.roi.circle.R;
+[coord, mask] = roicir_draw(VSDI.crop.preview,newroi_label,r); 
+
+circle.center = coord;
+circle.R = r;
+circle.mask = mask;
+
+ roicirc_preview_multiple(VSDI.crop.preview, circle.center, circle.R); 
+ roicirc_preview_multiple(VSDI.backgr(:,:,VSDI.nonanidx(end)), circle.center, circle.R); 
+
+VSDI.roi.labels_circ{newroi_row} =  newroi_label{1};
+VSDI.roi.circle.center(newroi_row,:) = circle.center;
+VSDI.roi.circle.mask(:,:,newroi_row) = circle.mask;
+% TORus('save',VSDI)
+
+
