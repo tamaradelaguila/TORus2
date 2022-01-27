@@ -25,7 +25,7 @@ load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fa
 % @SET: REJECT SETTINGS
 %----------------------------------------------------------------
 
-reject_on = [11];  %@ SET
+reject_on = [12];  %@ SET
 % Subsettings:
 setting.manual_reject = 0; %@ SET
 setting.GSmethod_reject = 1;  %@ SET
@@ -55,7 +55,7 @@ addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 %----------------------------------------------------------------
 
 
- blocki = 4;% 1:length(fast_condition_list)
+ blocki = 8;% 1:length(fast_condition_list)
    
     nfish = fast_condition_list{blocki,1};
     
@@ -120,6 +120,7 @@ end
     
 
 %% OPTION 1 - CONCATENATE MOVIES
+case 'concat_simple'
 %----------------------------------------------------------------
 % CONCATENATE TRIALS FROM EACH CONDITION 
 %----------------------------------------------------------------
@@ -159,7 +160,52 @@ end
 j = j+1;
 clear idx moviesin
 end
+% 
+% 
+% case 'concat_match'
+% 
+%     j = 1;
+% 
+% for condi =  makeRow(trial_kinds)
+%    idxcondi =  find(VSDI.condition(:,1)==condi);
+%    idxcondi = intersect(idxcondi, sel_trials);
+% %    idxcondi = intersect(idxcondi(1:round(end/2)), sel_trials);
+% %    idxcondi = intersect(idxcondi(round(end/2):end), sel_trials);
+%    
+% moviesin = movies(:,:,:,idxcondi);
+% dim = size(moviesin);
+% 
+% for triali = 1:dim(4)
+% supermovie = reshape(moviesin, [dim(1) dim(2) newdim]);
+% end 
+% 
+% seedwave = roi_TSave(supermovie,cROI.mask);
+% seedwave = seedwave';
+% 
+% %-------
+% % pixel-wise correlation 
+% %----------------------------------------------------------------
+% for rowi =1:dim(2)
+%     for coli = 1:dim(1)
+%         pixelwave = squeeze(supermovie(coli, rowi, 1:end-1)); %roi_TSave substracts the last frame so we have to match length
+%         
+%         if sum(pixelwave) ==0
+%             rhomap(coli, rowi, j) = 0;
+%         else
+%             rhomap(coli, rowi, j) = corr(seedwave, pixelwave); 
+%         end
+%         
+%         clear pixelwave
+%     end
+% end
+% j = j+1;
+% clear idx moviesin
+% end
 
+case 'trialwise'
+
+    
+end % cases method
 
 %----------------------------------------------------------------
 % PLOT 

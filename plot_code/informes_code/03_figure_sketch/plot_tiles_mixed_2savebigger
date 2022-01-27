@@ -1,0 +1,122 @@
+clear
+user_settings
+
+%----------------------------------------------------------------
+% @SET: fish + conditions
+%----------------------------------------------------------------
+nfish = 12;
+cond_codes = [401:404];
+% message = 'tren largo - no aleat (intra?)';
+message = 'no sharks';
+
+%----------------------------------------------------------------
+% @SET: MEASURE (OR LOOP THROUGH ALL MEASURES)
+%----------------------------------------------------------------
+reject_on= 1;
+
+setting.manual_reject = 1; %
+setting.GSmethod_reject = 1;  %
+setting.GSabsthres_reject = 1; %
+setting.force_include = 0; %
+
+
+%----------------------------------------------------------------
+% LOAD PARAMETERS
+%----------------------------------------------------------------
+VSDI = TORus ('load', nfish);
+movie_ref = '_18filt6'; % input movie '_17filt5'
+VSDmov = TORus('loadmovie',nfish,movie_ref);
+
+%----------------------------------------------------------------
+% COMPUTE REJECTION IDX FROM REJECT-OPTIONS
+%----------------------------------------------------------------
+
+rejectidx = [];
+
+if setting.manual_reject
+    rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+end
+
+if setting.GSabsthres_reject
+    rejectidx = [rejectidx  makeRow(VSDI.reject.GSabs025)];
+
+end
+
+if setting.GSmethod_reject
+    rejectidx = [rejectidx makeRow(VSDI.reject.GSdeviat2sd)];
+end
+
+if setting.force_include
+    rejectidx = setdiff(rejectidx, VSDI.reject.forcein);
+
+end
+
+rejectidx = sort(unique(rejectidx));
+
+
+%----------------------------------------------------------------
+% PLOT TILES 
+%----------------------------------------------------------------
+for condi = cond_codes
+        
+%%    
+    [sel_trials] = find(VSDI.condition(:,1)==condi);
+    sel_trials = setdiff(sel_trials, rejectidx);
+
+    
+    %to plot single trial
+    movie2plot = mean(VSDmov.data(:,:,:,sel_trials),4);
+    movie2plot(:,:,end) = VSDI.crop.preview; %clean non-blured background
+    % settings
+    tileset.start_ms = 0; % time in ms for first tile
+    tileset.end_ms = 700;
+    %           tileset.clims = [-0.9 0.9];
+    maxval = movmedian(movie2plot(:,:,1:end-1),8 ,3); %temporal smooth to get the max value
+    maxval = max(maxval(:));
+    tileset.clims = [-maxval*1.2 maxval*1.2];
+%     tileset.clims = [-8 8];
+%     tileset.thresh = [-maxval*0.4 maxval*0.4]; 
+    tileset.thresh = [-maxval*0.4 maxval*0.6]; 
+%     tileset.thresh = [-4.5 4.5];
+
+    tileset.nrowcol = [1 6];
+    tiles.backgr = VSDI.crop.preview;
+    % get info to plot in title
+    
+    % plot
+%     roi2draw = VSDI.roi.manual_poly([1,2,7,8,13,14]);
+%     plot_tilemovie_custom(movie2plot, VSDI.timebase, tileset, roi2draw);
+    plot_tilemovie_custom(movie2plot, VSDI.timebase, tileset);
+
+%         plot_tilemovie_custom(movie2plot, VSDI.timebase, tileset);
+
+%             plot_tilemovie12frames(movie2plot, VSDI.timebase, tileset);
+
+        
+    titulo = [num2str(VSDI.ref) 'cond' num2str(condi) '.clim=' num2str(round(tileset.clims(2),2)), '.thresh=' num2str(round(tileset.thresh(2),2))];
+    sgtitle(titulo)
+    
+%     savename= [num2str(VSDI.ref) 'cond' num2str(condi) '_' num2str(numel(sel_trials)) 'trials.jpg']   
+    disp(['Included trials for condition' num2str(condi) ':' num2str(numel(sel_trials))])
+
+end
+
+% newsave = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes_code/03_figure_sketch/def_figs/tiles';
+% saveas(gcf, fullfile(newsave,savename) 'jpg')
+
+%----------------------------------------------------------------
+% PRINT INCLUDED AND EXCLUDED TRIALS
+% ----------------------------------------------------------------
+
+for condi = cond_codes
+    
+    [sel_trials] = find(VSDI.condition(:,1)==condi);
+    local_reject = intersect(sel_trials, rejectidx);%just to display later;
+    sel_trials = setdiff(sel_trials, rejectidx);
+
+    disp(['Included trials for condition' num2str(condi) ':' ])
+    disp(sel_trials)
+    disp('%')
+    disp(['Rejected trials for condition' num2str(condi) ':'])
+    disp(local_reject)
+end
