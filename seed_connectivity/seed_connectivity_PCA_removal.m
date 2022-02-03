@@ -4,15 +4,15 @@
 % conditions) and the trials from each condition will be reconstructed from
 % all-but-the-first component
 
-clear
+cleardata.filtered
 user_settings
 %----------------------------------------------------------------
 % @SET: BASIC PARAMETERS
 %----------------------------------------------------------------
 
-savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/seed_connectivity/PCA_removal' ;%@ SET
+savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/seed_connectivity/seedCONN_1PCremoval' ;%@ SET
 % load('/home/tamara/Documents/MATLAB/VSDI/STIM/PCAgroupinfo.mat') %stores group parameters
-load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new.mat') % ATTENTION: select cases manually (there are repetitions)
+% load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new.mat') % ATTENTION: select cases manually (there are repetitions)
 
 seednames = {'dm4m_R2', 'dm4_R', 'dm2_R2', 'dm1_R', 'dldm_R2', 'dm3_R2', 'dldr_R',...
             'dm4m_L2', 'dm4_L', 'dm2_L2', 'dm1_L', 'dldm_L2', 'dm3_L2', 'dldr_L',};
@@ -20,15 +20,31 @@ seednames = {'dm4m_R2', 'dm4_R', 'dm2_R2', 'dm1_R', 'dldm_R2', 'dm3_R2', 'dldr_R
 roikind = 'circle'; %
 % roikind = 'anat';
 
-ref_movie= '_19filt7';% '_17filt5' ; '_18filt6'
+ref_movie= '_16diff_f0pre';% '_17filt5' ; '_18filt6'; '_19filt7'; '_16diff_f0pre'
 
 activ_unit = 'diffF'; % @ MANUALLY SET (just for display purposes)
 analysisref = 'new_group5_'; % MANUALLY SET!!! extra info for the name. Set group according to the rows of 'groupplot' selected in;   for suji  =  [1 3 4 9]
 
 
-nfish = 9;
-conditions = [1000 1002:1003];
+%----------------------------------------------------------------
+%  @SET: SUBJECT-SPECIFIC PARAMETERS
+%----------------------------------------------------------------
+
+nfish = 12;
+conditions = 400:404;
 tiles_on = 1;
+
+%----------------------------------------------------------------
+% @SET: MEASURE (OR LOOP THROUGH ALL MEASURES)
+%----------------------------------------------------------------
+reject_on= 3;
+
+setting.manual_reject = 1; %
+setting.GSmethod_reject = 1;  %
+setting.GSabsthres_reject = 1; %
+setting.force_include = 0; %
+
+
 
 %% PERFORM PCA ON ALL TRIALS FROM ALL CONDITIONS
 
@@ -42,20 +58,68 @@ tiles_on = 1;
 
 exclude_basel = 0;
 
+clean_PCA = 0;
+clean_seed = 1; % can be zero only with: clean_PCA = 0;
+
 %----------------------------------------------------------------
 % LOAD DATA
 %----------------------------------------------------------------
 VSDI = TORus('load', nfish);
 VSDmov = TORus('loadmovie', nfish, ref_movie);
 
+
+%----------------------------------------------------------------
+% COMPUTE REJECTION IDX FROM REJECT-OPTIONS 
+%----------------------------------------------------------------
+rej = 'reject' ;
+if reject_on > 1
+rej = [rej num2str(reject_on)];
+end
+
+rejectidx = [];
+
+
+if setting.manual_reject
+    rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+end
+
+if setting.GSabsthres_reject
+    rejectidx = [rejectidx  makeRow(VSDI.(rej).GSabs025)];
+    
+end
+
+if setting.GSmethod_reject
+    rejectidx = [rejectidx makeRow(VSDI.(rej).GSdeviat2sd)];
+
+end
+
+if setting.force_include
+    rejectidx = setdiff(rejectidx, VSDI.reject.forcein);
+    
+end
+
+rejectidx = sort(unique(rejectidx));
+
+%----------------------------------------------------------------
+% IDX SELECTION 
+%----------------------------------------------------------------
+
 idxsel = [];
 for ci = 1:numel(conditions)
     temp = choose_condidx(VSDI.condition(:,1),conditions(ci));
     idxsel = [idxsel temp];
 end
+
+
+if clean_PCA
+  idxsel = setdiff(idxsel, rejectidx);   
+end
+
 idxsel = sort(idxsel');
 
-% selcondrows are the rows from the 'cond' matrix that
+%----------------------------------------------------------------
+% GET MOVIE DATA - now relative to the indexes 'idxsel'
+%----------------------------------------------------------------
 
 if exclude_basel
     t0 = dsearchn(VSDI.timebase, 0);
@@ -64,10 +128,12 @@ else
     movies_in= VSDmov.data(:,:,1:end-1,idxsel); %from t0 to the end (excluding background)
 end
 
+
 dim = size(movies_in);
 newdim = dim(3)*dim(4);
 
 supermovie = reshape(movies_in, [dim(1) dim(2) newdim]); %concatenated
+
 
 %----------------------------------------------------------------
 % PCA: 1PC SUBSTRACTION
@@ -98,7 +164,11 @@ for condi = conditions
 j = j+1;
 
 % Get index relative to the already selected movies 
-idxcond = choose_condidx(VSDI.condition(:,1),conditions(ci));
+idxcond = choose_condidx(VSDI.condition(:,1),condi);
+if clean_seed
+  idxcond = setdiff(idxcond, rejectidx);   
+end
+
 idxnew = dsearchn(idxsel,idxcond'); %relative to the reconstructed movies (movies_new) but also to movies_in
 
 % Get movies from the selected condition
@@ -287,15 +357,16 @@ seedCONN.labels = labels;
 seedCONN.cond = cond_labels ;
 seedCONN.seednames = seednames;
 
-matname = ['RHOmaps' num2str(VSDI.ref) ref_movie];
+matname = ['RHOmaps_PCA' num2str(clean_PCA),'_seed' num2str(clean_seed), '_' num2str(VSDI.ref) ref_movie];
 save(fullfile(savein, matname), 'seedCONN')
 blob()
 
-%% % NESTED-LOOPS #2: PLOT SEED-BASED CONNECTIVITY
+%% PLOT ALREADY COMPUTED SEED-BASED CONNECTIVITY RHOMAPS
 % For each seed, plot all conditions and
 
 % EXTRACT DATA AND INFO FROM SAVED RHO-CONNECTIVITY MAPS
-matname = ['RHOmaps' num2str(VSDI.ref) ref_movie];
+% matname = ['RHOmaps' num2str(VSDI.ref) ref_movie]; %simple name (old)
+matname = ['RHOmaps_PCA' num2str(clean_PCA),'_seed' num2str(clean_seed), '_' num2str(VSDI.ref) ref_movie];
 load(fullfile(savein, matname))
 rhomap = seedCONN.rho;
 rhomap_new = seedCONN.rho_no1pc ; 
@@ -340,9 +411,11 @@ for seedi = seed_allidx
     axis image
     set(gcf, 'Position', get(0, 'Screensize'));
     
+    
     supertit = [num2str(VSDI.ref) ref_movie 'Seed-connectivity:' num2str(seedi) '(' name ')'  '-A-original.jpg'];
     sgtitle(supertit)
-    name2save = fullfile(savein, supertit);
+%     name2save = fullfile(savein, supertit);
+    name2save = fullfile(savein, ['PCA' num2str(clean_PCA) '_seed' num2str(clean_seed) '_' supertit]);
     saveas(gcf, name2save, 'jpg')
     close
     
@@ -377,7 +450,8 @@ for seedi = seed_allidx
     
     supertit = [num2str(VSDI.ref) ref_movie 'Seed-connectivity:' num2str(seedi) '(' name ')'  '-B-pc1 substracted.jpg'];
     sgtitle(supertit)
-    name2save = fullfile(savein, supertit);
+%     name2save = fullfile(savein, supertit);
+    name2save = fullfile(savein, ['PCA' num2str(clean_PCA) '_seed' num2str(clean_seed) '_' supertit]);
     saveas(gcf, name2save, 'jpg')
     close
     
