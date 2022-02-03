@@ -1,5 +1,6 @@
 data/
 plot/
+ICA/GIFT
 **/*.jpg
 **/*.pdf
 **/*.nii
