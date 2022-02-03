@@ -2,6 +2,7 @@ data/
 plot/
 ICA/GIFT
 **/*.jpg
+**/*.png
 **/*.pdf
 **/*.nii
 **/*.zip
