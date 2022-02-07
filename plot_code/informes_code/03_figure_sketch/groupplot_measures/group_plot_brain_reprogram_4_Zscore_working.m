@@ -29,20 +29,21 @@ sourcedata = 'normal';
 % selroinames = {'dm4m_R',  'dm2_R', 'dm3_R' ,'dm1_R','dldm_R'};%dm3,
 % selroinames = {'dm4m_R2',  'dm2_R2', 'dm3_R2' ,'dm1_R','dldm_R2'};%dm3,
 % selroinames = {'dm4m_R',  'dm4_L', 'dm2_R' ,'dm2_L'};
-selroinames = {'dm4m_R2','dm2_R2','dm1_R','dldm_R2'};
+selroinames = {'dm4m_R2','dm2_R2','dm1_R','dldm_R2'}; %4roi
+% selroinames = {'dm4m_R2','dm2_R2','dm1_R','dldm_R2','dm4m_L2','dm2_L2','dm1_L','dldm_L2'}; %8roi
 
 roikind = 'circle'; %
 % roikind = 'anat';
 
-ref_movie= '_18filt6';% '_17filt5' ;
+ref_movie= '_18filt6';% '_17filt5' ; '_18filt6'
 % ref_movie= '_12filt5' ;
 
 activ_unit = 'diffF'; % @ MANUALLY SET (just for display purposes)
-analysisref = 'new_group5_'; % MANUALLY SET!!! extra info for the name. Set group according to the rows of 'groupplot' selected in;   for suji  =  [1 3 4 9]
+analysisref = 'new_group6_'; % MANUALLY SET!!! extra info for the name. Set group according to the rows of 'groupplot' selected in;   for suji  =  [1 3 4 9]
 
-plotmaps = 0;
-savemaps = 0;
-getR = 0;
+plotmaps = 1;
+savemaps = 1; % if plotmaps =1
+getR = 1;
 get_excel_indiv = 1;
 
 savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore' ;%@ SET
@@ -92,15 +93,24 @@ path.list =fullfile(path.rootpath, 'data','BVlists');
 addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 
 % END USER_SETTINGS
+if strcmpi( analysisref, 'new_group2_')
+    sel_subjects = [1:4,9];
+elseif strcmpi( analysisref, 'new_group3_')
+    sel_subjects = [5:8];
+elseif strcmpi( analysisref, 'new_group4_')
+    sel_subjects = [1 3 4 9];
+elseif strcmpi( analysisref, 'new_group6_')
+    sel_subjects = [2 3 8 9 11];
+end
 
-for reject_on = [1]  %@ SET
+for reject_on = [3]  %@ SET
     
     %----------------------------------------------------------------
     % @SET: REJECT SETTINGS
     %----------------------------------------------------------------
     
     % Subsettings:
-    setting.manual_reject = 1; %@ SET
+    setting.manual_reject = 0; %@ SET CHA-CHA-CHA-CHANGEEEEEEEEE
     setting.GSmethod_reject = 1;  %@ SET
     setting.GSabsthres_reject = 1; %@ SET+
     setting.force_include = 0; %@ SET
@@ -109,7 +119,7 @@ for reject_on = [1]  %@ SET
     i = 2; % counter for long format rows: the first will be the labels
     si = 0; % counter for subjects list
     
-    for suji  =  [1:3 9] %1:size(groupplot,1) SELECT included fish+condition
+    for suji  =  sel_subjects %1:size(groupplot,1) SELECT included fish+condition
         
         si = si+1;
         nfish = groupplot{suji,1};
@@ -138,20 +148,29 @@ for reject_on = [1]  %@ SET
         %----------------------------------------------------------------
         % COMPUTE REJECTION IDX FROM REJECT-OPTIONS
         %----------------------------------------------------------------
+        rej = 'reject' ;
+        if reject_on > 1
+            rej = [rej num2str(reject_on)];
+        end
         
         rejectidx = [];
         
         if setting.manual_reject
-            rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+            try
+                rejectidx = [rejectidx  makeRow(VSDI.(rej).manual)];
+            catch
+                rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+                disp(['rejec.manual was used for fish' num2str(VSDI.ref) 'because there is no reject' num2str(reject_on) '.manual'])
+            end
         end
         
         if setting.GSabsthres_reject
-            rejectidx = [rejectidx  makeRow(VSDI.reject.GSabs025)];
+            rejectidx = [rejectidx  makeRow(VSDI.(rej).GSabs025)];
             
         end
         
         if setting.GSmethod_reject
-            rejectidx = [rejectidx makeRow(VSDI.reject.GSdeviat2sd)];
+            rejectidx = [rejectidx makeRow(VSDI.(rej).GSdeviat2sd)];
         end
         
         if setting.force_include
@@ -253,7 +272,7 @@ for reject_on = [1]  %@ SET
                     
             end % switch sourcedata
             
-                
+            
         end %for condition
         
         %% SPATIAL Z-SCORE AMONG CONDITIONS (for each measure)
@@ -271,79 +290,102 @@ for reject_on = [1]  %@ SET
         %----------------------------------------------------------------
         % SELECT ROI
         %----------------------------------------------------------------
-            switch roikind
-                case 'circle'
-                    selroi =name2idx(selroinames, VSDI.roi.labels_circ);
-                    roilabels = VSDI.roi.labels_circ;
-                    masks =  VSDI.roi.circle.mask;
-                    
-                case 'anat'
-                    selroi =name2idx(selroinames, VSDI.roi.labels);
-                    roilabels = VSDI.roi.labels;
-                    masks = VSDI.roi.manual_mask;
-            end
+        switch roikind
+            case 'circle'
+                selroi =name2idx(selroinames, VSDI.roi.labels_circ);
+                roilabels = VSDI.roi.labels_circ;
+                masks =  VSDI.roi.circle.mask;
+                
+            case 'anat'
+                selroi =name2idx(selroinames, VSDI.roi.labels);
+                roilabels = VSDI.roi.labels;
+                masks = VSDI.roi.manual_mask;
+        end
+        
+        
+        % -------------------------------------------
+        % GET MEASURES OF ROI WAVES FOR EACH TRIAL - for
+        % checking
+        % -------------------------------------------
+        
+        if get_excel_indiv
+            ci = 0;
+            ti = 1; ri = 3;
+            for condition =  makeRow(cond_lohi)
+                ci = ci +1;
+                
+                sel_trials = find(VSDI.condition(:,1)==condition);
+                if reject_on
+                    sel_trials = setdiff(sel_trials, rejectidx);
+                end
+                
+                for triali = makeRow(sel_trials) %each trial will be saved in a row
+                    ti = ti+1;
+                    movie2plot = movies(:,:,idxrange,triali);
+                    ri= 3;
+                    for roii = makeRow(selroi) %each roi in a column
+                        ri= ri+1;
+                        roimask = masks(:,:, roii);
+                        %                             meanF0 = squeeze(mean(VSDmov.F0(:,:,triali),3));
+                        roiwave = roi_TSave(movie2plot,roimask);
+                        temp = devo_peak2peak(roiwave, VSDI.timebase(idxrange), feedf.window, [], feedf.method, 0, 0);
+                        
+                        % trial identification / kind
+                        trialmeasure.peak{ti,1} = triali;
+                        trialmeasure.peak{ti,2} = VSDI.trialref(triali);
+                        trialmeasure.peak{ti,3} = condition;
+                        % measures: PEAK
+                        trialmeasure.peak{ti,ri} = round(temp.peakminusbasel,2);
+                        
+                        % trial identification / kind
+                        trialmeasure.wmean{ti,1} = triali;
+                        trialmeasure.wmean{ti,2} = VSDI.trialref(triali);
+                        trialmeasure.wmean{ti,3} = condition;
+                        % measures: WMEAN
+                        trialmeasure.wmean{ti,ri} = round(temp.wmean,2);
+                        
+                        clear roimask roiwave meanF0
+                        labels{1,1} = 'idx';
+                        labels{1,2} = 'trial';
+                        labels{1,3} = 'condition';
+                        labels{1,ri} = roilabels{roii};
+                        
+                        % TRIALS TABLE TO LATER REJECT BASED ON STD
+                        % trial identification / kind
+                        trialmat.peak(ti,1) = triali;
+                        trialmat.peak(ti,2) = VSDI.trialref(triali);
+                        trialmat.peak(ti,3) = condition;
+                        % measures: PEAK
+                        trialmat.peak(ti,ri) = round(temp.peakminusbasel,2);
+                        
+                        % trial identification / kind
+                        trialmat.wmean(ti,1) = triali;
+                        trialmat.wmean(ti,2) = VSDI.trialref(triali);
+                        trialmat.wmean(ti,3) = condition;
+                        % measures: WMEAN
+                        trialmat.wmean(ti,ri) = round(temp.wmean,2);
+                        
+                    end % forroii
+                end % for triali
+            end %for condition
+            % add labels
+            trialmeasure.peak(1,1:length(labels)) = labels(1:end);
+            trialmeasure.wmean(1,1:length(labels)) = labels(1:end);
+            
+            excelname = [analysisref 'Zscore_individual_trials' ref_movie '_' refcase 'rej' num2str(reject_on) '_' num2str(numel(selroi)) 'roi.xls'];
+            labels = {'idx' 'trial' 'cond'};
+            
+            % write output (new sheet for each fish
+            writecell (trialmeasure.peak, fullfile(savein , excelname), 'sheet',  [num2str(VSDI.ref) 'peak'])
+            writecell (trialmeasure.wmean, fullfile(savein,  excelname), 'sheet',  [num2str(VSDI.ref) 'wmean'])
+            
+            clear trialmeasure
             
             
-            % -------------------------------------------
-            % GET MEASURES OF ROI WAVES FOR EACH TRIAL - for
-            % checking
-            % -------------------------------------------
-            
-            if get_excel_indiv
-                ci = 0;
-                ti = 1; ri = 3;
-                for condition =  makeRow(cond_lohi)
-                    ci = ci +1;
-                    for triali = makeRow(sel_trials) %each trial will be saved in a row
-                        ti = ti+1;
-                        movie2plot = movies(:,:,idxrange,triali);
-                        ri= 3;
-                        for roii = makeRow(selroi) %each roi in a column
-                            ri= ri+1;
-                            roimask = masks(:,:, roii);
-%                             meanF0 = squeeze(mean(VSDmov.F0(:,:,triali),3));
-                           	roiwave = roi_TSave(movie2plot,roimask);
-                            temp = devo_peak2peak(roiwave, VSDI.timebase(idxrange), feedf.window, [], feedf.method, 0, 0);
-                            
-                            % trial identification / kind
-                            trialmeasure.peak{ti,1} = triali;
-                            trialmeasure.peak{ti,2} = VSDI.trialref(triali);
-                            trialmeasure.peak{ti,3} = condition;
-                            % measures: PEAK
-                            trialmeasure.peak{ti,ri} = round(temp.peakminusbasel,2);
-                            
-                            % trial identification / kind
-                            trialmeasure.wmean{ti,1} = triali;
-                            trialmeasure.wmean{ti,2} = VSDI.trialref(triali);
-                            trialmeasure.wmean{ti,3} = condition;
-                            % measures: WMEAN
-                            trialmeasure.wmean{ti,ri} = round(temp.wmean,2);
-                            
-                            clear roimask roiwave meanF0
-                            labels{1,1} = 'idx';
-                            labels{1,2} = 'trial';
-                            labels{1,3} = 'condition';
-                            labels{1,ri} = roilabels{roii};
-                        end % forroii
-                    end % for triali
-                end %for condition
-                % add labels
-                trialmeasure.peak(1,1:length(labels)) = labels(1:end);
-                trialmeasure.wmean(1,1:length(labels)) = labels(1:end);
-                
-                excelname = [analysisref 'Zscore_individual_trials' ref_movie '_' refcase 'rej' num2str(reject_on) '_' num2str(numel(selroi)) 'roi.xls'];
-                labels = {'idx' 'trial' 'cond'};
-                
-                % write output (new sheet for each fish
-                writecell (trialmeasure.peak, fullfile(savein , excelname), 'sheet',  [num2str(VSDI.ref) 'peak'])
-                writecell (trialmeasure.wmean, fullfile(savein,  excelname), 'sheet',  [num2str(VSDI.ref) 'wmean'])
-                
-                clear trialmeasure
-                
-            end %if get_excel_indiv
-
-            
-            %% EXTRACT ROI MEASURES AND STORE (for R)
+        end %if get_excel_indiv
+        
+        
+        %% EXTRACT ROI MEASURES AND STORE (for R)
         
         ci = 0;
         for condition =  makeRow(cond_lohi)
@@ -387,46 +429,61 @@ for reject_on = [1]  %@ SET
             %
             ncond = length(cond_lohi);
             
-%             % ------------------------------------------------------------------
-%             % PLOT MAPS OF AVERAGE MEASURES CONDITION-WISE
-%             % ------------------------------------------------------------------
-%             figure
-%             ci = 0;
-%             for condition =  makeRow(cond_lohi)
-%                 % peak in the first row
-%                 ci = ci+1;
-%                 ax(ci) = subplot(2,ncond,ci);
-%                 imagesc(maps.peak(:,:,ci))
-%                 axis image
-%                 colorbar
-%                 %
-%                 set(gca, 'clim', [0 max(maps.peak(:))*0.8])
-%                 condidx = find(VSDI.condition(:,1) ==condition); % get idx from condition
-%                 tempmA = VSDI.condition(condidx(1),4); %get mA from first trial that meet the condition
-%                 title(['c',num2str(condition), '(', num2str(tempmA),'mA)'])
-%                 
-%                 % wmean in the second row
-%                 ax(ci+ncond) = subplot(2,ncond,ci+ncond);
-%                 imagesc(maps.wmean(:,:,ci))
-%                 axis image
-%                 colorbar
-%                 set(gca, 'clim', [0 max(maps.wmean(:))*0.8])
-%                 
-%                 
-%             end
-%             
-%             sgtitle([num2str(VSDI.ref), '(',ref_movie,  ')', 'up: peak; down: onsetA'])
-%             localname = ['MAPS'] ;
-%             
-%             if savemaps
-%                 saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
-%                 close
-%             end
+            %             % ------------------------------------------------------------------
+            %             % PLOT MAPS OF AVERAGE MEASURES CONDITION-WISE
+            %             % ------------------------------------------------------------------
+            %             figure
+            %             ci = 0;
+            %             for condition =  makeRow(cond_lohi)
+            %                 % peak in the first row
+            %                 ci = ci+1;
+            %                 ax(ci) = subplot(2,ncond,ci);
+            %                 imagesc(maps.peak(:,:,ci))
+            %                 axis image
+            %                 colorbar
+            %                 %
+            %                 set(gca, 'clim', [0 max(maps.peak(:))*0.8])
+            %                 condidx = find(VSDI.condition(:,1) ==condition); % get idx from condition
+            %                 tempmA = VSDI.condition(condidx(1),4); %get mA from first trial that meet the condition
+            %                 title(['c',num2str(condition), '(', num2str(tempmA),'mA)'])
+            %
+            %                 % wmean in the second row
+            %                 ax(ci+ncond) = subplot(2,ncond,ci+ncond);
+            %                 imagesc(maps.wmean(:,:,ci))
+            %                 axis image
+            %                 colorbar
+            %                 set(gca, 'clim', [0 max(maps.wmean(:))*0.8])
+            %
+            %
+            %             end
+            %
+            %             sgtitle([num2str(VSDI.ref), '(',ref_movie,  ')', 'up: peak; down: onsetA'])
+            %             localname = ['MAPS'] ;
+            %
+            %             if savemaps
+            %                 saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
+            %                 close
+            %             end
             
             % ------------------------------------------------------------------
             % PLOT MAPS OF SPATIAL Z-SCORE OF AVERAGE MEASURES CONDITION-WISE
             % ------------------------------------------------------------------
+            
+            % colormap like jet but changing initial values 
             ccmap = jet;
+            % remove darker colors: 
+            darkblue = ccmap(4,:);
+            ccmap = removerows(ccmap,'ind',[1:8, 1:3]);
+
+            % change first color and interpolate
+            ccmap(1,:) = darkblue;
+            flag = 3;
+            R = linspace(ccmap(1,1), ccmap(flag,1), flag);
+            G = linspace(ccmap(1,2), ccmap(flag,2), flag);
+            B = linspace(ccmap(1,3), ccmap(flag,3), flag);
+            ccmap(1:flag,:) = [R; G; B]'; 
+            
+            
             cclim = [0 4];
             %         ccmap(1,:) = [0 0 0];
             figure
@@ -437,23 +494,23 @@ for reject_on = [1]  %@ SET
                 ax(ci) = subplot(2,ncond,ci);
                 
                 im1 = mapsZ.peak(:,:,ci);
-%                 im1 = interp2(im1, 5, 'nearest');
-%                 im1(~VSDI.crop.preview) = 0;
+                %                 im1 = interp2(im1, 5, 'nearest');
+                %                 im1(~VSDI.crop.preview) = 0;
                 
                 alphamask = ones(size(im1))*0.6;
-
-%                 alphamask= im1  > 1 ; %VISUALIZATION THRESHOLD
-%                 alphamask =  interp2(alphamask, 5, 'nearest');
+                
+                %                 alphamask= im1  > 1 ; %VISUALIZATION THRESHOLD
+                %                 alphamask =  interp2(alphamask, 5, 'nearest');
                 
                 back = VSDI.backgr(:,:,VSDI.nonanidx(1));
                 back = interp2(back,5);
-%                 imagesc(im1)
-%                 axis image
-%                 set(gca, 'clim',cclim)
-%                 colorbar; colormap(ccmap)
-% 
-                  plot_framesoverlaid2(im1, back, alphamask, 0, ax(ci), cclim, 1, 0, ccmap)
-                  ax(ci).Visible = 'off';
+                %                 imagesc(im1)
+                %                 axis image
+                %                 set(gca, 'clim',cclim)
+                %                 colorbar; colormap(ccmap)
+                %
+                plot_framesoverlaid2(im1, back, alphamask, 0, ax(ci), cclim, 1, 0, ccmap)
+                ax(ci).Visible = 'off';
                 % STOPS THE CODE FOR CHECKING ROI CENTERS
                 %             if ci ==2
                 %                 return
@@ -467,19 +524,19 @@ for reject_on = [1]  %@ SET
                 ax(ci+ncond) = subplot(2,ncond,ci+ncond);
                 
                 im2 = mapsZ.wmean(:,:,ci);
-%                 im2(~VSDI.crop.preview) = 0;
+                %                 im2(~VSDI.crop.preview) = 0;
                 
                 alphamask = ones(size(im2))*0.6;
-%                 alphamask= im2  >0;
+                %                 alphamask= im2  >0;
                 
                 back = VSDI.backgr(:,:,VSDI.nonanidx(1));
                 back = interp2(back,5);
                 plot_framesoverlaid2(im2, back, alphamask, 0, ax(ci+ncond), cclim, 1 , 0, ccmap)
-                 ax(ci+ncond).Visible = 'off';
-
+                ax(ci+ncond).Visible = 'off';
+                
             end
             
-            sgtitle([num2str(VSDI.ref), '(',ref_movie,  ')', 'Zmap. up: peak; down: onsetA'])
+            sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'Zmap. up: peak; down: onsetA. Cond:' num2str(cond_lohi)])
             localname = ['MAPS_Zscore'] ;
             
             if savemaps

@@ -15,9 +15,9 @@ savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketc
 % load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_condition_list.mat')
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new.mat') % ATTENTION: select cases manually (there are repetitions)
 
-% outfield = 'peakminusbasel';% @SET: output field with choosen measure
+outfield = 'peakminusbasel';% @SET: output field with choosen measure
 % outfield = 'slopemax'; % mean slope from idx = 0 to peak
-outfield = 'wmean';
+% outfield = 'wmean';
 % outfield = 'wmeanslope'; %mean slope in window (minus baseline slope)
 
 %----------------------------------------------------------------
@@ -72,8 +72,8 @@ savemat = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sket
 % end of user_settings
 %
 % for blocki = 1:length(groupplot)
-for reject_on = [1 0]
-    for nfish = [12]
+for reject_on = [3]
+    for nfish = [11]
         
         VSDI = TORus('load', nfish) ;
         
@@ -105,7 +105,13 @@ for reject_on = [1 0]
         %----------------------------------------------------------------
         % COMPUTE REJECTION IDX FROM REJECT-OPTIONS
         %----------------------------------------------------------------
-        
+        reject_on= 3;
+        rej = 'reject' ;
+        if reject_on > 1
+            rej = [rej num2str(reject_on)];
+        end
+
+
         rejectidx = [];
         
         if setting.manual_reject
@@ -113,12 +119,12 @@ for reject_on = [1 0]
         end
         
         if setting.GSabsthres_reject
-            rejectidx = [rejectidx  makeRow(VSDI.reject.GSabs025)];
+            rejectidx = [rejectidx  makeRow(VSDI.(rej).GSabs025)];
             
         end
         
         if setting.GSmethod_reject
-            rejectidx = [rejectidx makeRow(VSDI.reject.GSdeviat2sd)];
+            rejectidx = [rejectidx makeRow(VSDI.(rej).GSdeviat2sd)];
         end
         
         if setting.force_include
@@ -301,7 +307,7 @@ for reject_on = [1 0]
             
             % SETTINGS FOR PLOTTING AND SAVING
             % for saving plots
-            savename = fullfile(savein,[outfield, num2str(VSDI.ref),':',code_def{j},'.jpg']); %@ SET
+%             savename = fullfile(savein,[outfield, num2str(VSDI.ref),'rej', num2str(reject_on), ':',code_def{j},'.jpg']); %@ SET
             
             % For the permutation test:
             % nchoosek(24, 12)
