@@ -16,7 +16,6 @@ function [output] = TORus(action, object, object_feature)
 
 % nsubject = TORus('nsubject',    ref)
 
-
 datapath = '/home/tamara/Documents/MATLAB/VSDI/TORus/data';
 
 VSDIpath = fullfile(datapath,'dataVSDI');
@@ -30,84 +29,97 @@ nchar = length(expref);
 % Input control
 switch action
     case 'save'
-            if  ~isstruct(object) 
+        if  ~isstruct(object)
             disp('the input is not what expected'); end
+        if ~strcmpi(object.expref, expref)
+            error('It cannot be saved: the structure"s experiment does not match the function"s')
+        end
+        
+        if isfield(object, 'movref')
+            error('You are trying to save a movie, not a VSDI')
+        end
+        
     case 'load'
-%         assert(mod(object, 1) == 0 && , 'input to load must be a single number');
+        %         assert(mod(object, 1) == 0 && , 'input to load must be a single number');
         
         try
             load(fullfile(datapath, 'grouplist.mat'))
-        catch 
-            warning('fish cannot be load because "grouplist.mat" does not exist')
+        catch
+            error('fish cannot be load because "grouplist.mat" does not exist')
         end
         
-     case 'savemovie'
-            if ~exist('object_feature') 
-                error('input a proper reference name for the movie (as 3rd argument)'); end
+    case 'savemovie'
+        %             if ~exist('object_feature')
+        %                 error('input a proper reference name for the movie (as 3rd argument)'); end
+        objetc_feature = object.movieref;
+        if ~strcmpi(object.expref, expref)
+            error('It cannot be saved: the structure"s experiment does not match the function"s')
+            
+        end
+        
 end % input control
 
 %% FUNCTION CODE:
 
 switch action
     case 'save'
-        VSDI = object; 
+        VSDI = object;
         %saveVSDI saves current VSDI structure respect to the current rootpath
         pathname = fullfile(VSDIpath,[expref '_' num2str(object.ref) '.mat']);
         save(pathname, 'VSDI')
-
+        
     case 'load'
         load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         load(fullfile(VSDIpath,[grouplist{object},'.mat'])) %load the fish VSDI
         disp(strcat (grouplist{object}, '_loaded'));
         output= VSDI;
         
-    case 'savemovie' 
-       VSDmov= object;
-       %saveVSDI saves current VSDI structure respect to the current rootpath
-       pathname = fullfile(moviepath,['TORusMov_',num2str(VSDmov.ref),object_feature,'.mat']);
-       save(pathname,'VSDmov','-v7.3')
-
-    case 'loadmovie' 
-       load(fullfile(datapath, 'grouplist'))
-       fishref = grouplist{object}(nchar+2:end);
-       %saveVSDI saves current VSDI structure respect to the current rootpath
-       movieref = [expref,'Mov_',fishref,object_feature,'.mat'];
-       load(fullfile(moviepath,movieref))
-       output= VSDmov;       
-       disp([movieref, '_loaded']);
-
+    case 'savemovie'
+        VSDmov= object;
+        %saveVSDI saves current VSDI structure respect to the current rootpath
+        pathname = fullfile(moviepath,['TORusMov_',num2str(VSDmov.ref),object_feature,'.mat']);
+        save(pathname,'VSDmov','-v7.3')
+        
+    case 'loadmovie'
+        load(fullfile(datapath, 'grouplist'))
+        fishref = grouplist{object}(nchar+2:end);
+        %saveVSDI saves current VSDI structure respect to the current rootpath
+        movieref = [expref,'Mov_',fishref,object_feature,'.mat'];
+        load(fullfile(moviepath,movieref))
+        output= VSDmov;
+        disp([movieref, '_loaded']);
+        
     case 'savewave'
-        VSDroiTS = object; 
+        VSDroiTS = object;
         %saveVSDI saves current VSDI structure respect to the current rootpath
         pathname = fullfile(wavespath,[expref 'RoiTS_' num2str(object.ref) '.mat']);
         save(pathname, 'VSDroiTS')
-
+        
     case 'loadwave'
         load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         fishref = grouplist{object}(nchar+2:end);
         load(fullfile(wavespath,[expref 'RoiTS_',fishref,'.mat'])) %load the fish VSDI
         disp(strcat ('ROIs timeseries for fish',grouplist{object}, '_loaded'));
         output= VSDroiTS;
-
+        
     case 'savespike'
-        spike = object; 
+        spike = object;
         %saveVSDI saves current VSDI structure respect to the current rootpath
         pathname = fullfile(spikepath,[expref '_spike' num2str(object.ref) '.mat']);
         save(pathname, 'spike')
-
+        
     case 'loadspike'
         load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         fishref = grouplist{object}(nchar+2:end);
         load(fullfile(spikepath,[expref '_spike',fishref,'.mat'])) %load the fish VSDI
         disp(strcat ('Spike structure for fish',grouplist{object}, '_loaded'));
         output= spike;
-
+        
     case 'who'
         load(fullfile(datapath, 'grouplist')) %load structure list to take the fish reference
         nref = object; if  isnumeric(nref); nref = num2str(nref); end
         name = [expref, '_', num2str(nref)];
         output = find(strcmpi([grouplist(:)],name)); %number of fish
-        
         
 end %switch
 end
@@ -118,3 +130,5 @@ end
 
 %% Created: 31/01/2021
 % Updated: 08/02/21
+% 21/02/22 : add save-with-safety functionaluty (save only if the
+... structure's 'expref' field matches the function's name
