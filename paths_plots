@@ -13,7 +13,7 @@ CURVAS SOLAPADAS DE TODAS LAS REGIONES (al lateral de los tiles):
 
 GRÁFICO LATERALIDAD: dm2 y dm4mR (ipsi y contra)
 
-MAPAS PICO y WMEAN
+MAPAS PEAK y WMEAN
 /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working.m
 
 MANTELITO
@@ -21,30 +21,104 @@ get measures: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/0
 anova: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore/group_barplot_anova_Z_and_norm.R
 
 LATERALIZACIÓN: PICO, ÁREA, LATENCIA
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore/group_barplot_anova_Z_laterality.R
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_6_fromwaves.m
 
 PMAP
 /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/fig_mmaps_TFCE_perm_threshold_savemat_groupplot.m
 Results matfiles saved in: TORus/plot/informes/03_figure_sketch/fast_TFCEperm/
-Plots saved in : TORus/plot/informes/03_figure_sketch/fast_TFCEperm/pmaps
+Plots saved in : TORus/plot/informes/03_figure_sketch/fast_TFCEperm/plots
+
+RASTERPLOTS
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/raster_fromline_onthego.m
 
 PANEL 2 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TILES INTENSIDADES (de 1 pez, todas las intensidades)
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/plot_tiles_and_waves.m
 
-CURVAS SOLAPADAS
+INDIVIDUAL BARPLOT + GROUP BOXPLOT OF Z-PEAK
+*not 100% sure: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working.m
+ R: ~/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore/group_barplot_anova_Z_and_norm_newslope.R
 
-ALTERNATIVO A TILES (3 sujetos): un fotograma de cada de 3 intensidades; curva latencia, mapa LATENCIA
+
+
+ALTERNATIVO A TILES (3 sujetos): un fotograma (peak) de cada de 3 intensidades; curva latencia, mapa LATENCIA
 
 BOXPLOT bradi + 3 intensidades
 
 PLOT BRADI vs RESPUESTA para cada pez en todas las condiciones juntas
+/home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis_grouped_by_condition_new.m
 
-MAPA LATENCIA
+BRADY (antiguo) ////////////////////////////////////////////////
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady
+    /home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis.m
+    /home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis_grouped_by_condition.m
+/home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis_grouped_by_condition_new.m
+
+
+BRADY (nuevo) ////////////////////////////////////////////////
+
+· Single-subject
+
+
+· Single-subject excel with individual trials and also with binned values
+/home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis_grouped_by_condition_new5_forR.m
+feeds from: '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady/groupbrady_new3_roi1_selection'
+Rcode: ~/Documents/MATLAB/VSDI/TORus/plot/brady/test_brady_R/regression_R.R
+
+
+TIMEMAPS WITH THE SAME THRESHOLD FOR MULTIPLE CONDITIONS
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/timemap_from_averagemovie.m
+
+TIMEMAP OF ONE CONDITION AND AREA DETERMINATION
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/timemap_for_Area.m
 
 PRINTING COMMAND /////////////////////////////////////////////
 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
 print(['path' name '.svg'],'-r900','-dsvg','-painters') % prints it as you see them
 
-
 SEED-BASED CONNECTIVITY /////////////////////////////////////////////
 PCA first component removal:
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/seed_connectivity/seed_connectivity_PCA_removal.m
+
+original tests: /home/tamara/Documents/MATLAB/VSDI/STIM
+
+
+REJECTION NEW REJECTION METHOD WITH FUNCTION /////////////////////////////////////////////
+Implement as in: /home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis_grouped_by_condition_new.m
+
+% @ REJECT SETTINGS (in heading)
+    reject_on= 3;
+
+    setting.manual_reject = 0; %
+    setting.GSmethod_reject = 0;  %
+    setting.GSabsthres_reject = 0; %
+    setting.forcein = 0; %
+    setting.bradyvisual = 1;
+
+% APPLY FUNCTION (once the fish has been selected)
+    reject_idx  = compute_rejectidx(VSDI, reject_on, setting);
+
+% ...run only if we want to limit the trial selection to certain conditions
+    ci = 0;
+    seltrials = [];
+    for condi = cond_codes
+        ci = ci+1;
+        seltrials = [seltrials; find(VSDI.condition(:,1) == condi)];
+    end
+
+% COMPUTE REJECTION (in code)
+    seltrials = sort(seltrials);
+    if reject_on>0
+        seltrials = setdiff(seltrials, reject_idx);
+    end
+
+
+
+
+surf(xlim, ylim, plane_z*ones(2), 'FaceColor','b', 'FaceAlpha',0.5)             % Plot Plane At 'plane_z'
+hold off
+xlabel('X \rightarrow', 'Rotation',20)
+ylabel('\leftarrow Y', 'Rotation',-25)
+zlabel('Z \rightarrow')

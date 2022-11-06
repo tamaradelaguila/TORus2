@@ -34,7 +34,7 @@ SUJETO 2 [210323]
 #303(5mA)
 
 .Bloques control inicial y final
-# no extraído
+# no extraï¿½do
 ..........................
 
 SUJETO 3 [210325]
@@ -54,7 +54,7 @@ SUJETO 3 [210325]
 
 SUJETO 4 [210409]*
 
-.Bloque superf aleatorizado (pulsito 0,3ms) - más ensayos
+.Bloque superf aleatorizado (pulsito 0,3ms) - mï¿½s ensayos
 #100(control) 
 #101(0.2mA) 
 #102(0.6mA)
@@ -80,7 +80,7 @@ SUJETO 6 [210412]
 #1101 (pulsito )
 #1401 (tren 4 pulsitos,0.5mA)
 
-.Bloque aleatorizado variando nºpulsos  (de 0,15ms, 0.6mA): *
+.Bloque aleatorizado variando nï¿½pulsos  (de 0,15ms, 0.6mA): *
 #2000(control)
 #2001(1pulsito 0.3ms)
 #2002(2pulsitos 0.3ms)
@@ -169,4 +169,351 @@ SUJETO 12 [210522]
 #2002 post-morphine, first 10
 #2003 post-morphine, next 10
 #2004 post-morphine, after 10min rest
+
+..........................
+
+
+SUJETO 13 [220611] new 
+Non-aleat blocks
+
+.blank trials
+#0
+
+.blocks tactile (water stream)
+#701 (block1)
+#702 (block2)
+#703 (block3)
+
+.block short pulse 150us
+#404 (0.8mA)
+#401 (0.5mA)
+#402 (0.6mA)
+#403 (0.7mA)
+
+.blocks 3pulses*10ms train 
+#302 (1mA)
+#301 (0.4mA)
+
+.same stimulus as #301, higher Optical Reg light
+#801 (0.4mA)
+
+
+..........................
+
+SUJETO 14 [220608] new 
+Non-aleat blocks
+
+.blank trials
+#0
+
+.blocks tactile (water stream)
+#701 (block1)
+#702 (block2)
+#703 (block3)
+
+.blocks short pulse 150us
+#404 (0.8mA)
+#401 (0.5mA)
+#402 (0.6mA)
+#403 (0.7mA)
+
+.blocks 3pulses*10ms train 
+#303 (1mA)
+#302 (0.4mA)
+#301 (0.3mA)
+
+.blocks pulse 100ms
+#502 (0.2mA)
+#501 (0.15mA) - la mitad son con cables corazÃ³n, la otra sin ellos
+
+..........................
+
+SUJETO 15 [220615] new 
+Non-aleat blocks
+
+.blank trials
+#0
+#801 (after tactile block)
+#802 (at the very end, to check if it learnt)
+
+
+.blocks tactile (water stream)
+#701 (block1)
+#702 (block2) - following
+
+.blocks short pulse 150us
+#401 (0.8mA)
+
+.blocks pulse 100ms
+#501 (0.3mA) 
+
+.blocks 3pulses*10ms train 
+#303 (1 a 1.2mA) ~1.1mA
+#301 (0.5mA)
+#302 (0.8mA)
+
+..........................
+
+SUJETO 16 [220622] new 
+Non-aleat blocks
+
+.blank trials
+#0
+#801 (final block)
+
+.blocks tactile (water stream)
+#701 (block1)
+#702 (block2)
+
+.blocks short pulse 150us
+#404 (0.8mA)
+#401 (0.5mA)
+#402 (0.6mA)
+#403 (0.7mA)
+#405 (0.8mA) block2
+
+.blocks pulse 100ms
+#501 (0.2mA) 
+
+.blocks 3pulses*10ms train 
+#301 (1.2mA)
+#302 (1.2mA) + #300 (0mA) intercalated
+
+..........................
+
+SUJETO 17 [220623] new 
+Non-aleat blocks
+
+.blank trials
+#0
+
+.blocks tactile (water stream)
+#701 (block1)
+#702 (block2)
+#703 (block3) - after short pulse's block (#400)
+
+.blocks short pulse 150us
+#400 (blank)
+#404 (0.8mA)
+#401 (0.5mA)
+#402 (0.6mA)
+#403 (0.7mA)
+
+.blocks pulse 100ms
+#500 (0mA) 
+#502 (0.2mA)
+#501 (0.1mA)
+
+.blocks 3pulses*10ms train
+#302 (0.6mA)
+#301 (0.4mA)
+#303 (1.2mA)
+
+.intercalated blank + train
+#900 (0mA)
+#901 (1.2mA)
+
+..........................
+
+SUJETO 18 [220628] new 
+Non-aleat blocks
+
+.blank trials
+#0
+
+.blocks tactile (water stream)
+#701 (block1)
+    #801 (2nd blank block)
+#702 (block2)
+    #802 (3rd blank block)
+#703 (block3) - at the end after the electric blocks
+
+
+.blocks short pulse 150us *some blocks intercalated with #500
+#401 (0.8mA)
+#402 (1mA)
+#403 (1.2mA)
+#404 (1.4mA)
+
+.blocks pulse 100ms
+#502 (0.2mA)
+#501 (0.15mA)
+
+..........................
+
+SUJETO 19 [220612] new 
+Non-aleat blocks
+
+.blank trials
+#0
+
+.blocks tactile (water stream)
+701
+
+.blocks short pulse 150us
+#401 (0.8mA)
+#402 (0.9mA)
+#403 (1mA)
+#404 (1.1mA)
+
+..........................
+
+SUJETO 20 [220706] map - non-aleat. blocks
+
+#0 blank (initial)
+
+.100ms pulse, low-intensity
+# 513: C (lomo) 0.15mA
+# 511: A (boca) 0.05mA
+# 515: E (cola) 0.018mA
+# 512: B (opÃ©rculo) 0.02mA
+# 514: D (lomo caudal) 0.15mA
+
+.100ms pulse, hi-intensity
+# 523: C (lomo) 0.25mA
+# 521: A (boca) 0.1mA
+# 525: E (cola) 0.3mA
+# 522: B (opÃ©rculo) 0.08mA
+# 524: D (lomo caudal) 0.25mA
+
+.200ms tone
+#600 blank
+#602: 500hz
+#604: 1500hz
+#601: 200hz
+#603: 1000hz 
+
+.300ms tone
+#800 blank
+#802: 500hz
+#804: 1500hz
+#801: 200hz
+#803: 1000hz 
+
+#9 - blank final
+
+..........................
+
+SUJETO 21 [220518] map - non-aleat. blocks
+
+.blank (initial)
+#0 (
+
+.block
+
+..........................
+
+SUJETO 22 [220712] map - non-aleat. blocks
+
+#0
+
+.bloque pulso 100ms 'low I' block
+
+
+#533: C (lomo) 0.15mA
+#531: A (boca) 0.02mA
+#511: A(boca) 0.05mA *
+# 513: C (lomo) 0.2mA *
+#541: A(boca) 0.10mA *
+#515: E (cola) 0.3mA *
+#502: B (opï¿½rculo) 0.15mA *
+#534: D (lomo caudal) 0.2mA
+# 802: blank 2 
+# 544: D (lomo caudal) 0.3mA
+
+.bloque pulso 100ms 'high I' block
+#523: C (lomo) 0.3mA
+#521: A (boca) 0.2mA
+#525: E (cola) 0.4mA
+#522: B(opï¿½rculo) 0.25mA
+#524: D (lomo caudal) 0.4mA
+
+. 200ms tone
+#800 - blank
+#802 - 500 Hz
+#804 - 1500 Hz
+#801 - 200 Hz 
+#803 - 1000 Hz
+
+. 300ms tone
+#603 - 1000 Hz
+#602 - 500 Hz
+#600 - blank
+
+..........................
+
+SUJETO 23  [220926] map  - non-aleat. blocks
+
+..........................
+
+SUJETO 24  [220531] - non-aleat. blocks
+
+#0 blank (initial)
+
+.100ms pulse, low-intensity
+# 513: C (lomo) 0.15mA
+
+.blocks 3pulses*10ms train
+#301 (1.2mA)
+
+. block post-morphine
+#801 como 301
+#802 como 513
+#803 como 301 de nuevo ~ pocos ensayos
+
+..........................
+
+SUJETO 25  [221007] - non-aleat. blocks. 30trials except indicated
+
+#0 blank (initial)
+
+
+#511: A (boca) 0.005mA
+#512: B (opï¿½rculo) 0.01mA
+#513: C (lomo) 0.07mA
+#514: D (lomo caudal) 0.2mA
+#515: E (cola) 0.2mA
+
+.repeat some points with higher
+#523: C (lomo) 0.2mA
+#525: E (cola) 0.3mA
+
+.other shorter blocks (tests)
+#531: A (boca) 0.01 ~ 14x
+#533: C (lomo) 0.1mA ~14x
+
+#801 blank
+#802 blank
+
+..........................
+
+SUJETO 26  [221011] - non-aleat. blocks. 30trials except indicated
+
+#0 blank (initial)
+
+
+#700: chorrito en lomo
+
+#403: 0.8mA
+#401: 0.6mA
+#402: 0.7mA
+#404: 0.8mA al final
+#405: 0.9mA
+
+
+..........................
+
+SUJETO 27  [770608] - COPY OF 220608 FOR CHORRITO
+
+..........................
+
+SUJETO 28  [770622] - COPY OF 220622 FOR CHORRITO
+
+..........................
+
+SUJETO 29  [770531] - COPY OF 220531 FOR CHORRITO
+
+..........................
+
+SUJETO 30  [770518] - COPY OF 220518 FOR CHORRITO
 

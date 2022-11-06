@@ -1,0 +1,114 @@
+MEETING 21/09/22
+✘  ✔
+Common parameters settings at the end of the document.
+reject_on = 3;
+
+...............................................
+TILES
+...............................................
+
+[2A · TILES+ WAVES]
+ref_movie= '_18filt6';
+thresh_mode = 'wavebased_thresh_max';
+timerange_mode = 'auto_localwave' ;
+movie_ref = '_18filt6';
+fact_thresh = 0.6; *except 220618,220622,210509 ~ 0.65
+fact_clim= 1.5;
+
+selroinames = {'dm4m_R2','dm2_R2', 'dm1_R','dldm_R'};
+refroiname = 'dm4m_R2'
+
+sourcecode: [tiles and waves]: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/tiles_waves_contour_allcond.m
+
+.NO-DOLOROSO:
+analysisref = 'new4_group17_pulsito';
+
+.CHORRITO
+
+
+.DOLOROSO
+
+[2B · BOXPLOTS]
+ref_movie= '_18filt6';
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working.m
+
+selroinames = {'dm4m_R2','dm2_R2', 'dm1_R','dldm_R'}; refroiname = 'dm4m_R2'
+
+.NO-DOLOROSO: group
+load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
+
+.CHORRITO
+load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
+
+
+.DOLOROSO
+load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
+
+[2C - P-MAPS]
+
+[2D - MEAN WAVE]
+latency_refroi = 'dm2_R2';% to get percentage for threshold computation
+latency_thresh = 0.8; % 80% of the refroi value
+
+% Reference for normalization
+gain_refroi = 'dm4m_R2';%to normalize waves
+
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_8_NORM_WAVES_LATENCY.m
+
+
+[2E] - BARPLOT LATENCIA
+latency_refroi = 'dm2_R2';% to get percentage for threshold computation
+latency_thresh = 0.8; % 80% of the refroi value
+
+% Reference for normalization
+gain_refroi = 'dm4m_R2';%to normalize waves
+
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_8_NORM_WAVES_LATENCY.m
+R-source: ~/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_barplots/barplots_inputmanual.R
+
+[2F] - BARPLOT AREA
+.dolor (n=4)
+
+. chorrito (n=3)
+
+source:/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/tiles_waves_contour_allcond_04activepix
+R-source: ~/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_barplots/barplots_inputmanual.R
+
+
+[4 · Dm4 map]
+
+EARLY RESPONSE
+
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/05_figure_definit/MAP_CROP_tiles_waves_contour_allcond.m
+
+...............................................
+6 EFECTO INTENSIDAD
+...............................................
+ref_movie= '_18filt6';
+[6A · FRAMES]
+sourcode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/tiles_waves_contour_allcond_DOS.m
+
+[6B · BOXPLOT]
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working.m
+Parameters:
+load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot5_boxplot_Ieffect.mat') % ATTENTION: select cases manually (there are repetitions)
+selroinames = {'dm4m_R2',  'dm2_R2'};
+
+analysisref = 'new4_group20_3intens';
+
+sourcecodeR = ~/Documents/MATLAB/VSDI/TORus/plot/informes/04_figure_sketch2/group_barplot_anova_Z_and_norm_newslope2.R
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/6A_boxplot
+analysis ='2way_rm'
+measure = 'peakZ'
+
+[6C · BARPLOTS]
+thresh_mode = 'wavebased_thresh_max';
+timerange_mode = 'auto_fixed75%'
+selroinames = {'dm4m_R2',  'dm2_R2'};
+refroiname = 'dm4m_R2';
+
+
+
+
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/tiles_waves_contour_allcond_TRESpointmeasure.m
+sourcecodeR = ~/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/6B_barplots/point_measure_individual_barplots.R

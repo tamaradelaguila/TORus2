@@ -1,0 +1,138 @@
+250322 PANEL FIGURE'S SELECTION & PARAMETERS COMPILATION --- all %F
+Last update:
+Panel stored in: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/paneles_completos/panel_completo1
+
+✘  ✔
+Common parameters settings at the end of the document.
+
+[2A · TILES+ WAVES] ✔
+factors0.5-1.4pre3post2fr6​
+wavebased_thresh_max o.o
+
+210323 - [2] cond201_rej3_10trials ✔
+210430 - [8] cond1003_rej3_25trials ✔
+210508 - [9] cond1003_rej3_36trials ✔
+210521 - [11] cond402_rej3_37trial ✔
+
+sourcecode:/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/plot_tiles_and_waves2_units.m
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/def_figs/tiles/2A_tiles_%F
+
+[2B · WMEAN-MAPS + BOXPLOTS] ✔ ✔
+GRUPO 6 (n5)​
+
+210430: [8] 0.5 vs 1mA (1002 vs 1003) -  manual reject idx 80​
+210508: [9] 0.8 vs 1.5mA (1002 vs 1003)  -  manual reject idx 79, 141​
+210521: [11] 0.6 vs 0.8mA (402 vs 404)
+...also for stats:
+210509: [10] 0.6 vs 1.2mA(2002 vs 2003) - manual reject idx 63,85,97,104,119​
+210522: [12] 0.4 vs 0.8mA (402 vs 404)​
+
+sourcecode:/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working_v2percF.m
+Rsourcecode:~/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore/group_barplot_anova_Z_and_norm_newslope.R
+analysis ='2way_rm'
+
+stored:/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures//home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore3_percF
+
+[2D · P-maps] ✔
+p< 0.001
+
+[8] 210430 - cond 1003 ✔
+[2] 210323 - cond 201 ✔
+[11] 210521 - cond 401 ✔
+[12] 210522​ - cond 403 ✔
+
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/fig_mmaps_TFCE_perm_threshold_savemat_groupplot.m
+(plots) stored: TORus/plot/informes/03_figure_sketch/fast_TFCEperm/plots
+(results) stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm/TFCEperm_rocket_computed
+
+
+[3A · FRAME AT PEAK TIME]
+pre=3 ; post=2; 2frames
+fact_clim= 1.4;
+(newones with thresh_mode =wavebased_thresh_max)
+210409 [4]  cond (101*),102,103. fact_thresh =0.5 ✔
+210430 [8]  cond (2001*),2002,2003. fact_thresh =0.3 ✔
+210521 [11] cond 401,403,404. fact_thresh =0.55 ✔
+210522 [12] cond 402 403 404. fact_thresh =0.40 ✔
+(*) needs to be calculated without that condition, that do not reach the thresh
+
+(extra with thresh_mode =wavebased_thresh_local)
+210430 [8]  cond (2001*),2002,2003. fact_thresh =0.5 ✘
+210521 [11] cond 401,403,404. fact_thresh =0.5 ✘
+
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/plot_tiles_and_waves2_units.m
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/def_figs/tiles/3A_%F_framePeak_maxwave_based
+
+[3B · BARPLOTS OF 1 FISH  + 3B GROUP BOXPLOT OF PEAK]
+group 8
+210409 [4]: [100 101 102 103]
+210430 [8]: [2000 2001 2002 2003]
+210521 [11]: [400 401 403 404]
+210522 [12]: [400 402 403 404]
+! problem: with new example for frame-at-peak, the barplot worsens
+
+range1 = [0.2-0.4] ; range2 = [0.5-0.7]; range3 = [0.8-1.1];
+sourcecode:/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore_working_v2percF.m
+sourcecodeR: ~/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore/group_barplot_anova_Z_and_norm_newslope.R
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore2/group8
+
+based excel extracted by the same code as 2B
+
+[3C · BRADYCARDIA]
+Group 1 (old) redo ????
+
+[3C · BRADYCARDIA: SHARKS vs NO SHARKS vs ALL: waves + cloudplots + regression line]
+%dF
+whattrials= {'all, 'no-sharks', 'sharks'}
+reject_on = 4;
+step = 20; lim1= -20; lim2=160
+
+[1] 210320 #300 : IBI =1 ; selroinames = {'dm4m_L','dm2_L'}; !reject4.bradyvisual for ibi1 in this fish
+[-] rest of fish:  IBI =1 ; selroinames = {'dm4m_R','dm2_R'};
+[2] 210323 #300; #200
+[3] 210325 #300, #100
+[8] 210430 #1000 + 2000 (excepting 1001=tone)
+[10] 210509 #1000 + 2000 (excepting 1001, 2001=tone)
+
+
+source code: /home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis_grouped_by_condition_new.m
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady
+
+[SAME BUT INSIDE BRADY-RANGE]
+
+[1]#300 - bradyrange = [-10 60]; step = 10; lim1=-10;lim2=60
+[2]#300 - "
+[3]#300 - "
+
+[2] #200 - bradyrange = [-10 30]; step = 5; lim1=-5;lim2=30
+[3] #100 - "
+
+*rest of parameters equal to the previous.
+
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/devo_bradi_ibis_grouped_by_condition_new2_subset_bradyrange.m
+
+[3C · RASTERMAPS]
+210521 [11]: [401:404]
+210522 [12]: [401:404]
+
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/raster_fromline_onthego.m
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/raster_fromline/3C_rasterline_short
+////////////////////////////////////////////////////////////////
+/// Function settings for all:
+      feedf.window.min = [-100 100]; %'feed-function' structure
+      feedf.window.max = [0 1200]; % where to find the max peak
+      feedf.window.movsum = 50; %ms
+      feedf.window.basel = [-25 0]; %cambiar a  -100
+      feedf.window.slope=50;
+      feedf.window.wmean=[0 350];
+
+      feedf.method = 'movsum';
+
+///  Reject-settings for all:
+
+    reject_on = 3;
+
+    setting.manual_reject = 1; %@ SET CHA-CHA-CHA-CHANGEEEEEEEEE
+    setting.GSmethod_reject = 1;  %@ SET
+    setting.GSabsthres_reject = 1; %@ SET+
+    setting.forcein = 0; %@ SET
