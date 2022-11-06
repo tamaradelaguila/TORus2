@@ -239,8 +239,6 @@ addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
                 allroi_waves(:,roii,ci) = roi_TSave_percF_roiwise(movieave,roimask, meanF0);
             end %for roi_i
 
-            
-            
         end %for condition
         
         

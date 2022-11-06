@@ -18,17 +18,7 @@ user_settings
 cd(W)
 
 % load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot.mat')
-% load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new.mat') % ATTENTION: select cases manually (there are repetitions)
-
-% FOR NEW BOXPLOTS (no-pain vs pain)
-% load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
-
-% ...FOR 'EFFECT OF INTENSITY' BOXPLOT:
-% load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot5_boxplot_Ieffect.mat') % ATTENTION: select cases manually (there are repetitions)
-
-% ...FOR 'CHORRITO' BOXPLOT:
-load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
-
+load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new2.mat') % ATTENTION: select cases manually (there are repetitions)
 
 % ///////////////////////////////////////////////////////////
 % SETTINGS
@@ -36,36 +26,31 @@ load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure
 % selroinames = {'dm4m_R',  'dm2_R'};
 % selroinames = {'dm4m_R2',  'dm2_R2'};
 
-% selroinames = {'dm4m_R2','dm2_R2', 'dm3_R', 'dm1_R','dldm_R'}; %4roi
-selroinames = {'dm4m_R2','dm2_R2', 'dm1_R','dldm_R'}; %4roi
+% selroinames = {'dm4m_R',  'dm2_R', 'dm3_R' ,'dm1_R','dldm_R'};%dm3,
+% selroinames = {'dm4m_R2',  'dm2_R2', 'dm3_R2' ,'dm1_R','dldm_R2'};%dm3,
+% selroinames = {'dm4m_R',  'dm4_L', 'dm2_R' ,'dm2_L'};
+% selroinames = {'dm4m_R2','dm2_R2','dm1_R','dldm_R2'}; %4roi
+% selroinames = {'dm4m_R2','dm2_R2','dm1_R','dldm_R2','dm4m_L2','dm2_L2','dm1_L','dldm_L2'}; %8roi
+selroinames = {'dm4m_R2','dm2_R2'}; %4roi
 
 roikind = 'circle'; %
 % roikind = 'anat';
 
-dataunits = 'dF'; % '%F' 'dF'
-switch dataunits
-    case 'dF'
-        movie_ref = '_18filt6'; % input movie '_17filt5'
-    case '%F'
-        movie_ref = '_21filt6'; 
-end
-
 ref_movie= '_18filt6';% '_17filt5' ; '_18filt6'
 % ref_movie= '_12filt5' ;
 
-activ_unit = 'dF'; % @ MANUALLY SET (just for display purposes)
-analysisref = 'new4_group16_chorrito_n4'; % MANUALLY SET!!! extra info for the name. Set group according to the rows of 'groupplot' selected in;   for suji  =  [1 3 4 9] lateral_group7_RECOV
-reject_on = 3; %before 10/09/22, reject_on = 3;
+activ_unit = 'diffF'; % @ MANUALLY SET (just for display purposes)
+analysisref = 'panel2_group8'; % MANUALLY SET!!! extra info for the name. Set group according to the rows of 'groupplot' selected in;   for suji  =  [1 3 4 9] lateral_group7_RECOV
+reject_on = 3;
 
-onset_factor = 0.2; % of max value to set rising threshold (to onset latency)
+onset_factor = 0.1; % of max value to set rising threshold (to onset latency)
 
 plotmaps = 1;
 savemaps = 1; % if plotmaps =1
 getR = 1;
 get_excel_indiv = 0; %not working at the moment
 
-savewaves = 1;
-savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit';
+savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore2' ;%@ SET
 
 % Time range (to fit all the waves so they span the same timewindow) !!!
 % all baselines should be also but to this range
@@ -87,12 +72,12 @@ feedf.method = 'movsum';
 % flagslope = 1;
 
 % Params
-slope.window = [0, 1200]; %ms
+slope.window = [0, 200]; %ms
 
 % END USER_SETTINGS
 % ///////////////////////////////////////////////////////////////
 
-%% COPY FUNCTIONS SETTINGS IN CELL STRUCTURE TO OUTPUT IN EXCEL
+% COPY FUNCTIONS SETTINGS IN CELL STRUCTURE TO OUTPUT IN EXCEL
 params{1,1} = 'window.max (ms)';
 params{1,2} = feedf.window.max;
 
@@ -108,11 +93,11 @@ params{4,2} = feedf.window.wmean;
 params{5,1} = 'slope win (ms)';
 params{5,2} = slope.window;
 
-% params{6,1} = ['onset lat ' num2str(onset_factor*100) '%(ms)'];
+params{6,1} = ['onset lat ' num2str(onset_factor*100) '%(ms)'];
 
-params{8,1} = date;
-params{8,3} = ['source:'  mfilename('fullpath')];
-
+if strcmpi( analysisref, 'panel2_group8')
+    sel_subjects = [1 2 5 6];
+end
 
     %----------------------------------------------------------------
     % @SET: REJECT SETTINGS
@@ -121,75 +106,11 @@ params{8,3} = ['source:'  mfilename('fullpath')];
     % Subsettings:
     setting.manual_reject = 1; %@ SET CHA-CHA-CHA-CHANGEEEEEEEEE
     setting.GSmethod_reject = 1;  %@ SET
-    setting.GSabsthres_reject = 0; %@ SET+
-    setting.forcein = 0; %@ SET
-
-
-% SUBJECTS SELECTION (ROWSA FROM THE 'groupplot' CELL STRUCTURE
-if strcmpi( analysisref, 'new_group2_RECOV')  || strcmpi( analysisref, 'lateral_group2_RECOV')
-    sel_subjects = [1:4,9];
-elseif strcmpi( analysisref, 'new_group3_RECOV') || strcmpi( analysisref, 'lateral_group3_RECOV')
-    sel_subjects = [5:8];
-elseif strcmpi( analysisref, 'new_group4_RECOV') || strcmpi( analysisref, 'lateral_group4_RECOV')
-    sel_subjects = [1 3 4 9];
-elseif strcmpi( analysisref, 'new_group6_RECOV') || strcmpi( analysisref, 'lateral_group6_RECOV')
-    sel_subjects = [2 3 8 9 11];
-elseif strcmpi( analysisref, 'new_group7_RECOV') || strcmpi( analysisref, 'lateral_group7_RECOV')
-    sel_subjects = [2 8 9 11];
-    
-    % FOR NEW BOXPLOTS (no pain vs pain)
-    ...................
-        %  load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
-
-elseif strcmpi( analysisref, 'new4_group8_pulso')
-    sel_subjects = 1:5;
-elseif strcmpi( analysisref, 'new4_group9_pulso')
-    sel_subjects = [1 2 3 5];
-elseif strcmpi( analysisref, 'new4_group10_pulsito')
-    sel_subjects = 6:10;
-elseif strcmpi( analysisref, 'new4_group11_pulsito') % con los peces anteriores
-    sel_subjects = 6:15;
-elseif strcmpi( analysisref, 'new4_group12_dolor') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = 16:20;
-elseif strcmpi( analysisref, 'new4_group15_pulsito') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = 21:28;
-elseif strcmpi( analysisref, 'new4_group17_pulsito') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = [24 25 26 29 30];
-elseif strcmpi( analysisref, 'new4_group19_dolor_n5') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = [31:35];
-elseif strcmpi( analysisref, 'new4_group19_dolor_n4') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = [31:34];
-    
-    % FOR INTENSITY EFFECT BOXPLOTS
-    ...................
-        % from: load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot5_boxplot_Ieffect.mat') % ATTENTION: select cases manually (there are repetitions)
-elseif strcmpi( analysisref, 'new4_group13_intens') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = [1:4 6]; % n= 5
-    
-elseif strcmpi( analysisref, 'new4_group14_intens') % del panel original: para dm2+dm4 vs blank (n=6)
-    sel_subjects = [1:6]; %n=6
-    
-elseif strcmpi( analysisref, 'new4_group14subset_intens') % del panel original: para dm2+dm4 vs blank (n=6)
-    sel_subjects = [1 2 4 5]; %n=6
-    
-elseif strcmpi( analysisref, 'new4_group18_3intens') % del panel original: para dm2+dm4 vs blank (n=6)
-    sel_subjects = [7:10]; %n=4
-    
-elseif strcmpi( analysisref, 'new4_group20_3intens') % del panel original: para dm2+dm4 vs blank (n=6)
-    sel_subjects = [11:16]; %n=4
-    
-    % FOR CHORRITO
-    % ...................
-    % from: load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
-elseif strcmpi( analysisref, 'new4_group16_chorrito_n3') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = 1:3;
-elseif strcmpi( analysisref, 'new4_group16_chorrito_n4') % del panel original: para dm2+dm4 vs blank
-    sel_subjects = 1:4;
-end
-
+    setting.GSabsthres_reject = 1; %@ SET+
+    setting.force_include = 0; %@ SET
     
 
-    %% CODE
+    %% FIRST 'suji' LOOP :   GET WAVES (for each subject and roi)
     i = 2; % counter for long format rows: the first will be the labels
     si = 0; % counter for subjects list
     
@@ -225,19 +146,47 @@ end
         slope.windowidx = [slope.windowidx(1) slope.windowidx(end)];
 
         %----------------------------------------------------------------
-        % COMPUTE REJECTION IDX FROM REJECT-OPTIONS
+        % COMPUTE REJECTION IDX FROM REJECT-OPTIONS ---DEPRECATED in new code it's
+        % collapsed into a single function
         %----------------------------------------------------------------
-
-rejectidx = [];
-rejectidx  = compute_rejectidx(VSDI, reject_on, setting);
+        rej = 'reject' ;
+        if reject_on > 1
+            rej = [rej num2str(reject_on)];
+        end
         
+        rejectidx = [];
+        
+        if setting.manual_reject
+            try
+                rejectidx = [rejectidx  makeRow(VSDI.(rej).manual)];
+            catch
+                rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+                disp(['reject.manual was used for fish' num2str(VSDI.ref) 'because there is no reject' num2str(reject_on) '.manual'])
+            end
+        end
+        
+        if setting.GSabsthres_reject
+            rejectidx = [rejectidx  makeRow(VSDI.(rej).GSabs025)];
+            
+        end
+        
+        if setting.GSmethod_reject
+            rejectidx = [rejectidx makeRow(VSDI.(rej).GSdeviat2sd)];
+        end
+        
+        if setting.force_include
+            rejectidx = setdiff(rejectidx, VSDI.reject.forcein);
+            
+        end
+        
+        rejectidx = sort(unique(rejectidx));
         
         
 %         params{8,1} = 'rejected';
 
 %         params{8,1} = rejectidx';
 
-        % ----------------------------------------------------------------
+        %% ----------------------------------------------------------------
         % SELECT ROI
         %----------------------------------------------------------------
         switch roikind
@@ -260,9 +209,7 @@ rejectidx  = compute_rejectidx(VSDI, reject_on, setting);
         for condition =  makeRow(cond_lohi)
             ci = ci+1;
             
-            cond_blank = force0ending(condition); %when there is a blank trial for each condition
-%             cond_blank = 0; % from june2022 on... when there is a single blank trial
-
+            cond_blank = force0ending(condition);
             % -------------------------------------------
             % SELECT CASES  AND AVERAGE MOVIE
             % -------------------------------------------
@@ -284,13 +231,10 @@ rejectidx  = compute_rejectidx(VSDI, reject_on, setting);
             % CALCULATE MEASURES for each pixel and condition (and
             % store in 'maps')
             % -------------------------------------------
-                   tic
-
+                    
                     for xi = 1:size(movieave,1)
-                        
                         for yi = 1:size(movieave,2)
-                            pixelwave = squeeze(movieave(xi, yi,:));
-                            
+                            pixelwave = movieave(xi, yi,:);
                             
                             temp = devo_peak2peak(pixelwave, timebase_adj, feedf.window, [], feedf.method, 0, 0);
                             
@@ -300,23 +244,15 @@ rejectidx  = compute_rejectidx(VSDI, reject_on, setting);
 %                             % pixel-wise peak latency
                             
                             %slope
-
-                            idx0 = slope.windowidx(1);
+                                idx0 = slope.windowidx(1);
                                 idxend = slope.windowidx(end);
                                 waveW = pixelwave(idx0:idxend);
-                                %lowpass filter
-                                fs = 1000/(VSDI.info.stime);
-                                waveF = lowpass(waveW,5,fs);
-%                                 slopemean = mean(diff(waveW)); %DEPRECATED 25/10/22
-                                slopemax = max((diff(waveF)));
-                                maps.slope(xi,yi,ci) = slopemax;
-                                clear pixelwave waveW waveF slopemax
+                                slopemean = mean(diff(waveW));
+                                maps.slope(xi,yi,ci) = slopemean;
+                                clear pixelwave waveW slopemean
 
                         end % for yi
                     end % for xi
-            disp(xi)
-            t1 = toc
-
         
             % get maxval for ONSET LATENCY THRESHOLD
              maps.max(ci) = max(movieave(:));
@@ -327,7 +263,6 @@ rejectidx  = compute_rejectidx(VSDI, reject_on, setting);
              ...(once the threshold has been set respect to the maximum values
              % ---------------------------------------------------------------
 % ploti = 0;
-figure
 for roi_i = makeRow(selroi)
 %     ploti = ploti+1;
 %     subplot(1,length(selroi), ploti)
@@ -338,45 +273,20 @@ for roi_i = makeRow(selroi)
     temp = devo_peak2peak(roiwave, timebase_adj, feedf.window, [], feedf.method, 0, 0);
     peaklat(roi_i,ci) = temp.peaklatency;
     
-% %     % PLOT TO CHECK
+%     % PLOT TO CHECK
 %     plot(timebase_adj, roiwave, 'linewidth', 1.3)
 %     xline(temp.peaklatency)
-%     title([num2str(VSDI.ref) ':' roilabels{roi_i}])
-%     pause
-
-if savewaves
-hold on
-plot(roiwave, 'displayname', roilabels{roi_i}, 'linewidth', 2.5 )
-ylabel = 'dF';
+%     title(['-roi' roilabels{roi_i}])
+%     clear temp
 end
-    clear temp
-    
-end
+% sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'Peaklatency from wave .Cond:' num2str(condition)])
+% 
+% localname = ['Peaklat_from_avewave_cond' num2str(condition)] ;
+% savename = [num2str(VSDI.ref) '_' ref_movie '_rej' num2str(reject_on) '_' ];
+% 
+% saveas(gcf, fullfile(savein, [savename localname '.jpg']), 'jpg') % prints it as you see them
+% close
 
-if savewaves
-    hold off
-    legend
-    
-    sgtitle([num2str(VSDI.ref), movie_ref, 'rej', num2str(reject_on), '-cond:' num2str(condition)])
-    
-    savename= ['WAVES' num2str(VSDI.ref) movie_ref '_cond' num2str(condition) '_rej'  num2str(reject_on) '_' num2str(numel(sel_trials)) 'trials_' ];
-    
-        saveas(gcf, fullfile(savein, [savename '.jpg']), 'jpg')
-        
-        set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-        print(fullfile(savein, [savename '.svg']),'-r600','-dsvg', '-painters') % prints it as you see them %STILL TO TEST!
-        
-        close
-    end
-    
-    
-%     sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'Peaklatency from wave .Cond:' num2str(condition)])
-%     
-%     localname = ['Peaklat_from_avewave_cond' num2str(condition)] ;
-%     savename = [num2str(VSDI.ref) '_' ref_movie '_rej' num2str(reject_on) '_' ];
-%     
-%     saveas(gcf, fullfile(savein, [savename localname '.jpg']), 'jpg') % prints it as you see them
-%     close
         end %for condition
         
         % ---------------------------------------------------------------
@@ -413,7 +323,6 @@ if savewaves
                        
                        temp = devo_peak2peak(pixelwave, timebase_adj, feedf.window, [], feedf.method, 0, 0);
                        maps.onsetlat(xi,yi,ci) = temp.risingthreshlat;
-                       clear pixelwave temp
                    end
                end
                
@@ -436,7 +345,6 @@ if savewaves
         mapsZ.wmean = Zwmean;
         mapsZ.slope = Zslope;
 
-        clear Zpeak Zmean Zslope
 %         mapsZ.peak =reshape(Zpeak, [dim(1) dim(2) dim(3)]);
 %         mapsZ.wmean =reshape(Zwmean, [dim(1) dim(2) dim(3)]);
 %         mapsZ.slope = reshape(Zslope, [dim(1) dim(2) dim(3)]);
@@ -450,6 +358,7 @@ if savewaves
 %         if get_excel_indiv
 %             ci = 0;
 %             ti = 1; ri = 3;
+%               
 %             for condition =  makeRow(cond_lohi)
 %                 ci = ci +1;
 %                 
@@ -531,14 +440,11 @@ if savewaves
             ci = ci +1;
             
             if getR
-                
                 % -------------------------------------------------------
                 % CALCULATE MEASURE FOR EACH ROI AND STORE IN LONG FORMAT
                 % -------------------------------------------------------
                 for roi_i = makeRow(selroi)
                     
-                    % MEASURES FROM Z-MAPS
-                    % ---------------------------------
                     roimask= masks(:,:,roi_i);
                     roipeak = sum(maps.peak(:,:,ci).*roimask) / sum(roimask) ;
                     roiwmean = sum(maps.wmean(:,:,ci).*roimask) / sum(roimask) ;
@@ -550,15 +456,13 @@ if savewaves
                     
                     roionsetlat = sum(maps.onsetlat(:,:,ci).*roimask, 'omitnan') / sum(roimask) ;
                     roipeaklat =  peaklat(roi_i,ci);
-                    
-                    % STORE 
-                    % ---------------------------------
+
                     % FACTORS
                     longF{i,1} = suji ; %subject id
                     longF{i,2} = roi_i; % roi
                     longF{i,3} = roilabels{roi_i}; % roi
                     longF{i,4} = ci; % condition (1 = low; 2 = hi; 3 = blank)
-                    % Z-MAPS MEASURES
+                    % MEASURES
                     longF{i,5} = round(roipeak,2); % outputP(roi_i, condi)
                     longF{i,6} = round(roiwmean,2);%
                     longF{i,7} = round(roislope,2);%
@@ -568,8 +472,8 @@ if savewaves
                     longF{i,10} = round(roiwmeanZ,2);%
                     longF{i,11} = round(roislopeZ,2);%
                     longF{i,12} = round(roipeaklat);
-                    
-                    
+
+
                     % set hemisphere factor
                     if strcmpi( roilabels{roi_i}(end), 'R') || strcmpi(roilabels{roi_i}(end-1),'R')
                         longF{i,13} = 'R';%
@@ -577,12 +481,11 @@ if savewaves
                         longF{i,13} = 'L';%
                     end
                     
-                    longF{i,14} = roilabels{roi_i}(1:end-2);%in case we want to perform anova roi*hemisf
-                    
+                    longF{i,14} = roilabels{roi_i}(1:4);%in case we want to perform anova roi*hemisf
                     
 
                     i = i+1;
-                    clear roimask  roipeak  roiwmean roislope roipeakZ roiwmeanZ roislopeZ
+                    
                 end %for roi_i
             end % for if getR
         end % for condition
@@ -590,7 +493,7 @@ if savewaves
         %% PLOT MAPS
         if plotmaps
             
-            savename = [num2str(VSDI.ref) '_cond' num2str(condition)  ref_movie '_rej' num2str(reject_on) '_'];
+            savename = [num2str(VSDI.ref) '_' ref_movie '_rej' num2str(reject_on) '_'];
             %
             ncond = length(cond_lohi);
             
@@ -648,11 +551,11 @@ if savewaves
             B = linspace(ccmap(1,3), ccmap(flag,3), flag);
             ccmap(1:flag,:) = [R; G; B]'; 
             
-            cclim = [0 4];
+%             cclim = [0 4];
 %             %         ccmap(1,:) = [0 0 0];
 %             
 % 
-%             % PLOT PEAK + WMEAN (in the same figure)
+%             % PLOT PEAK + WMEAN
 %             % ------------------------------------------------------------------
 %             figure
 %             ci = 0;
@@ -711,13 +614,13 @@ if savewaves
 %                 
 %                 %                 saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
 %                 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-%                 print(fullfile(savein, [analysisref savename localname '.jpg']),'-r900','-djpeg') % prints it as you see them
+%                 print(fullfile(savein, [analysisref savename localname '.jpg']),'-r600','-djpeg') % prints it as you see them
 %                 
 %                 close
 %             end
 %             
-%             
-%             % PLOT PEAK 
+% 
+%             % PLOT SLOPE
 %             % ------------------------------------------------------------------
 %             figure
 %             ci = 0;
@@ -726,7 +629,7 @@ if savewaves
 %                 ci = ci+1;
 %                 ax(ci) = subplot(1,ncond,ci);
 %                 
-%                 im1 = mapsZ.peak(:,:,ci);
+%                 im1 = mapsZ.slope(:,:,ci);
 %                 %                 im1 = interp2(im1, 5, 'nearest');
 %                 %                 im1(~VSDI.crop.preview) = 0;
 %                 
@@ -749,65 +652,21 @@ if savewaves
 %                 %                 return
 %                 %             end
 %                 
-%                 condidx = find(VSDI.condition(:,1) ==condition); % get idx from condition
-%                 tempmA = VSDI.condition(condidx(1),4); %get mA from first trial that meet the condition
-%                 title(['c',num2str(condition), '(', num2str(tempmA),'mA)'])
-%                 
-%                 
 %             end
 %             
-%             sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'PEAK-Z map. Cond:' num2str(cond_lohi)])
-%             localname = ['MAPS_peakZ'] ;
+%             sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'Zmap. Slope. Cond:' num2str(cond_lohi)])
+%             localname = ['Zscore_slope'] ;
 %             
 %             if savemaps
 %                 
 %                 %                 saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
 %                 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-%                 print(fullfile(savein, [analysisref '_' savename localname '.jpg']),'-r300','-djpeg') % prints it as you see them (for poster: -r900)
-%                 
-%                 close
-%             end% 
-% 
-%             % PLOT WMEAN
-%             % ------------------------------------------------------------------
-%             figure
-%             ci = 0;
-%             for condition =  makeRow(cond_lohi)
-%                 % peak in the first row
-%                 ci = ci+1;
-%                 
-%                 condidx = find(VSDI.condition(:,1) ==condition); % get idx from condition
-%                 tempmA = VSDI.condition(condidx(1),4); %get mA from first trial that meet the condition
-%                 title(['c',num2str(condition), '(', num2str(tempmA),'mA)'])
-%                 
-%                 % wmean in the second row
-%                 ax(ci) = subplot(1,ncond,ci);
-%                 
-%                 im2 = mapsZ.wmean(:,:,ci);
-%                 %                 im2(~VSDI.crop.preview) = 0;
-%                 
-%                 alphamask = ones(size(im2))*0.6;
-%                 %                 alphamask= im2  >0;
-%                 
-%                 back = VSDI.backgr(:,:,VSDI.nonanidx(1));
-%                 back = interp2(back,5);
-%                 plot_framesoverlaid2(im2, back, alphamask, 0, ax(ci), cclim, 1 , 0, ccmap)
-%                 ax(ci).Visible = 'off';
-%                 
-%             end
-%             
-%             sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'onsetA-Z. Cond:' num2str(cond_lohi)])
-%             localname = ['MAPS_wmeanZ'] ;
-%             
-%             if savemaps
-%                 %                 saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
-%                 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-%                 print(fullfile(savein, [analysisref '_' savename localname '.jpg']),'-r300','-djpeg') % prints it as you see them
+%                 print(fullfile(savein, [analysisref savename localname '.jpg']),'-r600','-djpeg') % prints it as you see them
 %                 
 %                 close
 %             end
             
-            % PLOT SLOPE
+            % PLOT ONSET LATENCY
             % ------------------------------------------------------------------
             figure
             ci = 0;
@@ -816,7 +675,7 @@ if savewaves
                 ci = ci+1;
                 ax(ci) = subplot(1,ncond,ci);
                 
-                im1 = mapsZ.slope(:,:,ci);
+                im1 = maps.onsetlat(:,:,ci);
                 %                 im1 = interp2(im1, 5, 'nearest');
                 %                 im1(~VSDI.crop.preview) = 0;
                 
@@ -832,76 +691,30 @@ if savewaves
                 %                 set(gca, 'clim',cclim)
                 %                 colorbar; colormap(ccmap)
                 %
-                plot_framesoverlaid2(im1, back, alphamask, 0, ax(ci), cclim, 1, 0, ccmap)
+                
+                flipmap =flipud(ccmap);
+                plot_framesoverlaid2(im1, back, alphamask, 0, ax(ci), [50 80], 1, 0, flipmap)
                 ax(ci).Visible = 'off';
+
                 % STOPS THE CODE FOR CHECKING ROI CENTERS
                 %             if ci ==2
                 %                 return
                 %             end
-                
             end
             
-            sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'Zmap. Slope. Cond:' num2str(cond_lohi)])
-            localname = ['Zscore_slope'] ;
+            sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'Onsetlat' num2str(onset_factor*100) '%. Cond:' num2str(cond_lohi)])
+            localname = ['onsetlat' num2str(onset_factor*100) '_'] ;
             
             if savemaps
                 
-                                saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
-%                 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-%                 print(fullfile(savein, [analysisref savename localname '.jpg']),'-r300','-djpeg') % prints it as you see them
+                % saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
+                set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
+                print(fullfile(savein, [analysisref savename localname '.jpg']),'-r600','-djpeg') % prints it as you see them
                 
                 close
             end
             
-%             % PLOT ONSET LATENCY
-%             % ------------------------------------------------------------------
-%             figure
-%             ci = 0;
-%             for condition =  makeRow(cond_lohi)
-%                 % peak in the first row
-%                 ci = ci+1;
-%                 ax(ci) = subplot(1,ncond,ci);
-%                 
-%                 im1 = maps.onsetlat(:,:,ci);
-%                 %                 im1 = interp2(im1, 5, 'nearest');
-%                 %                 im1(~VSDI.crop.preview) = 0;
-%                 
-%                 alphamask = ones(size(im1))*0.6;
-%                 
-%                 %                 alphamask= im1  > 1 ; %VISUALIZATION THRESHOLD
-%                 %                 alphamask =  interp2(alphamask, 5, 'nearest');
-%                 
-%                 back = VSDI.backgr(:,:,VSDI.nonanidx(1));
-%                 back = interp2(back,5);
-%                 %                 imagesc(im1)
-%                 %                 axis image
-%                 %                 set(gca, 'clim',cclim)
-%                 %                 colorbar; colormap(ccmap)
-%                 %
-%                 
-%                 flipmap =flipud(ccmap);
-%                 plot_framesoverlaid2(im1, back, alphamask, 0, ax(ci), [50 80], 1, 0, flipmap)
-%                 ax(ci).Visible = 'off';
-% 
-%                 % STOPS THE CODE FOR CHECKING ROI CENTERS
-%                 %             if ci ==2
-%                 %                 return
-%                 %             end
-%             end
-%             
-%             sgtitle([num2str(VSDI.ref), 'rej' , num2str(reject_on), '(',ref_movie(2:end),  ')', 'Onsetlat' num2str(onset_factor*100) '%. Cond:' num2str(cond_lohi)])
-%             localname = ['onsetlat' num2str(onset_factor*100) '_'] ;
-%             
-%             if savemaps
-%                 
-%                 % saveas(gcf, fullfile(savein, [analysisref savename localname '.jpg']), 'jpg')
-%                 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-%                 print(fullfile(savein, [analysisref savename localname '.jpg']),'-r600','-djpeg') % prints it as you see them
-%                 
-%                 close
-%             end
-%             
-% 
+
             % ------------------------------------------------------------------
             % PLOT ROIS USED
             % ------------------------------------------------------------------
@@ -919,7 +732,7 @@ if savewaves
             localname = [num2str(VSDI.ref), ref_movie,'roipreview',num2str(numel(selroi)) ];
             
             if savemaps
-                saveas(gcf, fullfile(savein, [analysisref '_' localname '.jpg']), 'jpg')
+                saveas(gcf, fullfile(savein, [analysisref localname '.jpg']), 'jpg')
                 close
             end
         end % if plotmaps
@@ -943,8 +756,6 @@ if savewaves
         clear maps mapsZ
         
         groupplot_print(suji,:) = groupplot(suji,1:end);
-    
-    display([num2str(VSDI.ref) 'done'])
     end % for suji
     
     %% -------------------------------------------
@@ -967,11 +778,11 @@ if savewaves
         
         clear longF
     end % if getR
-   
     
     blob()
 
 % Update history:
+% DEPRECATED - saved as backup
 % 16/02/22 - Add onset-latency measure and delete 'switch refcase' (so only
 % the normal dF condition is considered). To use blank-substraction
 % methods, go to the older versions of the code
