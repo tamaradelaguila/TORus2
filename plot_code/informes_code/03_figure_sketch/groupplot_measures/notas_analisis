@@ -1,0 +1,16 @@
+Para los barplots de ensayos individuales, no se usan las medidas Zscore, sino las medidas de las curvas de la roi para cada ensayo directamente. 
+La normalización Zscore se hace para poder hacer la comparación inter sujeto. Así: 
+
+Para comparar intra sujeto: 
+se obtiene la curva de roi de cada película (trial); se obtiene la medida de la curva, y se comparan entre sí. 
+
+código que prepara datos para R: 
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/single_subject_individual_measures.m
+
+Para la comparación entre sujeto: 
+Se obtiene la película promedio para cada condición; se extrae la curva y medida para cada píxel; del mapa de medida, se extrae el valor medio correspondiente a las roi.
+
+código que prepara datos para R:
+/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_4_Zscore2_working.m
+
+(comprobar en el código)

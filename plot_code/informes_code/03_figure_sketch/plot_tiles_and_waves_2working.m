@@ -1,3 +1,4 @@
+close all
 clear
 W = pwd;
 cd '/home/tamara/Documents/MATLAB/VSDI/TORus'
@@ -8,17 +9,17 @@ cd(W)
 % @SET: fish + conditions
 %---------------------------------------------------------------
 nfish = 11;
-cond_codes = [401 402 403 404]; % DO NOT INCLUDE THE BLANK CONDITION (or the threshold will fail)
+cond_codes = [401]; % DO NOT INCLUDE THE BLANK CONDITION (or the threshold will fail)
 % ATT: the threshold will be computed respect to the maxim um condition
 
-plottiles = 0; %also plots early-peak
+plottiles = 1; %also plots early-peak
 savetiles = 0;
 
-plot_earlypeak = 1;
-save_earlypeak =1;
+plot_earlypeak = 0;
+save_earlypeak =0;
 
 plotwaves=1;
-savewaves = 1;
+savewaves = 0;
 
 movie_ref = '_18filt6'; % input movie '_17filt5'
 % movie_ref = '_17filt5'; % input movie '_17filt5'
@@ -27,23 +28,35 @@ movie_ref = '_18filt6'; % input movie '_17filt5'
 savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/04_figure_sketch2/'; % 
 
 
+% FOR WAVES
+%---------------------------------------------------------------
+% Note that for the computation initial and ending times from tiles and
+% early peaks, the dF movie is always used 
+
+waves_units = 'dF'; % 'dF' '%F'
+
 % FOR TILES AND EARLY-PEAK FRAMES
 %---------------------------------------------------------------
 
-fact_thresh = 0.55; % @SET : limits parameters
-fact_clim= 1.2;
+fact_thresh = 0.6; % @SET : limits parameters
+fact_clim= 1.65;
 
 thresh_mode = 'wavebased_thresh_max'; % 'moviebased_thresh_max' 'wavebased_thresh_max' 'wavebased_thresh_local' 'manual'. 'moviebased_thresh_max' is the one we have been using for tiles 
+timerange_mode = 'refwave' ; %'refwave', 'manual' 
+
 
 % if thresh_mode = 'manual' SET:
 manual.clims = [];
 manual.thresh = [];
 
- 
+% if timerange_mode = 'manual' SET:
+manual.start_ms = [];
+manual.end_ms = [];
+
 %----------------------------------------------------------------
 % @SET: MEASURE (OR LOOP THROUGH ALL MEASURES)
 %----------------------------------------------------------------
-reject_on= 3; 
+reject_on= 0; 
 
 setting.manual_reject = 1; %
 setting.GSmethod_reject = 1;  %
@@ -59,7 +72,7 @@ setting.forcein = 0; %
 
 % selroinames = {'dm4m_R2',  'dm2_R2' ,'dm1_R', 'dldm_R2'};%dm3 % FROM '03figure_sketch'
 
-selroinames = {'dm4m_R',  'dm2_R' ,'dm1_R', 'dldm_R'};%dm3
+selroinames = {'dm4m_R2',  'dm2_R2' ,'dm1_R', 'dldm_R'};%dm3
 
 % selroinames = {'dm4m_R2', 'dm4m_L2',  'dm2_R2' , 'dm2_L2'};% IPSI VS CONTRA
 
@@ -248,13 +261,22 @@ for condi = makeRow(cond_codes)
                 tileset.thresh = manual.thresh;
         end
         
-        idx.start = find(dm4_wave > tileset.thresh(2), 1, 'first')- fr_pre;
-        idx.end= find(dm4_wave > tileset.thresh(2), 1, 'last') + fr_post;
+            idx.start = find(dm4_wave > tileset.thresh(2), 1, 'first')- fr_pre;
+            idx.end= find(dm4_wave > tileset.thresh(2), 1, 'last') + fr_post;
+            
+    end    
         
-        
+        switch timerange_mode
+        case 'refwave'
+
         tileset.start_ms = VSDI.timebase(idx.start);
         tileset.end_ms = VSDI.timebase(idx.end);
 %         tileset.peak_ms = VSDI.timebase(idx.peak);
+            case 'manual'
+          tileset.start_ms = manual.start_ms; %%%%%%&&&&&&&&&&&&&&&&&&&&&&&&&&&&//////////////////////////77
+          tileset.end_ms = manual.end_ms;
+        end
+
         
         if isempty (tileset.start_ms)
 %             error('The threshold is too high (lower the value of "fact_thresh"')
@@ -279,78 +301,7 @@ for condi = makeRow(cond_codes)
         end
         
         clear idx tileset.start_ms tileset.end_ms
-    end
-   
-    
-    
-    %----------------------------------------------------------------
-    ... PLOT EARLY-PEAK
-        %----------------------------------------------------------------
-    
-    if plot_earlypeak
-        % GET REPRESENTATION THRESHOLD ACCORDING TO THE MODE
-        %----------------------------------------------------------------
-        switch thresh_mode
-            case 'moviebased_thresh_max'
-                
-                tileset.clims = [0 maxval*fact_clim];
-                tileset.thresh = [-maxval*fact_thresh maxval*fact_thresh];
-                
-            case 'wavebased_thresh_local'
-                localmax = wavelocal_max(ci);
-                maxwave = max(wavelocal_max);
-                tileset.clims = [0 maxwave*fact_clim]; % the colormap has to be the same to be comparable
-                tileset.thresh = [-localmax*fact_thresh localmax*fact_thresh];
-            case 'wavebased_thresh_max'
-                maxwave = max(wavelocal_max);
-                tileset.clims = [0 maxwave*fact_clim]; % the colormap has to be the same for all conditions to be comparable
-                tileset.thresh = [-maxwave*fact_thresh maxwave*fact_thresh];
-                
-        end
-
-        tileset.nrowcol = [1 2];
         
-        idx.start = find(dm4_wave > tileset.thresh(2), 1, 'first')- fr_pre; %
-        
-        if  ~ isempty (idx.start)
-            
-            tileset.start_ms = VSDI.timebase(idx.start);
-            
-            temp = devo_peak2peak(dm4_wave, wave_timebase, feedf.window, [],  'movsum' , 0, 0); %it always calculate the peak (highest value), even if it doesnt reach a threshold
-            idx.peak =temp.peakidx(2);
-            
-            tileset.end_ms = VSDI.timebase(idx.peak);
-
-        elseif isempty (idx.start)
-                        %             error('The threshold is too high (lower the value of "fact_thresh"')
-            tileset.start_ms = 0;
-            ntiles = tileset.nrowcol(1) * tileset.nrowcol(2);
-            tileset.end_ms = 6*ntiles;
-
-        end
-
-        
-%         if isempty (tileset.start_ms)
-%             error('The threshold is too high (lower the value of "fact_thresh"')
-%         end
-        
-        nframes = 2;
-        plot_tilemovie_custom_interp2(movie2plot, VSDI.timebase, tileset, [], cmap_tile);
-        
-        titulo = [num2str(VSDI.ref) '_cond' num2str(condi) '.clim=' num2str(round(tileset.clims(2),1)) '(' num2str(fact_clim) '%)', '.thresh=' num2str(round(tileset.thresh(2),1)) '(' num2str(fact_thresh*100) '%)'];
-        sgtitle(titulo)
-        
-        savename= ['earlypeak_frames' num2str(VSDI.ref) '_' thresh_mode  'trials_factors' num2str(fact_thresh)  '_cond' num2str(condi) '_rej'  num2str(reject_on) '_' num2str(numel(sel_trials)) '-' num2str(fact_clim) 'pre' num2str(fr_pre) 'post' num2str(fr_post) 'fr' num2str(nframes) movie_ref '.jpg'];
-        
-        if save_earlypeak
-            %                         saveas(gcf, fullfile(savein, savename), 'jpg')
-            set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-            print(fullfile(savein, savename),'-r600','-djpeg') % prints it as you see them
-            close
-        end
-        
-    end
-    
     %----------------------------------------------------------------
     % WAVES
     %----------------------------------------------------------------
@@ -368,6 +319,8 @@ for condi = makeRow(cond_codes)
             %                 allroi_waves(:,roii,ci) = roi_TSave(movieave,roimask);
             allroi_waves(:,roii) = roi_TSave_percF_roiwise(movie2plot,roimask, meanF0); %CHANGE TO NOT %F
         end %for roi_i
+        
+        
         
         % -------------------------------------------------------
         % RANGE
@@ -410,11 +363,11 @@ for condi = makeRow(cond_codes)
         roicolors= roi_colors();
         
         hold on
-        i = 0;
+        i = 0
         for roii = selroi
             i = i+1;
             waveroi = movmean(allroi_waves(wave.start:wave.end,roii),5);
-            plot(VSDI.timebase(wave.start:wave.end), waveroi , 'linewidth', 1.3, 'Color', cmap(i,:));
+            plot(VSDI.timebase(wave.start:wave.end), waveroi , 'linewidth', 2, 'Color', cmap(i,:));
             clear waveroi
             %     legend(selroinames{:}, 'Location', 'northeast')
         end
@@ -437,7 +390,11 @@ for condi = makeRow(cond_codes)
         
     end % if plotwaves
     
-end % for condi
+        
+    end
+   
+    
+    
 blob()
 
 % newsave = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes_code/03_figure_sketch/def_figs/tiles';
@@ -461,6 +418,7 @@ blob()
 % end
 
 % Updates
+% 20/09/22: substantially change the code, delete early, add 'manual' option for timerange 
 % 19/09/22: code adjusted so it works also when the threshold is not
 % reached (tileset.start_ms is set to zero)
 % 17/09/22: add 'manual' option for thresh_mode 

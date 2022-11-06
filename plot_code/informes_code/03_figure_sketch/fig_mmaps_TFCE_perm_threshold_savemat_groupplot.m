@@ -1,35 +1,52 @@
 %% s06_analysis1: FRAME-WISE STATISTICAL COMPARISON (TFCE CORRECTION)
-clear
 
+
+clear
+W = pwd;
+cd '/home/tamara/Documents/MATLAB/VSDI/TORus'
+user_settings
+cd(W)
+
+
+% for blocki = 1:length(groupplot)
+for nfish = [27:30] %29 sólo 701 
+
+ clearvars -except nfish path       
 %----------------------------------------------------------------
 % @SET: BASIC PARAMETERS
 %----------------------------------------------------------------
-ref_movie= '_16diff_f0pre' ;
-% ref_movie= '_18filt6' ;
-% ref_movie= '_17filt5' ;
-% ref_movie= '_11filt4' ;
-% ref_movie = '_08diff_perc_f0pre';
-% ref_movie = '_09filt3';
+ref_movie= '_18filt6' ; % '_16diff_f0pre' ; '_20perc_f0pre'; '_18filt5'
 
-savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_plot' ;%@ SET
 % load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_condition_list.mat')
-load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new.mat') % ATTENTION: select cases manually (there are repetitions)
+% load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new.mat') % ATTENTION: select cases manually (there are repetitions)
 
-outfield = 'peakminusbasel';% @SET: output field with choosen measure
+reject_on = [3];
+trial_kinds = [0 701 ]; % blank conditions needs to be included and be the first for the code to properly work
+
+% outfield = 'peakminusbasel';% @SET: output field with choosen measure
 % outfield = 'slopemax'; % mean slope from idx = 0 to peak
-% outfield = 'wmean';
-% outfield = 'wmeanslope'; %mean slope in window (minus baseline slope)
+outfield = 'wmean';
+% outfield = 'wslope'; %mean slope in window (minus baseline slope)
+
+if strcmpi(outfield, 'wslope')
+flagslope = 1;
+else
+    flagslope = 0;
+end
 
 %----------------------------------------------------------------
 % @SET: FUNCTION PARAMETERS
 %----------------------------------------------------------------
 feedf.window.min = [-100 100]; % 'feed-function' structure
-feedf.window.max = [0 600];
+% feedf.window.max = [0 600]; %muted 27/10/22
+feedf.window.max = [0 800];
+
 feedf.window.movsum = 50;
 feedf.window.basel = [-25 0];
 feedf.window.slope=50;
 feedf.window.wmean=[0 350];
 
+slope.window = [0, 200]; %ms
 % feedf.noise.fr_abovenoise = 30;
 % feedf.noise.SDfactor = 2;
 % feedf.noise.basel = [-200 0]; %it won't be used by the function, but will be used to manually get the baseline
@@ -41,7 +58,6 @@ feedf.window.wmean=[0 350];
 % feedf.noise_ave = feedf.noise;
 % feedf.noise_ave.SDfactor = 4;% SET differences
 
-
 feedf.method = 'movsum';
 
 %----------------------------------------------------------------
@@ -51,7 +67,7 @@ feedf.method = 'movsum';
 % Subsettings:
 setting.manual_reject = 1; %@ SET
 setting.GSmethod_reject = 1;  %@ SET
-setting.GSabsthres_reject = 1; %@ SET+
+setting.GSabsthres_reject = 0; %@ SET+
 setting.force_include = 0; %@ SET
 % END OF SETTINGS
 
@@ -67,20 +83,17 @@ path.list =fullfile(path.rootpath, 'data','BVlists');
 
 addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 
-savemat = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm';
-
-% end of user_settings
-%
-% for blocki = 1:length(groupplot)
-for reject_on = [3]
-    for nfish = [11]
+% savemat = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm/';
+savemat = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_pmaps';
         
+        %----------------------------------------------------------------
+        % START CODE
+        %----------------------------------------------------------------
         VSDI = TORus('load', nfish) ;
-        
+
         % SETTINGS THAT ALLOW LOADING STRUCTURE
         n_perm = 1000;  %@ SET
         
-        clearvars -except nfish VSDI blocki fast_condition_list outfield ref_movie  savein  feedf reject_on setting path groupplot n_perm savemat
         
         %----------------------------------------------------------------
         % LOAD THE STRUCTURE WITH PERMUTATION RESULTS (if exists)
@@ -97,7 +110,6 @@ for reject_on = [3]
         %         trial_kinds = [401:404];
 %         trial_kinds = unique(VSDI.condition(:,1));
 %         trial_kinds= trial_kinds( ~isnan(trial_kinds));
-        trial_kinds = [400:404];
 
         temp = TORus('loadmovie',nfish,ref_movie);
         movies = temp.data(:,:,1:end-1,:);
@@ -105,7 +117,7 @@ for reject_on = [3]
         %----------------------------------------------------------------
         % COMPUTE REJECTION IDX FROM REJECT-OPTIONS
         %----------------------------------------------------------------
-        reject_on= 3;
+        reject_on=3;
         rej = 'reject' ;
         if reject_on > 1
             rej = [rej num2str(reject_on)];
@@ -115,7 +127,7 @@ for reject_on = [3]
         rejectidx = [];
         
         if setting.manual_reject
-            rejectidx = [rejectidx  makeRow(VSDI.reject.manual)];
+            rejectidx = [rejectidx  makeRow(VSDI.(rej).manual)];
         end
         
         if setting.GSabsthres_reject
@@ -149,13 +161,15 @@ for reject_on = [3]
             sel_trials = setdiff(sel_trials, rejectidx);
         end
         
-        
         %----------------------------------------------------------------
         % CONFIGURATION OF PARAMETERS THAT ARE SPECIFIC FOR EACH MEASURE
         %----------------------------------------------------------------
         mmaps= [];
         localclim = [];
-        flagslope = 0;
+        
+        slope.windowidx = dsearchn(VSDI.timebase, makeCol(slope.window));
+        slope.windowidx = [slope.windowidx(1) slope.windowidx(end)]; 
+
         
         %     switch outfield
         %
@@ -237,8 +251,11 @@ for reject_on = [3]
                     output = devo_peak2peak(wave, VSDI.timebase, feedf.window,[], feedf.method, 0, 0);
                     
                     if flagslope
-                        idx0= dsearchn(VSDI.timebase, 0);%get 0 index
-                        waveW = wave(idx0:output.peakidx(2));
+%                         idx0= dsearchn(VSDI.timebase, 0);%get 0 index
+%                         idxend = output.peakidx(2);
+                        idx0 = slope.windowidx(1);
+                        idxend = slope.windowidx(end);
+                        waveW = wave(idx0:idxend);
                         slopemean = mean(diff(waveW));
                         
                         mmaps(rowi, coli, triali) = slopemean;
@@ -272,10 +289,12 @@ for reject_on = [3]
         
         j = 1;
         
-        for condi = makeRow(trial_kinds)
+        condB = trial_kinds(1);
+        for condi = makeRow(trial_kinds(2:end))
             
             condA = condi;
-            condB = force0ending(condi);
+%             condB = force0ending(condi); % when the block has its corresponding blank
+
             
             if condA == condB
                 continue %skips computing the control condition
@@ -316,7 +335,6 @@ for reject_on = [3]
             % act_clim= [-4 4]; %@SET coloraxis of the shown colors
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
             
             % COMPUTATION:  PERMUTATION + TFCE - Diffmap with p-value based threshold
             
@@ -404,8 +422,7 @@ for reject_on = [3]
         %     blob()
         pause(60*3)
     end % nfishi
-end %reject on
-blob(); pause(0.1); blob()
+% blob(); pause(0.1); blob()
 
 % end %fish loop
 % ----------------------------------------------
@@ -413,7 +430,10 @@ blob(); pause(0.1); blob()
 
 %% PLOT >>FROM SAVED MAT FILE<< STATISTICAL DIFFERENCE BETWEEN CONDITIONS: [P-THRESHOLDED ACTIVITY MAP]
 clear
+W = pwd;
+cd '/home/tamara/Documents/MATLAB/VSDI/TORus/'
 user_settings
+cd(W)
 %--------------------------------------
 % MANUALLY load TFCEmaps structure
 %--------------------------------------
@@ -428,23 +448,28 @@ user_settings
 n_perm = 1000;
 clims= [];
 % outfield = 'peakminusbasel';
-outfield = 'wmean';
+% outfield = 'wmean';
+outfield = 'wslope';
 
+% reject_on = 3;
 
 %     custom_map = colormap_loadBV();
 ccmap = jet;
-ccmapP = flipud(hot);
+% ccmapP = flipud(hot);
+ccmapP = hot;
 
-for nfish = [12]
-    VSDI = TORus('load', nfish) ;
+
+for nfish = [29] 
+    VSDI = TORus('load', nfish) ; 
     
     for pthresh = [0.001 0.05] %to (maximum value to plot)
         
-        for reject_on = [0 1]
+        reject_on = 3;
             for ref_movie = {'_16diff_f0pre'} %{ '_17filt5', '_18filt6'}
                 
-                matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm';
-                
+%                 matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm/';
+ matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_pmaps'    ;            
+
                 name = [num2str(VSDI.ref) '_TFCE' num2str(n_perm) 'rep_reject' num2str(reject_on), 'data', ref_movie{1} ,'maps.mat'];
                 
                 try
@@ -456,7 +481,7 @@ for nfish = [12]
                 
                 maps = TFCEmaps.(outfield);
                 
-                for condi= 1:4 %length(TFCEmaps.(outfield).conditions_number)
+                for condi= 1:length(TFCEmaps.(outfield).conditions_number)
                     
                     figure('units','normalized','outerposition',[0 0 1 1])
                     
@@ -469,6 +494,8 @@ for nfish = [12]
                     %    imagesc(imtiles(:,:,ploti))
                     %         plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
                     plot_framesoverlaid2(maps.diffmap(:,:,condi),backgr, alpha  ,0, ax(1), clims, 1, [], ccmap);
+                    
+
                     ax(1).Visible = 'off';
                     
                     % PLOT P-MAP
@@ -503,6 +530,111 @@ for nfish = [12]
                     localname = ['plot_MeanMap_Pthresh_' num2str(VSDI.ref) '-' maps.conditions{condi} ' (TFCEperm' num2str(TFCEmaps.perm)  'rep) of_ ' outfield  '_p' num2str(pthresh) '_' TFCEmaps.dataset_ref 'reject' num2str(TFCEmaps.reject_on) '.jpg'];
                     %SAVE
                     savein = fullfile('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm/plots',outfield) ;%@ SET
+                    
+                    try
+                        saveas(gcf, fullfile(savein,localname ), 'jpg')
+                        
+                    catch
+                        mkdir(savein)
+                        saveas(gcf, fullfile(savein,localname), 'jpg')
+                    end
+                    
+%                     close
+                    
+                end % for condi
+                
+            end % for ref_movie
+    end % for pthresh
+    
+end % for nfish
+%             ax(9).Visible = 'off';
+%             axis image
+
+%             clear maps  name pathsave moviesA moviesB idxA idxB nA nB cond_def
+% blob()
+
+
+%% PLOT >>FROM SAVED MAT FILE<< ONLY P-MAP --- HIGH QUALITY
+clear
+W = pwd;
+cd '/home/tamara/Documents/MATLAB/VSDI/TORus/'
+user_settings
+cd(W)
+%--------------------------------------
+% MANUALLY load TFCEmaps structure
+%--------------------------------------
+
+% nfish = TORus('who', TFCEmaps.ref) ; %needed if manually loaded
+
+%--------------------------------------
+% SETTINGS TO LOAD DATA
+%--------------------------------------
+% outfield = 'wmean';
+
+n_perm = 1000;
+clims= [];
+% outfield = 'peakminusbasel';
+outfield = 'wmean';
+% outfield = 'wslope';
+
+% reject_on = 3;
+
+%     custom_map = colormap_loadBV();
+ccmap = jet;
+ccmapP = flipud(hot);
+% ccmapP = hot;
+
+
+for nfish = [27:30] 
+    VSDI = TORus('load', nfish) ; 
+    
+    for pthresh = [0.05 0.001] %to (maximum value to plot)
+        
+        reject_on = 3;
+            for ref_movie = {'_16diff_f0pre'} %{ '_17filt5', '_18filt6'}  {'_20diff_f0pre'}
+                
+                matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_pmaps';
+                
+                name = [num2str(VSDI.ref) '_TFCE' num2str(n_perm) 'rep_reject' num2str(reject_on), 'data', ref_movie{1} ,'maps.mat'];
+                
+                try
+                    load(fullfile(matpath,name))
+                catch
+                    disp(['the file "' name '" is not found']);
+                    return
+                end
+                
+                maps = TFCEmaps.(outfield);
+                    backgr = VSDI.backgr(:,:,VSDI.nonanidx(1));% .* VSDI.crop.mask;
+                                    backgr = interp2(single(backgr),5, 'cubic');
+
+                for condi= 1:length(TFCEmaps.(outfield).conditions_number)
+                    
+                    figure('units','normalized','outerposition',[0 0 1 1])
+                    
+                    % PLOT P-MAP
+                    ax(2) = subplot(1,1,1);
+                    ax(2).Visible = 'off';
+                    
+                    clims = [0 pthresh];
+                    %    imagesc(imtiles(:,:,ploti))
+                    %         plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
+                    alpha = maps.Pmap(:,:,condi)< pthresh;
+                    alpha =  interp2(alpha,5, 'nearest');
+                    act = interp2(maps.Pmap(:,:,condi),5, 'nearest');
+
+                    plot_framesoverlaid2(act, backgr, alpha  ,0, ax(2), clims, 1, [], ccmapP);
+                    
+                    set(ax(2),'XColor', 'none','YColor','none')
+                    
+                    tit = [num2str(VSDI.ref) '-' maps.conditions{condi} ': (1)' outfield ' p-thresh (2)pmap (3) backgr'];
+                    sgtitle(tit);
+                    
+                    localname = ['HIdef_Pmap_' num2str(VSDI.ref) '-' maps.conditions{condi} ' (TFCEperm' num2str(TFCEmaps.perm)  'rep) of_ ' outfield  '_p' num2str(pthresh) '_' TFCEmaps.dataset_ref 'reject' num2str(TFCEmaps.reject_on) '.jpg'];
+                    %SAVE
+%                     savein = fullfile('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm/plots',outfield) ;%@ SET
+                    savein= fullfile(matpath, outfield);
+                    
                     try
                         saveas(gcf, fullfile(savein,localname ), 'jpg')
                         
@@ -516,7 +648,6 @@ for nfish = [12]
                 end % for condi
                 
             end % for ref_movie
-        end % for reject_on
     end % for pthresh
     
 end % for nfish
@@ -524,8 +655,7 @@ end % for nfish
 %             axis image
 
 %             clear maps  name pathsave moviesA moviesB idxA idxB nA nB cond_def
-blob()
-
+% blob()
 % %% PLOT >>FROM SAVED MAT FILE<< STATISTICAL DIFFERENCE BETWEEN CONDITIONS: [P-MAP]
 %
 % %--------------------------------------
