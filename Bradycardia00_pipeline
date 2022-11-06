@@ -1,0 +1,29 @@
+STEPS TO PROCESS BRADYCARDIA:
+Updated: 24/08/22
+
+STEP#1: Get '.mat' from Spike2 software.
+.........................................
+It must contain the event channels: 'stim1', 'spikes'.
+It can also contain, depending on the design:
+...'stim2' (for discriminative procedures)
+...'US' (for conditioning experiments)
+...'RO' (for 
+
+STEP#2: Execute'Bradycardia01_flexible_counting_code.m'
+......................................................
+Input the '.mat' into the code to get .csv with brady measures.
+Configure Settings for the experiment (or even for certain specific spike files). 
+Read carefully the instructions concerning the configuration of the RO parameters and ibi-counting.
+
+The code will also output rasters for each kind of stimuli if the option is selected.
+
+STEP#3: Execute 'Bradycardia02_matching_BVspike.m'
+.................................................
+The third step of the code (the matching itself) can be performed either automatically or manually. The automatic version is not yet finished to input the bradycardia from the csv output in STEP#2. 
+
+MANUAL VERSION .........
+Make a new csv file in excel copying output in STEP#2,  
+
+AUTOMATIC VERSION ..... 
+Not yet finished! I have to optimize it to output the same VSDI.brady structure as the manual version. In any case, this code won't 
+
