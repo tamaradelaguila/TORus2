@@ -130,5 +130,6 @@ end
 
 %% Created: 31/01/2021
 % Updated: 08/02/21
+% 31/03/22: secure savemovies - from info contained in the VSDmov object
 % 21/02/22 : add save-with-safety functionaluty (save only if the
 ... structure's 'expref' field matches the function's name
