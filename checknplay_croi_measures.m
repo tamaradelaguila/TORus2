@@ -3,7 +3,7 @@ clear
 
 reject_on = 1;
 user_settings;
-nfish =12;
+nfish =9;
 
 clearvars -except nfish reject_on
 
@@ -31,7 +31,7 @@ setting.force_include = 1; %@ SET
 % cond_codes=  cond_codes(~isnan(cond_codes));
 % cond_codes= setdiff(cond_codes,0);
 
-cond_codes =[400:404 ];
+cond_codes =[1003];
 
 %% SELECT EXCLUDED
 

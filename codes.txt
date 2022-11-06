@@ -2,8 +2,26 @@ code for stim_type:
 1 = 0.3ms pulse
 2 = 60ms train of small pulses: 3 x 0.3ms (interval 20ms)
 3 = 60ms train of normal pulses: 3 x 10ms (interval 20ms)
+4 = 150us pulse
+5 = 100ms pulse
+6 = tone (in older fish, when the tone is inside a block with other stim, the final code is different)
+7 = tactile (thin stream of water on skin)
+8 = other (also other blank blocks, when there are distinct blocks)
+
 
 'code': stim_type - intraderm - condition. 
 eg: code = 101 means: (1) 0.3pulse (2)intradermal = 0 (i.e. superficial), (3)condition 1 (whatever corresponds)
 
 
+*ATT: only controls can end in '0'. For tone / tactile, if there is only one condition, use 701/801
+
+In '7' (tactile), the 3rd number corresponds to the block instead of the condition
+
+
+A block ending in '0' is a blank (control) trial. A code = 0 means that is a blank for all other stimulus; 
+code = 400 means that that blank is intermingled with the stimulus type 150us pulse, or intended for that specific block
+
+For maps: the second digit corresponds to the number of the block. E.g. 511 = 100ms pulse, 1st block, 1st position
+
+
+last updated: 19/09/22

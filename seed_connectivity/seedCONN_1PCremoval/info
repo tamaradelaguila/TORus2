@@ -5,3 +5,6 @@
 In 'PCAwith_onlyEI' - only blank+US trials where used in the PCA analysis.
 In 'PCA_toneUS' - all blank+US+tone trials where used in the PCA analysis.
 In 'PCA_onlyUS_seedrejectON' - all trials where used for PCA but the seed connectivity left the rejected out
+
+
+NOTES ON THE Ana

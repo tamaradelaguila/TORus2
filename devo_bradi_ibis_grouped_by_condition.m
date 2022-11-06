@@ -52,6 +52,7 @@ for nfish = [11 12]
     VSDroiTS =TORus('loadwave',nfish);
     waves = VSDroiTS.circ_filt309.data; %@ SET
     
+    
     roi2plotidx = [1 3 5 7 11];  %@ SET
     
     window_sh= window; % DIFFERENT WINDOW FOR SHARK-FINDING  (the whole trial). It has to be defined inside the function because VSDI.timebase might differ among fishes
