@@ -28,18 +28,38 @@ grouplist{8} = 'TORus_210430' ;
 grouplist{9} = 'TORus_210508' ;
 grouplist{10} = 'TORus_210509' ;
 grouplist{11} = 'TORus_210521' ;
-grouplist{12} = 'TORus_210522' ;
+grouplist{12} = 'TORus_210522';
+grouplist{13} = 'TORus_220611';
+grouplist{14} = 'TORus_220608';
+grouplist{15} = 'TORus_220615';
+grouplist{16} = 'TORus_220622';
+grouplist{17} = 'TORus_220623';
+grouplist{18} = 'TORus_220628';
+grouplist{19} = 'TORus_220612';
+grouplist{20} = 'TORus_220706'; % 1x (map)
+grouplist{21} = 'TORus_220518'; % 
+grouplist{22} = 'TORus_220712'; % 
+grouplist{23} = 'TORus_220926'; % 
+grouplist{24} = 'TORus_220531'; % 
+grouplist{25} = 'TORus_221007'; % 
+grouplist{26} = 'TORus_221011'; %
+grouplist{27} = 'TORus_770608'; % COPY OF 220608. ADJUSTED VSDI.info.Sonset FOR CONDITION #700
+grouplist{28} = 'TORus_770622'; % 
+grouplist{29} = 'TORus_770531'; % 
+grouplist{30} = 'TORus_770518'; % 
+
 save(fullfile(path.data,'grouplist.mat'),'grouplist');
 
 % load(fullfile(path.data,'grouplist.mat'),'grouplist');
 %% 2. CREATE VSDI structure (FOR EACH FISH) 
-VSDI.ref = 210522 ; %@ SET
+VSDI.ref = 221011 ; %@ SET
+VSDI.expref = 'TORus';
 VSDI.info.stime = 6; %ms (sampling time) @ SET
-VSDI.info.Sonset = 600; % ms (from start of recording) %@ SET
+VSDI.info.Sonset = 300; % ms (from start of recording) %@ SET
 % VSDI.info.Sonset = 590; % ms (from start of recording) %@ SET
 
 % IMPORT LIST. Have to be saved from Brainvision. See notes for details 
-listpath =  path.list; %@ SET in user_settings
+listpath =  path.list; %@ SET in use*-*-r_settings
 listpath = fullfile(listpath,strcat('filelist',num2str(VSDI.ref),'.csv'));
 
 list_table=  readtable(listpath);
@@ -52,75 +72,74 @@ end
 [VSDI.iti] = get_iti(VSDI); 
 TORus('save',VSDI);
 
-%% @ SET
+%% @ SET (IF IT HASNT BEEN ALREADY ADDED IN THE CSV)
 % ADD MANUALLY THE CONDITION FOR EACH TRIAL (in new fields -name them to be able to copy them)...
 % Non-included trials: NaN
-
-% Set all to NaN and later add the conditions
-for ii = 1:length(VSDI.list)
-    VSDI.list(ii).code= NaN;
-    VSDI.list(ii).stim_type= NaN;
-    VSDI.list(ii).intraderm= NaN;
-    VSDI.list(ii).mA= NaN;
-    VSDI.list(ii).Sdur= NaN;
-  
-end
-
-        for ii =1: length(VSDI.list)
-
-
-              
-            if strcmp(VSDI.list(ii).Comment, '0')
-              VSDI.list(ii).code = 400;
-              VSDI.list(ii).stim_type = 4 ;
-              VSDI.list(ii).intraderm = 0 ;
-
-              VSDI.list(ii).mA = 0;
-
-              VSDI.list(ii).Sdur = 0 ;
-              
-            elseif strcmp(VSDI.list(ii).Comment, '1')
-              VSDI.list(ii).code = 401;
-              VSDI.list(ii).stim_type = 5 ;
-              VSDI.list(ii).intraderm = 0 ;
-
-              VSDI.list(ii).mA = 0.38;
-
-              VSDI.list(ii).Sdur = 0.15 ;
-
-            elseif strcmp(VSDI.list(ii).Comment, '2')
-              VSDI.list(ii).code = 402;
-              VSDI.list(ii).stim_type = 4 ;
-              VSDI.list(ii).intraderm = 0 ;
-
-              VSDI.list(ii).mA = 0.4;
-
-              VSDI.list(ii).Sdur = 0.15 ;
-            
-            elseif strcmp(VSDI.list(ii).Comment, '3')
-              VSDI.list(ii).code = 403;
-              VSDI.list(ii).stim_type = 4 ;
-              VSDI.list(ii).intraderm = 0 ;
-
-              VSDI.list(ii).mA = 0.6;
-
-              VSDI.list(ii).Sdur = 0.15 ;
-              
-            elseif strcmp(VSDI.list(ii).Comment, '4')
-              VSDI.list(ii).code = 404;
-              VSDI.list(ii).stim_type = 4 ;
-              VSDI.list(ii).intraderm = 0 ;
-
-              VSDI.list(ii).mA = 0.8;
-
-              VSDI.list(ii).Sdur = 0.15 ;
-
-           end
-
-        end
 % 
+% % Set all to NaN and later add the conditions
+% for ii = 1:length(VSDI.list)
+%     VSDI.list(ii).code= NaN;
+%     VSDI.list(ii).stim_type= NaN;
+%     VSDI.list(ii).intraderm= NaN;
+%     VSDI.list(ii).mA= NaN;
+%     VSDI.list(ii).Sdur= NaN;
+%   
+% end
+% 
+%         for ii =1: length(VSDI.list)
+% 
+%               
+%             if strcmp(VSDI.list(ii).Comment, '0')
+%               VSDI.list(ii).code = 400;
+%               VSDI.list(ii).stim_type = 4 ;
+%               VSDI.list(ii).intraderm = 0 ;
+% 
+%               VSDI.list(ii).mA = 0;
+% 
+%               VSDI.list(ii).Sdur = 0 ;
+%               
+%             elseif strcmp(VSDI.list(ii).Comment, '1')
+%               VSDI.list(ii).code = 401;
+%               VSDI.list(ii).stim_type = 5 ;
+%               VSDI.list(ii).intraderm = 0 ;
+% 
+%               VSDI.list(ii).mA = 0.38;
+% 
+%               VSDI.list(ii).Sdur = 0.15 ;
+% 
+%             elseif strcmp(VSDI.list(ii).Comment, '2')
+%               VSDI.list(ii).code = 402;
+%               VSDI.list(ii).stim_type = 4 ;
+%               VSDI.list(ii).intraderm = 0 ;
+% 
+%               VSDI.list(ii).mA = 0.4;
+% 
+%               VSDI.list(ii).Sdur = 0.15 ;
+%             
+%             elseif strcmp(VSDI.list(ii).Comment, '3')
+%               VSDI.list(ii).code = 403;
+%               VSDI.list(ii).stim_type = 4 ;
+%               VSDI.list(ii).intraderm = 0 ;
+% 
+%               VSDI.list(ii).mA = 0.6;
+% 
+%               VSDI.list(ii).Sdur = 0.15 ;
+%               
+%             elseif strcmp(VSDI.list(ii).Comment, '4')
+%               VSDI.list(ii).code = 404;
+%               VSDI.list(ii).stim_type = 4 ;
+%               VSDI.list(ii).intraderm = 0 ;
+% 
+%               VSDI.list(ii).mA = 0.8;
+% 
+%               VSDI.list(ii).Sdur = 0.15 ;
+% 
+%            end
+% 
+%         end
+% % 
 
-%AND THEN COPY IT INTO NEW FIELDS (as many as condition - columns you have)
+%% AND THEN COPY IT INTO NEW FIELDS (as many as condition - columns you have)
 
 for triali = 1:length(VSDI.list)
 VSDI.condition(triali,1) = VSDI.list(triali).code; %@ SET the name of the field so it c an be c opied
@@ -157,4 +176,4 @@ TORus('save',VSDI);
 
 % test saving
 clear
-[VSDI] = TORus('load',8);
+[VSDI] = TORus('load',18);

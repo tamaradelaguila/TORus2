@@ -1,9 +1,9 @@
-%% s02 FILTERING (further preprocessing) and crop
+ drink%% s02 FILTERING (further preprocessing) and crop
 % Crop masks should have been drawn in the s01_importmov_basic_preproces
 
 clear
 user_settings;
-nfish = 2;
+nfish = 13;
 
 VSDI = TORus('load',nfish);
 
@@ -77,6 +77,7 @@ VSDI = TORus('load',nfish);
 % % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % % structure used to apply new changes in
 % VSDmov.ref = inputStruct.ref;
+% VSDmov.expref = 'TORus';
 % VSDmov.movieref= outputRef;
 % VSDmov.data = filtmov4;
 % VSDmov.times = inputStruct.times;
@@ -148,6 +149,7 @@ VSDI = TORus('load',nfish);
 % % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % % structure used to apply new changes in
 % VSDmov.ref = inputStruct.ref;
+% VSDmov.expref = 'TORus';
 % VSDmov.movieref= outputRef;
 % VSDmov.data = filtmov_def;
 % VSDmov.times = inputStruct.times;
@@ -177,7 +179,6 @@ outputRef = '_06filt3'; %@ SET
 [inputStruct] = TORus('loadmovie',nfish,inputRef);
 inputdata=inputStruct.data;
 
-
 % 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
 
 % Preallocate in NaN
@@ -185,7 +186,6 @@ filtmov1 = NaN(size(inputdata));
 filtmov2 = NaN(size(inputdata));
 filtmov3 = NaN(size(inputdata));
 filtmov4 = NaN(size(inputdata));
-
 
 % 2.1. Tcnst
 for triali = makeRow(VSDI.nonanidx)
@@ -232,6 +232,7 @@ filtmov_def = filtmov4;
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
 VSDmov.ref = inputStruct.ref;
+VSDmov.expref = 'TORus';
 VSDmov.movieref= outputRef;
 VSDmov.data = filtmov4;
 VSDmov.times = inputStruct.times;
@@ -324,6 +325,7 @@ blob()
 % % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % % structure used to apply new changes in
 % VSDmov.ref = inputStruct.ref;
+% VSDmov.expref = 'TORus';
 % VSDmov.movieref= outputRef;
 % VSDmov.data = filtmov4;
 % VSDmov.times = inputStruct.times;
@@ -419,6 +421,7 @@ for nfish = [5:6]
     % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
     % structure used to apply new changes in
     VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
     VSDmov.movieref= outputRef;
     VSDmov.data = filtmov4;
     VSDmov.times = inputStruct.times;
@@ -507,6 +510,7 @@ for nfish =  [11:12]
     % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
     % structure used to apply new changes in
     VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
     VSDmov.movieref= outputRef;
     VSDmov.data = filtmov_def;
     VSDmov.times = inputStruct.times;
@@ -594,6 +598,7 @@ for nfish =  [4 9]
     % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
     % structure used to apply new changes in
     VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
     VSDmov.movieref= outputRef;
     VSDmov.data = filtmov_def;
     VSDmov.times = inputStruct.times;
@@ -676,6 +681,7 @@ filtmov_def = filtmov4;
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
 VSDmov.ref = inputStruct.ref;
+VSDmov.expref = 'TORus';
 VSDmov.movieref= outputRef;
 VSDmov.data = filtmov_def;
 VSDmov.times = inputStruct.times;
@@ -754,6 +760,7 @@ filtmov_def = filtmov4;
 % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
 % structure used to apply new changes in
 VSDmov.ref = inputStruct.ref;
+VSDmov.expref = 'TORus';
 VSDmov.movieref= outputRef;
 VSDmov.data = filtmov_def;
 VSDmov.times = inputStruct.times;
@@ -766,11 +773,11 @@ VSDmov.hist{length(VSDmov.hist)+1,1} = 'cubicBV'; %@ SET
 TORus('savemovie', VSDmov, VSDmov.movieref);
 blob()
 
-%% 12 FILT5 :
+%% 15 FILT5 :
 clear
 user_settings;
 
-for nfish =  [2 8 11 12]
+for nfish =  [14]
     user_settings;
     
     VSDI = TORus('load',nfish);
@@ -838,6 +845,7 @@ for nfish =  [2 8 11 12]
     % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
     % structure used to apply new changes in
     VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
     VSDmov.movieref= outputRef;
     VSDmov.data = filtmov_def;
     VSDmov.times = inputStruct.times;
@@ -872,7 +880,8 @@ for nfish =  [8:12]
     % 1. REFERENCES for input/output movies (see 'z_notes.txt', point 5 for
     % complete list)
     inputRef =  '_16diff_f0pre';
-    outputRef = '_18filt6'; %@ SET
+%     outputRef = '_18filt6'; %@ SET AWFUL BUG!!! KEEP AN EYE ON
+%     POTENTIALLY AFFECTED FISH
     
     % Load input movie
     [inputStruct] = TORus('loadmovie',nfish,inputRef);
@@ -925,6 +934,7 @@ for nfish =  [8:12]
     % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
     % structure used to apply new changes in
     VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
     VSDmov.movieref= outputRef;
     VSDmov.data = filtmov_def;
     VSDmov.times = inputStruct.times;
@@ -946,7 +956,7 @@ end
 clear
 user_settings;
 
-for nfish =  [2]
+for nfish =  [26]
     user_settings;
     
     VSDI = TORus('load',nfish);
@@ -962,6 +972,163 @@ for nfish =  [2]
     % complete list)
     inputRef =  '_16diff_f0pre';
     outputRef = '_18filt6'; %@ SET
+    
+    % Load input movie
+    [inputStruct] = TORus('loadmovie',nfish,inputRef);
+    inputdata=inputStruct.data;
+    
+    
+    % 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
+    
+    % Preallocate in NaN
+    filtmov1 = NaN(size(inputdata));
+    filtmov2 = NaN(size(inputdata));
+    filtmov3 = NaN(size(inputdata));
+    filtmov4 = NaN(size(inputdata));
+    
+    % 2.1. Tcnst
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = inputdata(:,:,:,triali);
+        filtmov1(:,:,:,triali) = filter_Tcnst(tempmov,tcnst);
+        clear tempmov
+        disp(triali)
+    end
+    
+    % 2.2. Spatial Filter (mean)
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov1(:,:,:,triali);
+        filtmov2(:,:,:,triali) = filter_spatial2(tempmov, meanpix);
+        clear tempmov
+    end
+    
+    % 2.3. Median spatial filter
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov2(:,:,:,triali);
+        filtmov3(:,:,:,triali) = filter_median(tempmov, medianpix);
+        clear tempmov
+    end
+    
+    % 2.4. Slow drift removal
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov3(:,:,:,triali);
+        filtmov4(:,:,:,triali) = filter_bleach_butterhigh(tempmov, cutoff, VSDI.info.stime);
+        clear tempmov
+    end
+    % % 2.5. Crop background
+    % for triali = makeRow(VSDI.nonanidx)
+    %     tempmov = filt4(:,:,:,triali);
+    %     filtmov(:,:,:,triali)= roi_crop(tempmov, VSDI.crop.mask);
+    %     clear tempmov
+    % end
+    
+    % SET definitive filtered movie that will be stored (do not forget to set the filters
+    % accordingly
+    filtmov_def = filtmov4;
+    
+    % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
+    % structure used to apply new changes in
+    VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
+    VSDmov.movieref= outputRef;
+    VSDmov.data = filtmov_def;
+    VSDmov.times = inputStruct.times;
+    %@ SET !!! according to the filters applie (append as many as needeed)
+    VSDmov.hist = inputStruct.hist;
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['tcnst =' num2str(tcnst)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['spatialmean = ' num2str(meanpix)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['median =' num2str(medianpix)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['butterhigh=' num2str(cutoff) 'Hz']; %@ SET
+    VSDmov.F0 = inputStruct.F0; %@ SET
+    VSDmov.units = 'dF'; 
+    % VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET
+    TORus('savemovie', VSDmov, VSDmov.movieref);
+    
+    blob()
+    clear
+end
+blob(); pause(0.1); blob()
+
+%% _19filt7 (from diff_f0preS-10frames) only bleach removal
+clear
+user_settings;
+
+for nfish =  [2 8 9 10 11 12]
+    user_settings;
+    
+    VSDI = TORus('load',nfish);
+    
+    %@ SET FILTERS PARAMETERS :
+    cutoff = 0.1 ; %Hz for the butterworth high-pass BLEACH-LIKE FILTER 
+    
+    % 1. REFERENCES for input/output movies (see 'z_notes.txt', point 5 for
+    % complete list)
+    inputRef =  '_16diff_f0pre';
+    outputRef = '_19filt7'; %@ SET
+    
+    % Load input movie
+    [inputStruct] = TORus('loadmovie',nfish,inputRef);
+    inputdata=inputStruct.data;
+    
+    
+    % 2. PERFORM COMPUTATIONS:
+    
+    % Preallocate in NaN
+    filtmov1 = NaN(size(inputdata));
+    
+    % 2.4. Slow drift removal
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = inputdata(:,:,:,triali);
+        filtmov1(:,:,:,triali) = filter_bleach_butterhigh(tempmov, cutoff, VSDI.info.stime);
+        clear tempmov
+    end
+    
+    % SET definitive filtered movie that will be stored (do not forget to set the filters
+    % accordingly
+    filtmov_def = filtmov1;
+    
+    % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
+    % structure used to apply new changes in
+    VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
+    VSDmov.movieref= outputRef;
+    VSDmov.data = filtmov_def;
+    VSDmov.times = inputStruct.times;
+    %@ SET !!! according to the filters applie (append as many as needeed)
+    VSDmov.hist = inputStruct.hist;
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['butterhigh=' num2str(cutoff) 'Hz']; %@ SET
+    VSDmov.F0 = inputStruct.F0; %@ SET
+    VSDmov.units = 'dF'; 
+
+    % VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET
+    TORus('savemovie', VSDmov, VSDmov.movieref);
+    
+    blob()
+    clear
+end
+blob()
+blob(); pause(0.1); blob()
+
+
+%% _21filt6 (like _18filt6 but from %dF values)
+clear
+user_settings;
+
+for nfish =  [13]
+    user_settings;
+    
+    VSDI = TORus('load',nfish);
+    
+    %@ SET FILTERS PARAMETERS :
+    tcnst = 10;% Time-constant for TEMPORAL SMOOTHING
+    % mean_filter = 3; %  gaussian smoothing kernel for SPATIAL SMOOTHERING
+    meanpix = 9;
+    medianpix = 3; % pixels size for MEDIAN SPATIAL FILTER
+    cutoff = 0.1 ; %Hz for the butterworth high-pass BLEACH-LIKE FILTER 
+    
+    % 1. REFERENCES for input/output movies (see 'z_notes.txt', point 5 for
+    % complete list)
+    inputRef =  '_20perc_f0pre';
+    outputRef = '_21filt6'; %@ SET
     
     % Load input movie
     [inputStruct] = TORus('loadmovie',nfish,inputRef);
@@ -1019,6 +1186,7 @@ for nfish =  [2]
     % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
     % structure used to apply new changes in
     VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
     VSDmov.movieref= outputRef;
     VSDmov.data = filtmov_def;
     VSDmov.times = inputStruct.times;
@@ -1029,68 +1197,351 @@ for nfish =  [2]
     VSDmov.hist{length(VSDmov.hist)+1,1} = ['median =' num2str(medianpix)]; %@ SET
     VSDmov.hist{length(VSDmov.hist)+1,1} = ['butterhigh=' num2str(cutoff) 'Hz']; %@ SET
     VSDmov.F0 = inputStruct.F0; %@ SET
-    
+    VSDmov.units = inputStruct.units; 
     % VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET
     TORus('savemovie', VSDmov, VSDmov.movieref);
     
-    blob()
     clear
+    pause(90) %if many subjects are to be computed in a row
+    blob()
+
 end
 blob(); pause(0.1); blob()
 
-%% _19filt7 (from diff_f0preS-10frames) only bleach removal
+%% _22filt7 (like _21filt6 but from cropping hemispheres)
 clear
 user_settings;
 
-for nfish =  [2 8 9 10 11 12]
+for nfish =  [11]
     user_settings;
     
     VSDI = TORus('load',nfish);
     
     %@ SET FILTERS PARAMETERS :
+    tcnst = 10;% Time-constant for TEMPORAL SMOOTHING
+    % mean_filter = 3; %  gaussian smoothing kernel for SPATIAL SMOOTHERING
+    meanpix = 9;
+    medianpix = 3; % pixels size for MEDIAN SPATIAL FILTER
     cutoff = 0.1 ; %Hz for the butterworth high-pass BLEACH-LIKE FILTER 
     
     % 1. REFERENCES for input/output movies (see 'z_notes.txt', point 5 for
     % complete list)
-    inputRef =  '_16diff_f0pre';
-    outputRef = '_19filt7'; %@ SET
+    inputRef =  '_20perc_f0pre';
+    outputRef = '_22filt7'; %@ SET
     
     % Load input movie
     [inputStruct] = TORus('loadmovie',nfish,inputRef);
     inputdata=inputStruct.data;
     
     
-    % 2. PERFORM COMPUTATIONS:
+    % 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
     
     % Preallocate in NaN
+    filtmov0 = NaN(size(inputdata));
     filtmov1 = NaN(size(inputdata));
+    filtmov2 = NaN(size(inputdata));
+    filtmov3 = NaN(size(inputdata));
+    filtmov4 = NaN(size(inputdata));
     
-    % 2.4. Slow drift removal
+        % 2.0. Apply cropmask of 2 hemispheres
+        for triali = makeRow(VSDI.nonanidx)
+            inputmovie = squeeze(inputdata(:,:,:,triali));
+            filtmov0(:,:,:,triali)= roi_crop(inputmovie, VSDI.crop.mask2H);
+        end
+    
+    % 2.1. Tcnst
     for triali = makeRow(VSDI.nonanidx)
-        tempmov = inputdata(:,:,:,triali);
-        filtmov1(:,:,:,triali) = filter_bleach_butterhigh(tempmov, cutoff, VSDI.info.stime);
+        tempmov = filtmov0(:,:,:,triali);
+        filtmov1(:,:,:,triali) = filter_Tcnst(tempmov,tcnst);
+        clear tempmov
+        disp(triali)
+    end
+    
+    % 2.2. Spatial Filter (mean)
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov1(:,:,:,triali);
+        filtmov2(:,:,:,triali) = filter_spatial2(tempmov, meanpix);
         clear tempmov
     end
     
+    % 2.3. Median spatial filter
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov2(:,:,:,triali);
+        filtmov3(:,:,:,triali) = filter_median(tempmov, medianpix);
+        clear tempmov
+    end
+    
+    % 2.4. Slow drift removal
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov3(:,:,:,triali);
+        filtmov4(:,:,:,triali) = filter_bleach_butterhigh(tempmov, cutoff, VSDI.info.stime);
+        clear tempmov
+    end
+    % % 2.5. Crop background
+    % for triali = makeRow(VSDI.nonanidx)
+    %     tempmov = filt4(:,:,:,triali);
+    %     filtmov(:,:,:,triali)= roi_crop(tempmov, VSDI.crop.mask);
+    %     clear tempmov
+    % end
+    
     % SET definitive filtered movie that will be stored (do not forget to set the filters
     % accordingly
-    filtmov_def = filtmov1;
+    filtmov_def = filtmov4;
     
     % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
     % structure used to apply new changes in
     VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
     VSDmov.movieref= outputRef;
     VSDmov.data = filtmov_def;
     VSDmov.times = inputStruct.times;
     %@ SET !!! according to the filters applie (append as many as needeed)
     VSDmov.hist = inputStruct.hist;
+    VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop 2Hmask';
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['tcnst =' num2str(tcnst)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['tcnst =' num2str(tcnst)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['spatialmean = ' num2str(meanpix)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['median =' num2str(medianpix)]; %@ SET
     VSDmov.hist{length(VSDmov.hist)+1,1} = ['butterhigh=' num2str(cutoff) 'Hz']; %@ SET
     VSDmov.F0 = inputStruct.F0; %@ SET
-    
+    VSDmov.units = '%dF'; 
     % VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET
     TORus('savemovie', VSDmov, VSDmov.movieref);
     
-    blob()
     clear
+    pause(90) %if many subjects are to be computed in a row
+    blob()
+
+end
+blob(); pause(0.1); blob()
+
+%% _23filt7 (like _22filt7 but cropping after the filtering)
+clear
+user_settings;
+
+for nfish =  [11]
+    user_settings;
+    
+    VSDI = TORus('load',nfish);
+    
+    %@ SET FILTERS PARAMETERS :
+    tcnst = 10;% Time-constant for TEMPORAL SMOOTHING
+    % mean_filter = 3; %  gaussian smoothing kernel for SPATIAL SMOOTHERING
+    meanpix = 9;
+    medianpix = 3; % pixels size for MEDIAN SPATIAL FILTER
+    cutoff = 0.1 ; %Hz for the butterworth high-pass BLEACH-LIKE FILTER 
+    
+    % 1. REFERENCES for input/output movies (see 'z_notes.txt', point 5 for
+    % complete list)
+    inputRef =  '_20perc_f0pre';
+    outputRef = '_23filt8'; %@ SET
+    
+    % Load input movie
+    [inputStruct] = TORus('loadmovie',nfish,inputRef);
+    inputdata=inputStruct.data;
+    
+    
+    % 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
+    
+    % Preallocate in NaN
+    filtmov0 = NaN(size(inputdata));
+    filtmov1 = NaN(size(inputdata));
+    filtmov2 = NaN(size(inputdata));
+    filtmov3 = NaN(size(inputdata));
+    filtmov4 = NaN(size(inputdata));
+    
+    % 2.1. Tcnst
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov =  squeeze(inputdata(:,:,:,triali));
+        filtmov1(:,:,:,triali) = filter_Tcnst(tempmov,tcnst);
+        clear tempmov
+        disp(triali)
+    end
+    
+    % 2.2. Spatial Filter (mean)
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov1(:,:,:,triali);
+        filtmov2(:,:,:,triali) = filter_spatial2(tempmov, meanpix);
+        clear tempmov
+    end
+    
+    % 2.3. Median spatial filter
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov2(:,:,:,triali);
+        filtmov3(:,:,:,triali) = filter_median(tempmov, medianpix);
+        clear tempmov
+    end
+    
+    % 2.4. Slow drift removal
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov3(:,:,:,triali);
+        filtmov4(:,:,:,triali) = filter_bleach_butterhigh(tempmov, cutoff, VSDI.info.stime);
+        clear tempmov
+    end
+    
+        
+        % 2.0. Apply cropmask of 2 hemispheres
+        for triali = makeRow(VSDI.nonanidx)
+            inputmovie = filtmov4(:,:,:,triali);
+            filtmov5(:,:,:,triali)= roi_crop(inputmovie, VSDI.crop.mask2H);
+        end
+
+    % % 2.5. Crop background
+    % for triali = makeRow(VSDI.nonanidx)
+    %     tempmov = filt4(:,:,:,triali);
+    %     filtmov(:,:,:,triali)= roi_crop(tempmov, VSDI.crop.mask);
+    %     clear tempmov
+    % end
+    
+    % SET definitive filtered movie that will be stored (do not forget to set the filters
+    % accordingly
+    filtmov_def = filtmov5;
+    
+    % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
+    % structure used to apply new changes in
+    VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
+    VSDmov.movieref= outputRef;
+    VSDmov.data = filtmov_def;
+    VSDmov.times = inputStruct.times;
+    %@ SET !!! according to the filters applie (append as many as needeed)
+    VSDmov.hist = inputStruct.hist;
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['tcnst =' num2str(tcnst)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['tcnst =' num2str(tcnst)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['spatialmean = ' num2str(meanpix)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['median =' num2str(medianpix)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['butterhigh=' num2str(cutoff) 'Hz']; %@ SET
+     VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop 2Hmask';
+
+    VSDmov.F0 = inputStruct.F0; %@ SET
+    VSDmov.units = '%dF'; %check 
+    % VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET
+    TORus('savemovie', VSDmov, VSDmov.movieref);
+    
+    clear
+    pause(90) %if many subjects are to be computed in a row
+    blob()
+
+end
+blob(); pause(0.1); blob()
+
+%% _24filt9 (like _22filt7 but cropping after the filtering)
+clear
+user_settings;
+
+for nfish =  [11]
+    user_settings;
+    
+    VSDI = TORus('load',nfish);
+    
+    %@ SET FILTERS PARAMETERS :
+    tcnst = 10;% Time-constant for TEMPORAL SMOOTHING
+    % mean_filter = 3; %  gaussian smoothing kernel for SPATIAL SMOOTHERING
+    meanpix = 9;
+    medianpix = 3; % pixels size for MEDIAN SPATIAL FILTER
+    cutoff = 0.1 ; %Hz for the butterworth high-pass BLEACH-LIKE FILTER 
+    meanpix2 = 3;
+
+    % 1. REFERENCES for input/output movies (see 'z_notes.txt', point 5 for
+    % complete list)
+    inputRef =  '_20perc_f0pre';
+    outputRef = '_24filt9'; %@ SET
+    
+    % Load input movie
+    [inputStruct] = TORus('loadmovie',nfish,inputRef);
+    inputdata=inputStruct.data;
+    
+    
+    % 2. PERFORM COMPUTATIONS: %DIFFERENTIAL VALUES
+    
+    % Preallocate in NaN
+    filtmov1 = NaN(size(inputdata));
+    filtmov2 = NaN(size(inputdata));
+    filtmov3 = NaN(size(inputdata));
+    filtmov4 = NaN(size(inputdata));
+    filtmov5 = NaN(size(inputdata));
+    filtmov6 = NaN(size(inputdata));
+    
+    % 2.1. Tcnst
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov =  squeeze(inputdata(:,:,:,triali));
+        filtmov1(:,:,:,triali) = filter_Tcnst(tempmov,tcnst);
+        clear tempmov
+        disp(triali)
+    end
+    
+    % 2.2. Spatial Filter (mean)
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov1(:,:,:,triali);
+        filtmov2(:,:,:,triali) = filter_spatial2(tempmov, meanpix);
+        clear tempmov
+    end
+    
+    % 2.3. Median spatial filter
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov2(:,:,:,triali);
+        filtmov3(:,:,:,triali) = filter_median(tempmov, medianpix);
+        clear tempmov
+    end
+%     
+    % 2.4. Slow drift removal
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov3(:,:,:,triali);
+        filtmov4(:,:,:,triali) = filter_bleach_butterhigh(tempmov, cutoff, VSDI.info.stime);
+        clear tempmov
+    end
+    
+        
+        % 2.0. Apply cropmask of 2 hemispheres
+        for triali = makeRow(VSDI.nonanidx)
+            inputmovie = filtmov4(:,:,:,triali);
+            filtmov5(:,:,:,triali)= roi_crop(inputmovie, VSDI.crop.mask2H);
+        end
+        
+            % 2.2. Spatial Filter (mean)
+    for triali = makeRow(VSDI.nonanidx)
+        tempmov = filtmov5(:,:,:,triali);
+        filtmov6(:,:,:,triali) = filter_spatial2(tempmov, meanpix2);
+        clear tempmov
+    end
+
+
+    % % 2.5. Crop background
+    % for triali = makeRow(VSDI.nonanidx)
+    %     tempmov = filt4(:,:,:,triali);
+    %     filtmov(:,:,:,triali)= roi_crop(tempmov, VSDI.crop.mask);
+    %     clear tempmov
+    % end
+    
+    % SET definitive filtered movie that will be stored (do not forget to set the filters
+    % accordingly
+    filtmov_def = filtmov6;
+    
+    % 3.SAVE NEW MOVIE STRUCTURE:  copying some references from the movie
+    % structure used to apply new changes in
+    VSDmov.ref = inputStruct.ref;
+    VSDmov.expref = 'TORus';
+    VSDmov.movieref= outputRef;
+    VSDmov.data = filtmov_def;
+    VSDmov.times = inputStruct.times;
+    %@ SET !!! according to the filters applie (append as many as needeed)
+    VSDmov.hist = inputStruct.hist;
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['tcnst =' num2str(tcnst)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['spatialmean = ' num2str(meanpix)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['median =' num2str(medianpix)]; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = ['butterhigh=' num2str(cutoff) 'Hz']; %@ SET
+    VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop 2Hmask';
+     VSDmov.hist{length(VSDmov.hist)+1,1} = ['extra spatialmean = ' num2str(meanpix2)]; %@ SET
+
+
+    VSDmov.F0 = inputStruct.F0; %@ SET
+    VSDmov.units = 'dF/F' %inputStruct.units; 
+    % VSDmov.hist{length(VSDmov.hist)+1,1} = 'crop-background'; %@ SET
+    TORus('savemovie', VSDmov, VSDmov.movieref);
+    
+    clear
+    pause(90) %if many subjects are to be computed in a row
+    blob()
+
 end
 blob(); pause(0.1); blob()

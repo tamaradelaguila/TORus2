@@ -5,7 +5,7 @@ clear
 user_settings; 
 % set(0,'DefaultFigureVisible','off')
 
-for nfish = [11 12]
+for nfish = [11]
 VSDI = TORus('load',nfish);
 % spike = TORus('loadspike', nfish);
 
@@ -34,7 +34,7 @@ for which_trials =  makeRow(trial_kinds)
     
     % config folder in which trials from same condition will be saved
     foldername = [num2str(VSDI.ref), '_', num2str(which_trials)]; 
-    parentfolder = fullfile(path.rootpath, 'plot', 'indiv_trials', 'reject2' ); %@ SET
+    parentfolder = fullfile(path.rootpath, 'plot', 'indiv_trials', 'reject3' ); %@ SET
     mkdir(parentfolder, foldername); 
     
     savein = fullfile(parentfolder, foldername); 
