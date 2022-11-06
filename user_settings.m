@@ -17,4 +17,4 @@ path.list =fullfile(path.rootpath, 'data','BVlists');
 addpath(genpath(path.rootpath));
 addpath(genpath(fullfile(tempsep.newdir, 'VSDI_ourToolbox', 'functions')));
 
-clear temp
+clear tempsep
