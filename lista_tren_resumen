@@ -1,0 +1,49 @@
+PECES CON BRADY - RESUMEN
+
+[21]220518...........................sólo bradi post morfina (algo)
+162-185A [3120] tren 60ms 1.2mA
+191-303A [8120] tren 60ms 1.2mA post-morfina 
+
+[14]220608...........................buscar spike
+221-260A [3100] tren 60ms 1mA
+267-276A [5015] pulso 100ms 0.15mA
+288-298A [5020] pulso 100ms 0.2mA
+302-315A [3040] tren 60ms 0.4mA
+316-335A [3030] tren 60ms 0.3mA
+
+[x]220610........................... *
+146-170 [3100] tren 60ms 1mA 
+171-195A [3030] tren 60ms 0.3mA
+196-223A [3060] tren 60ms 0.6ma
+224-239A [3120] tren 60ms 1.2mA
+
+[13]220611...........................ok
+225-262A [3100] tren 60ms 1mA
+225-262A [3050] tren 0.5mA
+
+[x]220613........................... *
+296-332A [3100] tren 60ms 1mA
+333-363A [3050] tren 60ms 0.5mA
+
+[15]220615........................... *
+217-239A [5030] pulso 100ms  0.3mA
+240-270A [3100] tren 60ms 1mA ~la intensidad la fui ajustando
+271-298A [3050] tren 60ms 0.5mA
+299-328A [3080] tren 60ms 0.8mA 
+
+[x]220617...........................buscar spike
+193-197A [3120] trenes 60ms de 1,2 y 1,4mA
+198-220A [3140] tren 60ms 1.4mA
+
+[16]220622.......................... poca bradi
+276-303A [3120] tren 1.2mA ~ 25x >> responde con taqui con algo de latencia 
+304-333A [3121] mixto TREN 1.2mA + BLANK *
+
+[17]220623..........................*
+300-327A [3060] tren ~25x - hace bradi 
+329-328A [3040] tren ~15x - bajo para ver si deja de hacer bradi pero no
+247-360A [3120] tren ~10x - sigue haciendo algo de bradi a veces
+361-388A [3120] tren ~25 *fui ajustando intensidad hasta 1.3. En los últimos ensayos ya no hace bradi
+
+Actualizado: 12/11/2022
+
