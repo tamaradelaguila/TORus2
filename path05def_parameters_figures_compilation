@@ -23,9 +23,10 @@ sourcecode: [tiles and waves]: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_cod
 analysisref = 'new4_group17_pulsito';
 
 .CHORRITO
-
+analysisref =
 
 .DOLOROSO
+analysisref =
 
 ...............................................
 2B · BOXPLOTS
@@ -39,12 +40,14 @@ selroinames = {'dm4m_R2','dm2_R2', 'dm1_R','dldm_R'}; refroiname = 'dm4m_R2'
 .NO-DOLOROSO: group
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
 
+
 .CHORRITO
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
 
 
 .DOLOROSO
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
+analysisref = new4_group19_dolor_n5
 
 ...............................................
 2C - P-MAPS
@@ -104,11 +107,11 @@ sourcecode: /home/tamara/Documents/MATLAB/CC_brady_counting_codes/Bradycardia_MA
 (barplots) R-code: ~/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_barplots/barplots_inputmanual.R
 
 
-----------------------------------------------
+-----------------------------------------------
 ...............................................
 6 EFECTO INTENSIDAD
 ...............................................
-----------------------------------------------
+-----------------------------------------------
 
 ref_movie= '_18filt6';
 
@@ -116,10 +119,11 @@ ref_movie= '_18filt6';
 6A · FRAMES
 ...............................................
 (all) thresh_mode = 'wavebased_thresh_max';
+fact_clim = 1.3
 
-[16] 220622 [401 402 403] thresh_fact= 0.35; 'auto_fixed75%' - last frame (= 75% peak)
-[26] 211011 [401 402 403] thresh_fact= 0.45; 'auto_fixed100%' - last frame (= 100% peak)
-[14] 220608 [402 403 404] thresh_fact= 0.4; 'auto_fixed75%' - 4th frame (=66ms before peak)
+[16] 220622 [401 402 403] thresh_fact= 0.35; 'auto_fixed75%' - last frame 126ms (= 75% peak )
+[26] 211011 [401 402 403] thresh_fact= 0.45; 'auto_fixed100%' - last frame 372ms (= 100% peak)
+[14] 220608 [402 403 404] thresh_fact= 0.4; 'auto_fixed100%' - 4th frame 198ms (=66ms before peak)
 
 sourcode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/tiles_waves_contour_allcond_DOS.m
 
@@ -138,20 +142,23 @@ sourcecodeR = ~/Documents/MATLAB/VSDI/TORus/plot/informes/04_figure_sketch2/grou
 stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/6A_boxplot
 analysis ='2way_rm'
 measure = 'peakZ'
-
 ...............................................
 6C · BARPLOTS (medida puntual - antiguo))
 ...............................................
+
 thresh_mode = 'wavebased_thresh_max';
-timerange_mode = 'auto_fixed75%'
 selroinames = {'dm4m_R2',  'dm2_R2'};
 refroiname = 'dm4m_R2';
+
+[16] 220622 [401 402 403] thresh_fact= 0.35; 'auto_fixed75%' - last frame 126ms (= 75% peak )
+[26] 211011 [401 402 403] thresh_fact= 0.45; 'auto_fixed100%' - last frame 372ms (= 100% peak)
+[14] 220608 [402 403 404] thresh_fact= 0.4; 'manual' [168 198] - 4th frame 198ms (=66ms before peak)
 
 sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/tiles_waves_contour_allcond_TRESpointmeasure.m
 sourcecodeR = ~/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/6B_barplots/point_measure_individual_barplots.R
 
 ...............................................
-6C · BARPLOTS (noramlized peak value)
+6C · BARPLOTS (normalized peak value)
 ...............................................
 thresh_mode = 'wavebased_thresh_max';
 timerange_mode = 'auto_fixed75%'
@@ -161,3 +168,30 @@ refroiname = 'dm4m_R2';
 sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/group_plot_brain_reprogram_4_Zscore_working.m
 sourcecodeR = ~/Documents/MATLAB/VSDI/TORus/plot/informes/04_figure_sketch2/group_barplot_anova_Z_and_norm_newslope2.R
 for R: get data from boxplot excel
+
+...............................................
+CORRELACIÓN ACTIVIDAD-BRADICARDIA
+...............................................
+sujetos nuevos en: /home/tamara/Documents/MATLAB/VSDI/TORus/data/bradi/correlacion
+
+#1.Excel bradicardia:
+/home/tamara/Documents/MATLAB/VSDI/TORus/brady_code/Bradycardia01_flexible_counting_code_correlacion.m
+
+#2.Excel actividad cerebro/condiciones:
+/home/tamara/Documents/MATLAB/VSDI/TORus/brady_code/Bradycardia02_Individual_trial_measures.m
+
+#3.Poner a mano en el de bradicardia el nºtrial de cada ensayo y cruzar excels con el código:
+/home/tamara/Documents/MATLAB/VSDI/TORus/brady_code/Bradycardia03_activity_crossing.m
+
+#4. GRÁFICA DE CORRELACIÓN (R):
+~/Documents/MATLAB/VSDI/TORus/brady_code/regresion_nuevo.R
+
+'cond_codes' para código #2
+[31] 220610: [300 301 302 303 304];
+[17] 220623: [900 301 302 303];
+[3] 210325 : [300 301 302 303]
+[1] 210320 : [300 301 302 303] ATT: dm4_L dm2_L !!!
+[13] 220611:
+[15] 220615: [802 301 302 303] respect:[0 0.5 0.8 1-1.2mA]
+[14] 220608: [0 501 502 301 302 303] mA: [0 0.15 0.2 0.3 0.4 1]
+[13] 220611: [0 301 302] mA:[0.4 1]
