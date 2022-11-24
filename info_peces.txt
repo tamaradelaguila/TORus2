@@ -21,13 +21,13 @@ SUJETO 1 [210320]
 
 SUJETO 2 [210323]
 
-.Bloque superficial aleatorizado (trenecito 0.3ms, 3pulsos) 
+.Bloque superficial aleatorizado (trenecito 0.3ms, 3pulsos)
 #200(control)
 #201(2mA)
 #202(3mA)
 #203(5mA)
 
-.Bloque superficial aleatorizado (tren largo 10ms, 3pulsos) 
+.Bloque superficial aleatorizado (tren largo 10ms, 3pulsos)
 #300(control)
 #301(0.2mA)
 #302(2mA)
@@ -40,12 +40,12 @@ SUJETO 2 [210323]
 SUJETO 3 [210325]
 
 .Bloque superf aleatorizado (pulsito 0,3ms)
-#100(control) 
-#101(1.3mA) 
+#100(control)
+#101(1.3mA)
 #102(1mA)
-#103(6mA) 
+#103(6mA)
 
-.Bloque superf aleatorizado (tren largo 10ms, 3pulsos) 
+.Bloque superf aleatorizado (tren largo 10ms, 3pulsos)
 #300(control)
 #301(0.1mA)
 #302(0.2mA)
@@ -55,10 +55,10 @@ SUJETO 3 [210325]
 SUJETO 4 [210409]*
 
 .Bloque superf aleatorizado (pulsito 0,3ms) - m�s ensayos
-#100(control) 
-#101(0.2mA) 
+#100(control)
+#101(0.2mA)
 #102(0.6mA)
-#103(1.1mA) 
+#103(1.1mA)
 ..........................
 
 SUJETO 5 [210411]
@@ -173,7 +173,7 @@ SUJETO 12 [210522]
 ..........................
 
 
-SUJETO 13 [220611] new 
+SUJETO 13 [220611] new
 Non-aleat blocks
 
 .blank trials
@@ -190,7 +190,7 @@ Non-aleat blocks
 #402 (0.6mA)
 #403 (0.7mA)
 
-.blocks 3pulses*10ms train 
+.blocks 3pulses*10ms train
 #302 (1mA)
 #301 (0.4mA)
 
@@ -200,7 +200,7 @@ Non-aleat blocks
 
 ..........................
 
-SUJETO 14 [220608] new 
+SUJETO 14 [220608] new
 Non-aleat blocks
 
 .blank trials
@@ -217,7 +217,7 @@ Non-aleat blocks
 #402 (0.6mA)
 #403 (0.7mA)
 
-.blocks 3pulses*10ms train 
+.blocks 3pulses*10ms train
 #303 (1mA)
 #302 (0.4mA)
 #301 (0.3mA)
@@ -228,7 +228,7 @@ Non-aleat blocks
 
 ..........................
 
-SUJETO 15 [220615] new 
+SUJETO 15 [220615] new
 Non-aleat blocks
 
 .blank trials
@@ -245,16 +245,16 @@ Non-aleat blocks
 #401 (0.8mA)
 
 .blocks pulse 100ms
-#501 (0.3mA) 
+#501 (0.3mA)
 
-.blocks 3pulses*10ms train 
+.blocks 3pulses*10ms train
 #303 (1 a 1.2mA) ~1.1mA
 #301 (0.5mA)
 #302 (0.8mA)
 
 ..........................
 
-SUJETO 16 [220622] new 
+SUJETO 16 [220622] new
 Non-aleat blocks
 
 .blank trials
@@ -273,15 +273,15 @@ Non-aleat blocks
 #405 (0.8mA) block2
 
 .blocks pulse 100ms
-#501 (0.2mA) 
+#501 (0.2mA)
 
-.blocks 3pulses*10ms train 
+.blocks 3pulses*10ms train
 #301 (1.2mA)
 #302 (1.2mA) + #300 (0mA) intercalated
 
 ..........................
 
-SUJETO 17 [220623] new 
+SUJETO 17 [220623] new
 Non-aleat blocks
 
 .blank trials
@@ -300,7 +300,7 @@ Non-aleat blocks
 #403 (0.7mA)
 
 .blocks pulse 100ms
-#500 (0mA) 
+#500 (0mA)
 #502 (0.2mA)
 #501 (0.1mA)
 
@@ -315,7 +315,7 @@ Non-aleat blocks
 
 ..........................
 
-SUJETO 18 [220628] new 
+SUJETO 18 [220628] new
 Non-aleat blocks
 
 .blank trials
@@ -341,7 +341,7 @@ Non-aleat blocks
 
 ..........................
 
-SUJETO 19 [220612] new 
+SUJETO 19 [220612] new
 Non-aleat blocks
 
 .blank trials
@@ -381,14 +381,14 @@ SUJETO 20 [220706] map - non-aleat. blocks
 #602: 500hz
 #604: 1500hz
 #601: 200hz
-#603: 1000hz 
+#603: 1000hz
 
 .300ms tone
 #800 blank
 #802: 500hz
 #804: 1500hz
 #801: 200hz
-#803: 1000hz 
+#803: 1000hz
 
 #9 - blank final
 
@@ -418,7 +418,7 @@ SUJETO 22 [220712] map - non-aleat. blocks
 #515: E (cola) 0.3mA *
 #502: B (op�rculo) 0.15mA *
 #534: D (lomo caudal) 0.2mA
-# 802: blank 2 
+# 802: blank 2
 # 544: D (lomo caudal) 0.3mA
 
 .bloque pulso 100ms 'high I' block
@@ -432,7 +432,7 @@ SUJETO 22 [220712] map - non-aleat. blocks
 #800 - blank
 #802 - 500 Hz
 #804 - 1500 Hz
-#801 - 200 Hz 
+#801 - 200 Hz
 #803 - 1000 Hz
 
 . 300ms tone
@@ -466,7 +466,6 @@ SUJETO 24  [220531] - non-aleat. blocks
 SUJETO 25  [221007] - non-aleat. blocks. 30trials except indicated
 
 #0 blank (initial)
-
 
 #511: A (boca) 0.005mA
 #512: B (op�rculo) 0.01mA
@@ -517,3 +516,66 @@ SUJETO 29  [770531] - COPY OF 220531 FOR CHORRITO
 
 SUJETO 30  [770518] - COPY OF 220518 FOR CHORRITO
 
+..........................
+
+SUJETO 31  [220610]
+
+.blocks short pulse 150us
+#401 (0.5mA)
+#404 (0.8mA)
+
+.blocks 60ms train (3pulses*10ms)
+#303 (1mA)
+#301 (0.3mA)
+#302 (0.6mA)
+#304 (1.2mA)
+*trial 146 is the reference for register and cropping
+
+..........................
+
+SUJETO 32  [220716] map
+
+#0 : blank
+
+#511: A (boca) 0.01mA
+#512: B (op�rculo) 0.15mA
+#513: C (lomo) 0.2mA
+#514: D (lomo caudal) 0.2mA
+#515: E (cola) 0.3mA
+
+#523: C (lomo) 0.1mA
+
+. 200ms tone
+#800 - blank final
+#801 - 300 Hz
+#802 - 500 Hz
+#803 - 1000 Hz
+#804 - 1500 Hz
+
+..........................
+
+SUJETO 33  [221004] map
+
+#0
+
+#511: A (boca) 0.01mA
+#512: B (op�rculo) 0.02mA
+#513: C (lomo) 0.2mA
+#514: D (lomo caudal) 0.3mA
+#515: E (cola) 0.3mA
+
+#522: B (op�rculo) 0.005 and 0.1mA mixed
+#524: D (lomo caudal) 0.1 and 0.2mA mixed
+
+#800: blank final
+
+..........................
+
+SUJETO 34  [221020] map
+
+#0
+#511: A (boca) 0.005mA
+#512: B (op�rculo) 0.005 fui subiendo hasta 0.1mA
+#513: C (lomo) 0.05mA
+#514: D (lomo caudal) 0.2mA
+#515: E (cola) 0.2mA
