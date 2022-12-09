@@ -14,6 +14,7 @@ cd(W)
 % cond_codes = [501]; % DO NOT INCLUDE THE BLANK CONDITION (or the threshold will fail)
 % ATT: the threshold will be computed respect to the maxim um condition
 
+
 % for rowi = [1:2]
 % clearvars -except grouptiles rowi path
 % TO LOOP FROM STRUCTURE
@@ -26,52 +27,52 @@ cd(W)
 % selroinames = grouptiles{rowi,3};
 %  ref_croproi = grouptiles{rowi,4};
 % ....................................
+ 
 
 % TO SKIP THE LOOP
 % ....................................
 nfish = 20;
-cond_codes = [511];
+cond_codes = [511:515];
 % selroinames = {'dm4m_R2',  'dm2_R2' ,'dm1_R','dldm_R'};%dm3 ORIGINAL
 
-ref_croproi = 'dm4_R'; % to crop the movies (window of analysis)
-
-refroi  ='dm4m_R'; 
-refroikind = 'anat';
-
+ref_croproi = 'dm4_R'; % respect which the start/end time of the tiles will be set
 % ....................................
 
+
 plot_contour = 1;
-save_contour = 1;
+save_contour = 0;
 highdefinition = 0;
 
-contour_of = 'early'; % 'early' 'peak_npix' 'peak'
-
+contour_of = 'early'; % 'early' 'peak'
 % Both codes find the thresh/frame that meet the condition of npix above
 % thresh:
-% ...early - threshold is fixed, finds the frame
-% ...peak - frametime is fixed at peak level, finds the thresh
+% ...early - threshold is fixed, finds the frame 
+% ...peak - frametime is fixed at peak level, finds the thresh 
 % condition
 
-plottiles = 0; %also plots early-peak
+plottiles = 1; %also plots early-peak
 savetiles = 0;
 
-movie_ref = '_18filt6'; % input movie '_17filt5' '_18filt6'
+
+movie_ref = '_18filt6'; % input movie '_17filt5'
+% movie_ref = '_17filt5'; % input movie '_17filt5'
 % movie_ref = '_15filt5'; % usado para 220608
+
 
 % savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/def_figs/tiles/'; %
 savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/'; %
 
 % FOR TILES AND CONTOURS
 %---------------------------------------------------------------
-% fact_thresh = 1.3; % @SET : limits parameters
-% fact_clim= 1.8;
+fact_thresh = 0.2; % @SET : limits parameters
+fact_clim= 1.5;
 
-thresh_mode = 'wavebased_thresh_local'; % 'moviebased_thresh_max' 'moviebased_thresh_local'.'wavebased_thresh_local'
+thresh_mode = 'moviebased_thresh_local'; % 'moviebased_thresh_max' 'moviebased_thresh_local'.
 % timerange_mode = 'auto_localwave' ; %'auto_localwave', 'manual', 'auto_fixed'
 
-% for contours: guiding parameters
-npix = 6; %set how many pix above thresh
-nfr = 10; %for how many nconsecutive frames
+% for contours: guiding parameters 
+npix = 10; %set how many pix above thresh
+nfr = 5; %for how many nconsecutive frames
 startfrom_ms = 0; %which index use as first
 % auto_localwave - sets the timerange according to the condition's
 % reference wave
@@ -105,9 +106,9 @@ reject_on= 0;
 
 setting.manual_reject = 1; %
 setting.GSmethod_reject = 1;  %
-setting.GSabsthres_reject = 0; %
+setting.GSabsthres_reject = 1; %
 if setting.GSabsthres_reject
-    warning('setting.GSabsthres_reject = 1')
+   warning('setting.GSabsthres_reject = 1') 
 end
 setting.forcein = 0; %
 
@@ -116,45 +117,24 @@ setting.forcein = 0; %
 
 cmap_tile = colormap_loadBV2(256);
 
-    
 %% LOAD AND SETTINGS
-
 %----------------------------------------------------------------
 % LOAD DATA
 %----------------------------------------------------------------
 VSDI = TORus ('load', nfish);
 VSDmov = TORus('loadmovie',nfish,movie_ref);
 
-
-% ------------------------------------------
-% ROI SELECTION 
-% ------------------------------------------
-
-% RECTANGULAR ROI TO CROP MOVIE ------------
+% SELECT RECTANGULAR ROI TO CROP MOVIE
+%----------------------------------------------------------------
 roilabels = VSDI.roi.labels_rect;
 
-selcroproi =name2idx( ref_croproi,roilabels);
-cropmask = VSDI.roi.rect.mask(:,:,selcroproi);
-
-
-% REFERENCE ROI 
-    switch refroikind
-
-        case 'circle'
-            selroi =name2idx(refroi, VSDI.roi.labels_circ);
-            roilabels = VSDI.roi.labels_circ;
-            masks =  VSDI.roi.circle.mask;
-            
-        case 'anat'
-            selroi =name2idx(refroi, VSDI.roi.labels);
-            roilabels = VSDI.roi.labels;
-            masks = VSDI.roi.manual_mask;
-    end
-
+selroi =name2idx( ref_croproi,roilabels);
+masks = VSDI.roi.rect.mask;
 
 %----------------------------------------------------------------
 % CROP MOVIES
 %----------------------------------------------------------------
+cropmask = masks(:,:,selroi);
 
 % cropvoxels = repmat(cropmask,  1,1, nframe); % 3D mask to select only the pixels from the mask
 % d = size(cropvoxels);
@@ -169,12 +149,6 @@ for tri = 1: size(VSDmov.data, 4)
     clear tempmov
 end
 
-
-        % Sampling frequency for lowpass flter
-        %----------------------------------------------------------------
-        
-        fs = 1000/(VSDI.info.stime);
-        
 %----------------------------------------------------------------
 % THIS DOES NOT WORK
 % for tri = 1:ntri
@@ -207,16 +181,6 @@ feedf.method = 'movsum';
 %% ----------------------------------------------------------------
 % CODE
 %----------------------------------------------------------------
-
-% MANUAL SNIPPET TO RERUN THE CELL
-fact_thresh = 0.5; % @SET : limits parameters
-fact_clim= 1.8;
-% for contours: guiding parameters
-npix = 200; %set how many pix above thresh 12
-cond_codes = [511:515];
-
-save_contour =1;
-
 %----------------------------------------------------------------
 % PRELIMINARY LOOP TO GET PARAMETERS
 %----------------------------------------------------------------
@@ -231,7 +195,8 @@ save_contour =1;
 % idxDm4 =name2idx( ref_croproi, roilabels);
 % ref_roimask = masks(:,:,idxDm4);
 
-%%-------------------------------------------------------------------
+%%
+%-------------------------------------------------------------------
 % GET MAX FROM ALL CONDITIONS TO SET AS REPRESENTATION'S THRESHOLD FOR
 % TILES
 %-------------------------------------------------------------------
@@ -247,7 +212,9 @@ switch thresh_mode
                 sel_trials = setdiff(sel_trials, rejectidx);
             end
             
+            
             back = cropbackgr(:,:,VSDI.nonanidx(1));
+            
             
             %to plot single trial
             movie2plot = mean(cropmovie(:,:,:,sel_trials),4);
@@ -261,29 +228,19 @@ switch thresh_mode
             
             maxall(ci) = max(tempmax(:));
             
-            % For 'wavebased_thresh_local' and 'wavebased_thresh_max' - NOTE dont
-            % think that these methods make sense for maps
-            %     dm4_wave = roi_TSave(movie2plot,ref_roimask);
-            %     dm4_wave = movmean(dm4_wave ,5);
-            
-            
-            %     wavelocal_max(ci) = max(dm4_wave);
-            
-            clear tempmax movie2plot  sel_trials
             
         end
         
         [maxval, maxidx] = max(maxall); % the idx gives the condition with maximum value
         
-        
         % -------------------------------------------------------
         % FOR MODE '' GET dF WAVE OF MAXIMUM WAVE TO ESTABLISH A FIXED START-END TIME
         % -------------------------------------------------------
-        maxcondi = cond_codes(maxidx);
+        maxcondi = maxidx;
         
         ... GET AVERAGE MOVIE
             %----------------------------------------------------------------
-        [sel_trials] = find(VSDI.condition(:,1)==maxcondi);
+        [sel_trials] = find(VSDI.condition(:,1)==cond_codes(maxcondi));
         
         if reject_on
             sel_trials = setdiff(sel_trials, rejectidx);
@@ -291,22 +248,15 @@ switch thresh_mode
         
         back = cropbackgr(:,:,VSDI.nonanidx(1));
         
-        %
+        %to plot single trial
         maxmovie = mean(cropmovie(:,:,:,sel_trials),4);
         maxmovie(:,:,end) = back; %clean non-blured background
         
-%         % CALCULATE max WAVE FOR dm4 TO ESTABLISH START-END TIMES
-%         % -------------------------------------------------------
-%         
-%         max_wave = roi_TSave(maxmovie,ref_roimask);
-%         max_wave = movmean(max_wave ,5);
-        
-        
-        clear movie2plot max_wave back sel_trials
+        clear movie2plot  back sel_trials
         
 end % switch
 
-%
+%%
 % ----------------------------------------------------------------
 % LOOP TO GET TILES, EARLY-PEAK FRAMES AND WAVES
 %----------------------------------------------------------------
@@ -332,7 +282,6 @@ for condi = makeRow(cond_codes)
     %----------------------------------------------------------------
     % GET REPRESENTATION THRESHOLD ACCORDING TO THE MODE
     %----------------------------------------------------------------
-    localmov = movmean(movie2plot(:,:,1:end-1),5); %temporal smooth to get the max value par: 3
     
     switch thresh_mode
         case 'moviebased_thresh_max'
@@ -347,9 +296,11 @@ for condi = makeRow(cond_codes)
             
         case 'moviebased_thresh_local'
             
-            % for 'moviebased_thresh_max'
             
-            [localmax, ~] = max(localmov(:));
+            % for 'moviebased_thresh_max'
+            localmov = movmean(movie2plot(:,:,1:end-1),5); %temporal smooth to get the max value par: 3
+            
+            [localmax, maxidx] = max(localmov(:));
             
             sz = size(localmov);
             ii = 0;
@@ -357,37 +308,28 @@ for condi = makeRow(cond_codes)
                 for y = 1:sz(2)
                     ii = ii+1;
                     pixwave = localmov(x,y,:);
-                    temp = devo_peak2peak(pixwave, VSDI.timebase, feedf.window, [],feedf.method, 0, 0);
+                   temp = devo_peak2peak(pixwave, VSDI.timebase, feedf.window, [],feedf.method, 0, 0);
                     allpeak(ii) = temp.peakminusbasel;
-                    allidx(ii) = temp.peakidx(2);
-                    clear pixwave temp
+                    allidx(ii) = temp.peakidx(2); 
+                   clear pixwave temp
                 end
             end
             clear ii
-            [peakval , idx] = max(allpeak);
-            peakidx = allidx(idx);
-            clear idx
+            peakval = max(allpeak);
+            peakidx = max(allidx);
             
-            % GET CLIMS AND THRESHOLD
+            % GET CLIMS AND THRESHOLD 
+            
             clims = [0 localmax*fact_clim];
             thresh = localmax*fact_thresh;
             
+            clear localmov localmax
             
-        case 'wavebased_thresh_local'
+        case 'moviebased_thresh_local'
             %base the threshold in wave
-            selmask = squeeze(masks(:,:,selroi));
-            local_wave = roi_TSave(localmov, selmask);
-            local_wave = lowpass(local_wave,10,fs);
-        temp0 = devo_peak2peak(local_wave, VSDI.timebase, feedf.window, [], feedf.method, 0, 0);
-        peakidx = temp0.peakidx(2);
-        peakval = local_wave(peakidx); % peak value instead of peak-to-peak value
-            thresh = peakval*fact_thresh;
-            clims = [0 peakval*fact_clim];
-        
 
     end
-                clear localmov localmax
-
+    
     
     %     %----------------------------------------------------------------
     %     % TILES
@@ -448,38 +390,21 @@ for condi = makeRow(cond_codes)
         end
         
         %----------------------------------------------------------------
-        % GET THRESHOLD +  FRAME TO INTERSECT
+        % GET FRAME TO INTERSECT
         %----------------------------------------------------------------
         
         switch contour_of
+            
             case 'peak'
-                frameidx= peakidx;
-                
-                frame = movie2plot(:,:,frameidx);
-                realabove = sum(frame(:)>= thresh);
-                
-                % Lower threshold in case that there is no visible pixel
-                temp_thresh = thresh;
-                i = 0;
-                while realabove<npix
-                    i = i+1;
-                    temp_thresh = peakval*(fact_thresh - 0.01*i); 
-                    realabove = sum(frame(:)>= temp_thresh);
-                    
-                end
-                thresh = temp_thresh;
-                clear temp_thresh
-                
-            case 'peak_npix'
                 % frame at peak level, the threshold is lowered until the
                 % npix is reached
                 
-                peakthresh = peakval;
-                step = peakthresh/100;
-                frameidx= peakidx;
+            peakthresh = peakval;
+            step = peakthresh/100; 
+            frameidx= peakidx;
                 nabove = 0;
                 stopflag = 0;
-                
+            
                 while ~stopflag
                     frame = movie2plot(:,:,frameidx);
                     nabove = sum(frame(:)>= peakthresh);
@@ -487,15 +412,15 @@ for condi = makeRow(cond_codes)
                     if nabove >= npix
                         stopflag = 1;
                     end
-                    peakthresh = peakthresh - step;
-                    
+              peakthresh = peakthresh - step; 
+                
                 end
-                
-                thresh = peakthresh + step; %to compensate for the last addition
-                realabove = nabove; % the name 'real' is inherited from the case 'early'
-                
-                fact_thresh = round((thresh)/peakval , 2);
-                
+
+            thresh = peakthresh + step; %to compensate for the last addition
+            realabove = nabove; % the name 'real' is inherited from the case 'early'
+            
+            fact_thresh = round((thresh)/peakval , 2); 
+            
             case 'early'
                 % Given a threshold, advances frame by frame until the npix
                 % activation is met (also has checks that the activation is
@@ -535,7 +460,7 @@ for condi = makeRow(cond_codes)
                 % CODE THAT ONLY COUNTS PIXELS ABOVE THE THRESH FOR A CERTAIN AMOUNT OF
                 % NFRAMES
                 % ............................................................
-                
+
                 while ~stopflag
                     frameidx = frameidx+1;
                     frame = movie2plot(:,:,frameidx);
@@ -571,12 +496,10 @@ for condi = makeRow(cond_codes)
                     if frameidx>= size(movie2plot,3)
                         frameidx = dsearchn(VSDI.timebase, startfrom_ms) -1 ; %'-1' to compensate for the first addition in loop
                         warning (['condition' num2str(condi) 'does not yield a result with the current parameters'])
-                        break
+                            break
                     end
                     
                 end
-                
-                
         end
         
         if plottiles
@@ -585,18 +508,19 @@ for condi = makeRow(cond_codes)
             tileset.end_ms = VSDI.timebase(frameidx+5);
             tileset.thresh = [-thresh thresh];
             tileset.clims = clims;
-            %             cmap_tile = colormap_loadBV2(256);
+%             cmap_tile = colormap_loadBV2(256);
             
             plot_tilemovie_custom_interp2(movie2plot, VSDI.timebase, tileset, [], cmap_tile);
             
+            
             titulo = [num2str(VSDI.ref) 'cond' num2str(condi) '.clim=' num2str(round(clims(2),1)) '(' num2str(fact_clim) '%)', '.thresh=' num2str(round(thresh,1)) '(' num2str(fact_thresh*100) '%)' num2str(realabove) 'pixabove'];
             sgtitle(titulo)
-            savename= ['TILES_' num2str(VSDI.ref) movie_ref '_cond' num2str(condi) '_rej'  num2str(reject_on) '_' thresh_mode  '_fact' num2str(fact_thresh) '_clim'  num2str(fact_clim) num2str(realabove) 'pixabove_for' num2str(nfr) movie_ref '.jpg'];
+            savename= ['TILES_' num2str(VSDI.ref) movie_ref '_cond' num2str(condi) '_rej'  num2str(reject_on) '_' num2str(numel(sel_trials)) 'trials_' thresh_mode  '_fact' num2str(fact_thresh) '_clim'  num2str(fact_clim) num2str(realabove) 'pixabove_for' num2str(nfr) movie_ref '.jpg'];
             
             if savetiles
-                saveas(gcf, fullfile(savein, savename), 'jpg')
-                %                 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-                %                 print(fullfile(savein, savename),'-r600','-djpeg') % prints it as you see them
+                  saveas(gcf, fullfile(savein, savename), 'jpg')
+%                 set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
+%                 print(fullfile(savein, savename),'-r600','-djpeg') % prints it as you see them
                 close
             end
             
@@ -642,33 +566,20 @@ for condi = makeRow(cond_codes)
         
         contours{ci} = structC;
         
-        % GET COLORS AND KEEP FOR PLOTTING
-        % get colour to plot according to the last digit (that codes
-        % position)
-        ccmap = lines(5);
-        temp = num2str(condi); 
-        temp = temp(end); 
-        temp = str2num(temp);
-        
-        keep.colour{ci} = ccmap(temp,:);  
-        % Keep also thresh and npix
-        keep.thresh{ci} = fact_thresh;
-        keep.npix{ci} = npix;
-
     end % if plot_contour
     
-    clear idx movie2plot rejectidx 
+    clear idx movie2plot rejectidx
     
 end % for condi
 % blob()
 
 
-% ----------------------------------------------------------------
+%% ----------------------------------------------------------------
 % PLOT AND SAVE CONTOURS
 %----------------------------------------------------------------
 if plot_contour
     
-%     timecmap = lines(numel(cond_codes)); % DEPRECATED 01/12/22
+    timecmap = lines(numel(cond_codes));
     
     figure
     imagesc(back); colormap bone
@@ -685,11 +596,8 @@ if plot_contour
             for n= 1:cont.n
                 x = cont.X{n};
                 y= cont.Y{n};
-                linecolour = colour{ci};
-%                 plot(y, x, 'linewidth' , 1.5, 'color', timecmap(ci,:),
-%                 'displayname', num2str(condi)); hold on % DEPRECATED 01/12/22
-                infolegend = [num2str(condi) 'f' num2str(keep.thresh{ci}) '(' num2str(keep.npix{ci}) 'px)'];
-                plot(y, x, 'linewidth' , 1.5, 'color', linecolour,'displayname', infolegend); hold on
+                
+                plot(y, x, 'linewidth' , 1.5, 'color', timecmap(ci,:), 'displayname', num2str(condi)); hold on
                 clear x y
                 
             end
@@ -701,10 +609,10 @@ if plot_contour
     %         savename= ['map_peak_' num2str(VSDI.ref) movie_ref  VSDI.info.Sside '_rej'  num2str(reject_on) '_' num2str(numel(sel_trials)) 'trials'];
     
     legend ('Location','northeastoutside')
-    sgtitle([num2str(VSDI.ref), 'rej', num2str(reject_on),'-', thresh_mode '- (thresh' num2str(fact_thresh) '%max min' num2str(npix) 'px)' ])
-    
-    
-    savename= ['CONTOUR' contour_of '_' num2str(VSDI.ref) movie_ref '_rej'  num2str(reject_on) '_cond' num2str(cond_codes(1)) '_' num2str(numel(sel_trials)) 'trials_' thresh_mode '_fact' num2str(fact_thresh) '_' num2str(npix) 'pix-for' num2str(nfr) 'fr'];
+    sgtitle([num2str(VSDI.ref), 'rej', num2str(reject_on),'-', thresh_mode '- (threh' num2str(fact_thresh) '%max)' ])
+
+  
+    savename= ['CONTOUR' contour_of '_' num2str(VSDI.ref) movie_ref '_rej'  num2str(reject_on) '_' num2str(numel(sel_trials)) 'trials_' thresh_mode '_fact' num2str(fact_thresh) '_' num2str(npix) 'pix-for' num2str(nfr) 'fr'];
     
 end
 
@@ -741,10 +649,6 @@ blob()
 % end
 
 % Updates
-% 01/12/22: plot contour with a color for each body position (last condi digit)
-% Add 'wavebased_thresh_local' 
-% 25/11/22 - made some adjustments taken from tiles_waves_allcond2 ---ATT,
-% I think it's an error, that this code was a simplified (on purpose) version
 % 26/09/22: Add 'npix' and 'nfr' conditions
 % 24/09/22: Update plot early peak
 % 21/09/22: add timerange_mode to the code
