@@ -5,9 +5,9 @@ graphics.off()
 # Restart to clear also loaded packages: Ctrl + Shift + (Fn) +  F10 >>> RESTARTS
 
 # SETTINGS
-sourcefile ="GROUP_sin210325.xls"
+sourcefile ="GROUPbrady_intensity.xls"
 
-sinkfile =  'group_sin210325'  #
+sinkfile =  'GROUPbrady_intensity'  #
 infotitle= sinkfile
 
 sinkfile = paste(sinkfile)
@@ -16,7 +16,7 @@ sinktests = paste('TESTS_' , sinkfile, '.txt')
 # GROUP BARPLOT - MEASURES 
 library("gdata")
 
-setwd("/home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady2/")
+setwd("/home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady2")
 
 rawdata <-read.xls(sourcefile)
 
@@ -94,19 +94,6 @@ rho4 <-round(testS_dm4$estimate, 2)
 p4 <- round(testS_dm4$p.value ,5)
 labelcor4<-  paste('rhoS=', rho4, '(', p4, ')')
 
-# 
-# A1<-ggplot(data = data, mapping = aes(x = roiact, y = ibi0)) +
-#   geom_point(color ="firebrick", size = 2) + #"firebrick"
-#   labs(title  =  tit, x  =  region) + #'se = TRUE' for plotting intervals # y~model
-#   geom_smooth(method = "lm", se = FALSE, color = "black") +
-#   theme_bw() +
-#   theme(plot.title = element_text(hjust = 0.5)) +
-#   annotate(geom= "text", x= 0, y=100,hjust=0,vjust=0 ,label =  labelcor , color='red')
-# #
-# # jpeg(paste('REGRESSION1_', sinkfile,'.jpg'), width = 500, height = 400)
-# # A1
-# # dev.off()
-# A1
 
 # A1<-ggplot(data = data, aes(x = ibi0 , y = dm2, colour= fish)) +
 #   geom_point( size = 2) + #"firebrick"     show.legend = TRUE
@@ -116,7 +103,7 @@ labelcor4<-  paste('rhoS=', rho4, '(', p4, ')')
 #   theme(plot.title = element_text(hjust = 0.5)) +
 #   annotate(geom= "text", x= 0, y=0,hjust=0,vjust=0 ,label =  labelcor2 , color='red')
 # #
-# jpeg(paste('REGRESSIONcolor_dm2', sinkfile,'_flip.jpg'), width = 500, height = 400)
+# svg(paste('REGRESSIONcolor_dm2', sinkfile,'_flip.svg'), width = 5, height = 5)
 # A1
 # dev.off()
 # A1
@@ -124,25 +111,25 @@ labelcor4<-  paste('rhoS=', rho4, '(', p4, ')')
 A2<-ggplot(data = data, aes(x = dm2, y = ibi0, colour= fish)) +
   geom_point( size = 2) + #"firebrick"     show.legend = TRUE
   labs(title  =  tit, x  =  "dm2") + #'se = TRUE' for plotting intervals # y~model
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_smooth(formula = y ~ x, method = "lm", se = FALSE, color = "black") +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom= "text", x= 0, y=100,hjust=0,vjust=0 ,label =  labelcor2 , color='red')
 #
-jpeg(paste('REGRESSIONcolor_dm2', sinkfile,'.jpg'), width = 500, height = 400)
+svg(paste('REGRESSIONcolor_dm2', sinkfile,'.svg'), width = 5, height = 5)
 A2
 dev.off()
 A2
 
 # A3<-ggplot(data = data, aes(x = ibi0, y = dm4 , colour= fish)) +
 #   geom_point( size = 2) + #"firebrick"     show.legend = TRUE
-#   labs(title  =  tit, x  =  "dm4") + #'se = TRUE' for plotting intervals # y~model
+#   labs(title  =  tit, x  =  "ibi0") + #'se = TRUE' for plotting intervals # y~model
 #   geom_smooth(method = "lm", se = FALSE, color = "black") +
 #   theme_bw() +
 #   theme(plot.title = element_text(hjust = 0.5)) +
 #   annotate(geom= "text", x= 0, y=0,hjust=0,vjust=0 ,label =  labelcor4 , color='red')
 # #
-# jpeg(paste('REGRESSIONcolor_dm4', sinkfile,'_flip.jpg'), width = 500, height = 400)
+# svg(paste('REGRESSIONcolor_dm4', sinkfile,'_flip.svg'), width = 5, height = 5)
 # A3
 # dev.off()
 # A3
@@ -150,12 +137,12 @@ A2
 A4<-ggplot(data = data, aes(x = dm4, y = ibi0, colour= fish)) +
   geom_point( size = 2) + #"firebrick"     show.legend = TRUE
   labs(title  =  tit, x  =  "dm4") + #'se = TRUE' for plotting intervals # y~model
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_smooth(formula = y ~ x, method = "lm", se = FALSE, color = "black") +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5)) +
   annotate(geom= "text", x= 0, y=100,hjust=0,vjust=0 ,label =  labelcor4 , color='red')
 #
-jpeg(paste('REGRESSIONcolor_dm4', sinkfile,'.jpg'), width = 500, height = 400)
+svg(paste('REGRESSIONcolor_dm4', sinkfile,'.svg'), width = 5, height = 5)
 A4
 dev.off()
 A4

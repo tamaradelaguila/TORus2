@@ -7,7 +7,7 @@
 clear
 user_settings
 
-nfish = 26;%@ SET
+nfish = 34;%@ SET
 [VSDI] = TORus('load',nfish);
 
 %% PYTHON dml extraction
@@ -190,6 +190,9 @@ blob()
 % ......................................................
 % [1] MAKE CROPMASK
 % ......................................................
+clear
+nfish = 23;
+VSDI = TORus('load', nfish); 
 
 % MAKE MASK FROM REFERENCE FRAME AND SAVE IN VSDI
 ref_frame = VSDI.backgr(:,:,VSDI.nonanidx(1)); %the background from the first included trial
@@ -212,12 +215,7 @@ inspect_allbackgrounds(VSDI.backgr)
 
 %% View the result on a all trial
 
-for trialsel= makeRow(VSDI.nonanidx(1):10:VSDI.nonanidx(end))% makeRow(VSDI.nonanidx) %@ SET (if you want to check the mask onto any specific frame)
-    roi_preview(VSDI.backgr(:,:,trialsel), crop_poly{1});
-    title(['trial' num2str(trialsel)])
-    pause
-    close
-end
+
 % polygon_preview(VSDI.backgr(:,:,1), VSDI.crop.poly{1,1});
 
 %% IF WE ARE HAPPY WITH THE MASK: SAVE in structure
@@ -402,7 +400,7 @@ blob()
 clear
 user_settings
 
-for nfish = [26]
+for nfish = [34]
 clearvars -except nfish
 
 [VSDI] = TORus('load',nfish);

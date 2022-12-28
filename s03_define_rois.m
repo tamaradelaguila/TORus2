@@ -1,8 +1,8 @@
 %% s03 DEFINE ROIS
 % Draw ROIs from brain areas.
-clear
+clear; clf
 user_settings
-nfish = 8;
+nfish = 34;
 VSDI = TORus('load',nfish);
 
 % Draw ROIs and store in structure
@@ -37,10 +37,11 @@ VSDI.roi.labels = {'dm4_R',... FOR MAPS EXPERIMENT
 VSDI.roi.manual_poly  = manual_poly;
 VSDI.roi.manual_mask = manual_mask;
 
-for ii = 1:size(VSDI.roi.labels,1)
-    roiname  =VSDI.roi.labels{1,ii};
-%     VSDI.roi.labels{2,ii} = roiname_ipsicontra(roiname, VSDI.info.Sside); 
-end
+% 
+% for ii = 1:size(VSDI.roi.labels,1)
+%     roiname  =VSDI.roi.labels{1,ii};
+% %     VSDI.roi.labels{2,ii} = roiname_ipsicontra(roiname, VSDI.info.Sside); 
+% end
 
 TORus('save',VSDI);
 
@@ -58,7 +59,7 @@ TORus('savewave', VSDroiTS);
 % 
 % figure
 % imagesc(VSDI.crop.preview); colormap('bone');
-% drawnroi = images.roi.Circle('InteractionsAllowed', 'translate','Radius',R, 'LineWidth',1.5);
+% drawnroi = images.roi.('InteractionsAllowed', 'translate','Radius',R, 'LineWidth',1.5);
 % draw(drawnroi);
 % 
 % 
@@ -73,7 +74,7 @@ TORus('savewave', VSDroiTS);
 %% DRAW CIRCULAR ROI WITH FUNCTION
 clear
 user_settings
-nfish = 26;
+nfish = 23;
 VSDI = TORus('load',nfish);
 
 VSDI.roi.labels_circ = {'dm4m_R', 'dm4m_L', ...
@@ -96,7 +97,7 @@ VSDI.roi.labels_circ = {'dm4m_R', ... %FOR MAPS
 
 
 close all
-r = 4; % r = 4 for whole brain; 7 for 1x
+r = 7; % r = 4 for whole brain; 7 for 1x
 [coord, mask] = roicir_draw(VSDI.crop.preview,VSDI.roi.labels_circ,r); 
 [coord, mask] = roicir_draw(VSDI.backgr(:,:,VSDI.nonanidx(1)),VSDI.roi.labels_circ,r); 
 
@@ -162,7 +163,7 @@ roi_preview_multiple(VSDI.crop.preview, VSDI.roi.circle.center);
 %% DRAW RECTANGULAR CROP MASKS WITH FUNCTION
 clear
 user_settings
-nfish = 23;
+nfish =25;
 VSDI = TORus('load',nfish);
 
 VSDI.roi.labels_rect = {'dm4_R'; 'dm2_R'};
@@ -175,8 +176,8 @@ close all
 roi_preview_multiple(VSDI.backgr(:,:,VSDI.nonanidx(1)), coord); 
 roi_preview_multiple(VSDI.backgr(:,:,VSDI.nonanidx(end)), coord); 
 
-imagesc(mask(:,:,1))
-axis image
+% imagesc(mask(:,:,1))
+% axis image
 
 VSDI.roi.rect.coord = coord;
 VSDI.roi.rect.mask = mask;

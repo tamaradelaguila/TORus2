@@ -40,24 +40,36 @@ selroinames = {'dm4m_R2','dm2_R2', 'dm1_R','dldm_R'}; refroiname = 'dm4m_R2'
 .NO-DOLOROSO: group
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
 
-
 .CHORRITO
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
-
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2A_boxplots/DEF/chorrito_n3/Rboxplot group16_chorrito_n3 peakZ _rej 3 bycond .jpg
+30	770518	[0,702]
+27	770608	[0,702]
+28	770622	[0,701]
 
 .DOLOROSO
 load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
 analysisref = new4_group19_dolor_n5
+stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2A_boxplots/DEF/dolor_n5/Rboxplot group19_n5_REPAIRED peakZ _rej 3 bycond .jpg
+8	210430	[1000,1003] 1mA
+10	210509	[1000,1002] 0.8mA
+18	220628	[0,501] 0.1mA(pulso 100ms)
+14	220608	[0,403] 0.7mA
+11	210521	[400,404] 0.8mA
 
 ...............................................
 2C - P-MAPS
 ...............................................
 
-sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/05_figure_definit/Pmaps_feed_from_struct.m
+code: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/05_figure_definit/Pmaps_feed_from_struct.m
+highquality output from section: %% PLOT >>FROM SAVED MAT FILE<< SINGLE CASE - HIGH QUALITY
 
 ...............................................
 2D - MEAN WAVE
 ...............................................
+
+chorrito - n =3
+dolor n = 5
 
 latency_refroi = 'dm2_R2';% to get percentage for threshold computation
 latency_thresh = 0.8; % 80% of the refroi value
@@ -65,7 +77,7 @@ latency_thresh = 0.8; % 80% of the refroi value
 % Reference for normalization
 gain_refroi = 'dm4m_R2';%to normalize waves
 
-sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/03_figure_sketch/groupplot_measures/group_plot_brain_reprogram_8_NORM_WAVES_LATENCY.m
+sourcecode: /home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/05_figure_definit/group_plot_brain_reprogram_8_NORM_WAVES_LATENCY.m
 
 ...............................................
 2E - BARPLOT LATENCIA
@@ -142,6 +154,7 @@ sourcecodeR = ~/Documents/MATLAB/VSDI/TORus/plot/informes/04_figure_sketch2/grou
 stored: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/6A_boxplot
 analysis ='2way_rm'
 measure = 'peakZ'
+
 ...............................................
 6C · BARPLOTS (medida puntual - antiguo))
 ...............................................
@@ -173,6 +186,7 @@ for R: get data from boxplot excel
 CORRELACIÓN ACTIVIDAD-BRADICARDIA
 ...............................................
 sujetos nuevos en: /home/tamara/Documents/MATLAB/VSDI/TORus/data/bradi/correlacion
+plots: /home/tamara/Documents/MATLAB/VSDI/TORus/plot/brady2/input
 
 #1.Excel bradicardia:
 /home/tamara/Documents/MATLAB/VSDI/TORus/brady_code/Bradycardia01_flexible_counting_code_correlacion.m
@@ -186,12 +200,23 @@ sujetos nuevos en: /home/tamara/Documents/MATLAB/VSDI/TORus/data/bradi/correlaci
 #4. GRÁFICA DE CORRELACIÓN (R):
 ~/Documents/MATLAB/VSDI/TORus/brady_code/regresion_nuevo.R
 
+#5. GRÁFICA DE GRUPO
+Pegar manualmente en un excel los valores de todos los peces
+~/Documents/MATLAB/VSDI/TORus/brady_code/regresion_grupo.R
+
+
 'cond_codes' para código #2
 [31] 220610: [300 301 302 303 304];
 [17] 220623: [900 301 302 303];
 [3] 210325 : [300 301 302 303]
 [1] 210320 : [300 301 302 303] ATT: dm4_L dm2_L !!!
-[13] 220611:
+[13] 220611: [0 301 302]
 [15] 220615: [802 301 302 303] respect:[0 0.5 0.8 1-1.2mA]
 [14] 220608: [0 501 502 301 302 303] mA: [0 0.15 0.2 0.3 0.4 1]
 [13] 220611: [0 301 302] mA:[0.4 1]
+
+...............................................
+CONTOUR MAP
+...............................................
+source:
+MAP_CROP_tiles_waves_contour_allcondTORus/plot_code/informes_code/05_figure_definit/MAP_CROP_tiles_waves_contour_allcond.m

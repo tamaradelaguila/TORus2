@@ -50,16 +50,18 @@ setting.force_include = 0; %@ SET
 %----------------------------------------------------------------
 %                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
-for ii = 2:size(feed,1)
+for ii = 7:12 %%:size(feed,1)
     tic
+%     feed{ii,6}
     %----------------------------------------------------------------
     % GET BASIC PARAMETERS FROM STRUCTURE
     %----------------------------------------------------------------
     nfish = feed{ii,1};
     VSDI = TORus('load', nfish) ;
                     
-    for ref_movi=  1:numel(feed{ii,4})
-        ref_movie = feed{ii,4}{ref_movi};
+    for ref_movi=  1%:size(feed{ii,4})
+%         ref_movie = feed{ii,4}{ref_movi};
+        ref_movie = feed{ii,4};
                     temp = TORus('loadmovie',nfish,ref_movie);
                     movies = temp.data(:,:,1:end-1,:);
 
@@ -67,13 +69,12 @@ for ii = 2:size(feed,1)
             reject_on = feed{ii,5}(reji);
             
             for fieldi = 1:numel(feed{ii,6})
-%                 outfield = feed{ii,6}{fieldi};
-                outfield = 'peakmean';
+                outfield =feed{ii,6}{fieldi};
                 
                 j = 1;
                 for condi = 1:size(feed{ii,3},1) % blank conditions needs to be included and be the first for the code to properly work
                     trial_kinds = feed{ii,3}(condi,:);
-                    clearvars -except ii path feed savemat sel_row feedf setting slope nfish VSDI ref_movie movies reject_on outfield trial_kinds    
+                    clearvars -except ii j path feed savemat sel_row feedf setting slope nfish VSDI ref_movie movies reject_on outfield trial_kinds    
                                         
                     if strcmpi(outfield, 'wslope')
                         flagslope = 1;
@@ -292,8 +293,8 @@ for ii = 2:size(feed,1)
                             continue %skips computing the control condition
                         end
                         
-                        conditions_labels{j} = [num2str(condA) 'minus' num2str(condB)];
-                        conditions_number(j) = condA;
+                        condition_labels = [num2str(condA) 'minus' num2str(condB)];
+                        condition_number= condA;
                         
                         % SELECT CONDITIONS TO COMPARE AND LOAD MOVIES
                         
@@ -345,8 +346,8 @@ for ii = 2:size(feed,1)
                         TFCEmaps.(outfield).Tobs(:,:,j) = results.Obs;
                         TFCEmaps.(outfield).Pmap(:,:,j) =results.P_Values;
                         TFCEmaps.(outfield).meanmap(:,:,j) = squeeze(mean(Data{1})); %TO DO!!!!
-                        TFCEmaps.(outfield).conditions = conditions_labels;
-                        TFCEmaps.(outfield).conditions_number = conditions_number;
+                        TFCEmaps.(outfield).conditions{1,j} = condition_labels;
+                        TFCEmaps.(outfield).conditions_number(1,j)  = condition_number;
                         
                         TFCEmaps.dataset_ref =  ref_movie;
                         TFCEmaps.perm = n_perm ;
@@ -416,14 +417,16 @@ tijd = toc;
 warning (['one loop took:' num2str(tijd) 's']);
 
 if isfield(TFCEmaps, 'measurelist')
-jj = numel(TFCEmaps.measurelist); 
+l = numel(TFCEmaps.measurelist); 
 else
-    jj = 0;
+    l = 0;
 end
 
-TFCEmaps.measurelist{1,jj+1} = outfield ;
+TFCEmaps.measurelist{1,l+1} = outfield ;
+save(fullfile(savemat,name),'TFCEmaps')
 
             end % field
+            
         end %rejection
         pause(60*3)
     end
@@ -460,8 +463,9 @@ ccmap = jet;
 % ccmapP = flipud(hot);
 ccmapP = hot;
 
+pinkmap = [1 ,0, .77; 1 ,0, .77; 1 ,0, .77];
 
-for ii = 1:2 %2:size(feed,1)
+for ii = [1:6]%2:size(feed,1)
     %----------------------------------------------------------------
     % GET BASIC PARAMETERS FROM STRUCTURE
     %----------------------------------------------------------------
@@ -471,15 +475,15 @@ for ii = 1:2 %2:size(feed,1)
     for ref_movi=  1:numel(feed{ii,4})
         ref_movie = feed{ii,4}{ref_movi};
         
-        for reji=  1:numel(feed{ii,5})
+        for reji=  1%:numel(feed{ii,5})
             reject_on = feed{ii,5}(reji);
             
-            clearvars -except path feed ii nfish VSDI ref_movie reject_on outfield  n_perm clims ccmap ccmapP sel_row highdef
+            clearvars -except path feed ii nfish VSDI ref_movie reject_on outfield  n_perm clims pinkmap ccmap ccmapP sel_row highdef
             
             % LOAD P-MAPS STRUCTURE
             matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_pmaps'    ;
             
-            name = [num2str(VSDI.ref) '_TFCE' num2str(n_perm) 'rep_reject' num2str(reject_on), 'data', ref_movie   ,'_Pmaps.mat'];
+            name = [num2str(VSDI.ref) '_TFCE' num2str(n_perm) 'rep_reject' num2str(reject_on) 'data' ref_movie  '_Pmaps.mat'];
             
             
             try
@@ -548,9 +552,11 @@ for ii = 1:2 %2:size(feed,1)
                         
                         % PLOT BACKGROUND
                         ax(3) = subplot(1,3,3);
-                        imagesc(backgr)
-                        axis image
-                        colormap(ax(3), bone)
+%                         imagesc(backgr)
+%                         axis image
+%                         colormap(ax(3), bone)
+                        alpha = alpha*0.5;
+                        plot_framesoverlaid2(act,backgr, alpha  ,0, ax(3), clims, 1, [], pinkmap);
                         colorbar('off')
                         
                         ax(3).Visible = 'on';
@@ -564,7 +570,7 @@ for ii = 1:2 %2:size(feed,1)
                         sgtitle(tit);
                         
                         
-                        localname = ['plot_MeanMap_Pthresh_' num2str(VSDI.ref) '-' maps.conditions{condi} ' (TFCEperm' num2str(TFCEmaps.perm)  'rep) of_ ' outfield  '_p' num2str(pthresh) '_' TFCEmaps.dataset_ref 'reject' num2str(TFCEmaps.reject_on) '.jpg'];
+                        localname = ['plot_MeanMap_Pthresh_singlecolor_' num2str(VSDI.ref) '-' maps.conditions{condi} ' (TFCEperm' num2str(TFCEmaps.perm)  'rep) of_ ' outfield  '_p' num2str(pthresh) '_' TFCEmaps.dataset_ref 'reject' num2str(TFCEmaps.reject_on) '.jpg'];
                         %SAVE
                         
                         try
@@ -590,177 +596,149 @@ end %ii
 %             clear maps  name pathsave moviesA moviesB idxA idxB nA nB cond_def
 % blob()
 
+%% PLOT >>FROM SAVED MAT FILE<< SINGLE CASE - HIGH QUALITY
+clear
+W = pwd;
+cd '/home/tamara/Documents/MATLAB/VSDI/TORus/'
+user_settings
+cd(W)
+%--------------------------------------
+% Load TFCEmaps feed structure
+%--------------------------------------
 
-% %% PLOT >>FROM SAVED MAT FILE<< ONLY P-MAP --- HIGH QUALITY
-% clear
-% W = pwd;
-% cd '/home/tamara/Documents/MATLAB/VSDI/TORus/'
-% user_settings
-% cd(W)
-% %--------------------------------------
-% % MANUALLY load TFCEmaps structure
-% %--------------------------------------
-% 
-% % nfish = TORus('who', TFCEmaps.ref) ; %needed if manually loaded
-% 
-% %--------------------------------------
-% % SETTINGS TO LOAD DATA
-% %--------------------------------------
-% % outfield = 'wmean';
-% 
-% n_perm = 1000;
-% clims= [];
-% % outfield = 'peakminusbasel';
-% outfield = 'wmean';
-% % outfield = 'wslope';
-% 
-% % reject_on = 3;
-% 
-% %     custom_map = colormap_loadBV();
-% ccmap = jet;
-% ccmapP = flipud(hot);
-% % ccmapP = hot;
-% 
-% 
-% for nfish = [27:30]
-%     VSDI = TORus('load', nfish) ;
-%     
-%     for pthresh = [0.05 0.001] %to (maximum value to plot)
-%         
-%         reject_on = 3;
-%         for ref_movie = {'_16diff_f0pre'} %{ '_17filt5', '_18filt6'}  {'_20diff_f0pre'}
-%             
-%             matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_pmaps';
-%             
-%             name = [num2str(VSDI.ref) '_TFCE' num2str(n_perm) 'rep_reject' num2str(reject_on), 'data', ref_movie{1} ,'maps.mat'];
-%             
-%             try
-%                 load(fullfile(matpath,name))
-%             catch
-%                 disp(['the file "' name '" is not found']);
-%                 return
-%             end
-%             
-%             maps = TFCEmaps.(outfield);
-%             backgr = VSDI.backgr(:,:,VSDI.nonanidx(1));% .* VSDI.crop.mask;
-%             backgr = interp2(single(backgr),5, 'cubic');
-%             
-%             for condi= 1:length(TFCEmaps.(outfield).conditions_number)
-%                 
-%                 figure('units','normalized','outerposition',[0 0 1 1])
-%                 
-%                 % PLOT P-MAP
-%                 ax(2) = subplot(1,1,1);
-%                 ax(2).Visible = 'off';
-%                 
-%                 clims = [0 pthresh];
-%                 %    imagesc(imtiles(:,:,ploti))
-%                 %         plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
-%                 alpha = maps.Pmap(:,:,condi)< pthresh;
-%                 alpha =  interp2(alpha,5, 'nearest');
-%                 act = interp2(maps.Pmap(:,:,condi),5, 'nearest');
-%                 
-%                 plot_framesoverlaid2(act, backgr, alpha  ,0, ax(2), clims, 1, [], ccmapP);
-%                 
-%                 set(ax(2),'XColor', 'none','YColor','none')
-%                 
-%                 tit = [num2str(VSDI.ref) '-' maps.conditions{condi} ': (1)' outfield ' p-thresh (2)pmap (3) backgr'];
-%                 sgtitle(tit);
-%                 
-%                 localname = ['HIdef_Pmap_' num2str(VSDI.ref) '-' maps.conditions{condi} ' (TFCEperm' num2str(TFCEmaps.perm)  'rep) of_ ' outfield  '_p' num2str(pthresh) '_' TFCEmaps.dataset_ref 'reject' num2str(TFCEmaps.reject_on) '.jpg'];
-%                 %SAVE
-%                 %                     savein = fullfile('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm/plots',outfield) ;%@ SET
-%                 savein= fullfile(matpath, outfield);
-%                 
-%                 try
-%                     saveas(gcf, fullfile(savein,localname ), 'jpg')
-%                     
-%                 catch
-%                     mkdir(savein)
-%                     saveas(gcf, fullfile(savein,localname), 'jpg')
-%                 end
-%                 
-%                 close
-%                 
-%             end % for condi
-%             
-%         end % for ref_movie
-%     end % for pthresh
-%     
-% end % for nfish
-% %             ax(9).Visible = 'off';
-% %             axis image
-% 
-% %             clear maps  name pathsave moviesA moviesB idxA idxB nA nB cond_def
-% % blob()
-% % %% PLOT >>FROM SAVED MAT FILE<< STATISTICAL DIFFERENCE BETWEEN CONDITIONS: [P-MAP]
-% %
-% % %--------------------------------------
-% % % MANUALLY load TFCEmaps structure
-% % %--------------------------------------
-% %
-% % nfish = TORus('who', TFCEmaps.ref) ;
-% % VSDI = TORus('load', nfish) ;
-% %
-% % %     custom_map = colormap_loadBV();
-% % custom_map = flipud(parula);
-% %
-% %
-% % %--------------------------------------
-% % % SETTINGS TO LOAD DATA
-% % %--------------------------------------
-% % field = 'wmean';
-% % pthresh = 0.05; %to (maximum value to plot)
-% % n_perm = 1000;
-% %
-% % reject_on = 0;
-% % ref_movie = '_17filt5';
-% %
-% % matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_TFCEperm';
-% % name = [num2str(VSDI.ref)  '_TFCE' num2str(n_perm) 'rep_' outfield '_reject' num2str(reject_on), 'data', ref_movie ,'maps.mat'];
-% % load(fullfile(matpath,name))
-% %
-% %
-% % for condi= 1:length(TFCEmaps.(field).conditions)
-% %     maps = TFCEmaps.(field);
-% %
-% %     backgr = VSDI.backgr(:,:,VSDI.nonanidx(1)) .* VSDI.crop.mask;
-% %     alpha = maps.Pmap(:,:,ploti)< pthresh;
-% %     clims = [0 pthresh];
-% %     %    imagesc(imtiles(:,:,ploti))
-% %     %         plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
-% %     plot_framesoverlaid2(maps.Pmap(:,:,ploti),backgr, alpha  ,0, ax(ploti), clims, 1, [], custom_map);
-% %
-% %     %         idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
-% %     %         tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
-% %     tit = maps.conditions{condi};
-% %     set(ax(ploti),'XColor', 'none','YColor','none')
-% %
-% %     ax(ploti).Title.String = tit;
-% %     localname = ['plot_Pmap' num2str(TFCEmaps.ref) tit ' (TFCEperm' num2str(TFCEmaps.perm)  'rep) of_ ' field  '_p' num2str(pthresh) '_' TFCEmaps.dataset_ref 'reject' num2str(TFCEmaps.reject_on) '.jpg'];
-% %
-% %     %SAVE
-% %
-% %     savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/fast_plot' ;%@ SET
-% %     saveas(gcf, fullfile(savein,localname ), 'jpg')
-% %     close all
-% %
-% % end %condi
-% % %     sgtit = [num2str(VSDI.ref) ':' num2str(pthresh) ' p-map ' field '(TFCE n' TFCEmaps.perm ')'];
-% % %     sgtitle(sgtit)
-% %
-% % %             ax(9) = subplot(3,3,9)
-% % %             imagesc(VSDI.backgr(:,:,VSDI.nonanidx(1)))
-% % %             colormap(ax(9), bone)
-% % %             colorbar('off')
-% % %             ax(9).Visible = 'off';
-% % %             axis image
-% %
-% % %             clear maps  name pathsave moviesA moviesB idxA idxB nA nB cond_def
-% % blob()
+savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_pmaps/pink/' ;%@ SET
+
+%--------------------------------------
+% SETTINGS TO LOAD DATA
+%--------------------------------------
 
 
-%% 04/10/22 Adapted from code created on 30/08/21
+highdef = 1;
+
+
+fishREF = 220608 ;
+condition = 404;
+ref_movie = '_25filt10'  ; % '_16diff_f0pre' '_18filt6' '_25filt10'
+reject_on = 3;
+outfield = 'peakminusbasel'; %     'peakmean' 'wmean'  'peakminusbasel'
+pthresh = .05;
+
+n_perm = 1000;
+clims= [];
+
+
+    %----------------------------------------------------------------
+    % GET MAPS FROM MAPS' STRUCTURE
+    %----------------------------------------------------------------
+    nfish = TORus('who', fishREF);
+    VSDI = TORus('load', nfish) ;
+    
+    % LOAD P-MAPS STRUCTURE
+    matpath = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/2_pmaps'    ;
+    
+    name = [num2str(VSDI.ref) '_TFCE' num2str(n_perm) 'rep_reject' num2str(reject_on) 'data' ref_movie  '_Pmaps.mat'];
+    savein = fullfile(savein,outfield) ;%@ SET
+    
+    try
+        load(fullfile(matpath,name))
+    catch
+        error(['the file "' name '" is not found']);
+        return
+    end
+            
+                
+                
+                try
+                    maps = TFCEmaps.(outfield);
+                catch
+                    error( ['IN:' name '-' outfield 'IS NOT FOUND'])
+                end
+                
+                    
+                        condi = find(condition == TFCEmaps.(outfield).conditions_number, 1, 'first');
+                        figure('units','normalized','outerposition',[0 0 1 1])
+                        
+                        % PLOT MEANMAPS P-THRESHOLDED
+                        ax(1) = subplot(1,3,1);
+                        backgr = VSDI.backgr(:,:,VSDI.nonanidx(1));% .* VSDI.crop.mask;
+                        
+                        alpha = maps.Pmap(:,:,condi)< pthresh;
+                        
+                        diffmap = maps.diffmap(:,:,condi);
+                        act = maps.Pmap(:,:,condi);
+                        % HIGH QUALITY MAPS .........................
+                        if highdef
+                            backgr = interp2(single(backgr),5, 'cubic');
+                            alpha = maps.Pmap(:,:,condi)< pthresh;
+                            alpha =  interp2(alpha,5, 'nearest');
+                            diffmap = interp2(diffmap,5, 'nearest');
+                            act = interp2(act,5, 'nearest');
+                        end
+                        
+%                         plot_framesoverlaid2(act, backgr, alpha  ,0, ax(1), clims, 1, [], ccmapP);
+                        % .................................................
+                        ccmap = jet;
+                        ccmapP = hot;
+                        pinkmap = [1 ,0, .77; 1 ,0, .77; 1 ,0, .77];
+                        
+                        
+                        
+                        clims = [];
+                        %    imagesc(imtiles(:,:,ploti))
+                        %         plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
+                        plot_framesoverlaid2(diffmap,backgr, alpha  ,0, ax(1), clims, 1, [], ccmap);
+                        
+                        ax(1).Visible = 'off';
+                        
+                        % PLOT P-MAP
+                        ax(2) = subplot(1,3,2);
+                        ax(2).Visible = 'off';
+                        
+                        clims = [0 pthresh];
+                        %    imagesc(imtiles(:,:,ploti))
+                        %         plot_logpmap_overlaid(maps.Pmap(:,:,condi),VSDI.backgr(:,:,VSDI.nonanidx(1)),pthresh ,0, ax(ploti), 1, flipud(parula));
+                        plot_framesoverlaid2(act,backgr, alpha  ,0, ax(2), clims, 1, [], ccmapP);
+                        
+                        set(ax(2),'XColor', 'none','YColor','none')
+                        
+                        % PLOT BACKGROUND
+                        ax(3) = subplot(1,3,3);
+%                         imagesc(backgr)
+%                         axis image
+%                         colormap(ax(3), bone)
+                        alpha = alpha*0.5;
+                        plot_framesoverlaid2(act,backgr, alpha  ,0, ax(3), clims, 1, [], pinkmap);
+                        colorbar('off')
+                        
+                        ax(3).Visible = 'on';
+                        set(ax(3),'XColor', 'none','YColor','none')
+                        
+                        
+                        %         idxcond = find(VSDI.condition(:,1) == newkinds(condi)); idxcond = idxcond(1);
+                        %         tit= ['c=',num2str(newkinds(condi)), '(', num2str(VSDI.condition(idxcond,4)), 'mA)'];
+                        tit = [num2str(VSDI.ref) '-' maps.conditions{condi} ': (1)' outfield ' p-thresh (2)pmap (3) backgr'];
+                        
+                        sgtitle(tit);
+                        
+                        
+                        localname = ['PINK_Pthresh_' num2str(VSDI.ref) '-' maps.conditions{condi} ' (TFCEperm' num2str(TFCEmaps.perm)  'rep) of_ ' outfield  '_p' num2str(pthresh) '_' TFCEmaps.dataset_ref 'reject' num2str(TFCEmaps.reject_on) '.jpg'];
+                        %SAVE
+                        
+                        try
+                            saveas(gcf, fullfile(savein,localname ), 'jpg')
+                            
+                        catch
+                            mkdir(savein)
+                            saveas(gcf, fullfile(savein,localname), 'jpg')
+                        end
+                        
+                        close
+       
+
+%% Update: 
+% 19/11/22: Add pink mask; add section to plot single case- high quality
+% 06/10/22: fix bug to properly store different conditions
+% Created 04/10/22 Adapted from code created on 30/08/21
 % Updated: 22/12/21
 % Updated: 28/12/21 - to save each p-thresholded map individually
 % FROM: Gent2 code 'fig_mmaps_TFCE_perm'. This is an adaptation to plot the

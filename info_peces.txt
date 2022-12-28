@@ -1,3 +1,4 @@
+Updated: 01/12/22
 
 SUJETO 1 [210320]
 .Bloque superficial aleatorizado (pulsito 0,3ms)
@@ -416,7 +417,7 @@ SUJETO 22 [220712] map - non-aleat. blocks
 # 513: C (lomo) 0.2mA *
 #541: A(boca) 0.10mA *
 #515: E (cola) 0.3mA *
-#502: B (opï¿½rculo) 0.15mA *
+#502: B (opérculo) 0.15mA *
 #534: D (lomo caudal) 0.2mA
 # 802: blank 2
 # 544: D (lomo caudal) 0.3mA
@@ -425,7 +426,7 @@ SUJETO 22 [220712] map - non-aleat. blocks
 #523: C (lomo) 0.3mA
 #521: A (boca) 0.2mA
 #525: E (cola) 0.4mA
-#522: B(opï¿½rculo) 0.25mA
+#522: B(opérculo) 0.25mA
 #524: D (lomo caudal) 0.4mA
 
 . 200ms tone
@@ -468,7 +469,7 @@ SUJETO 25  [221007] - non-aleat. blocks. 30trials except indicated
 #0 blank (initial)
 
 #511: A (boca) 0.005mA
-#512: B (opï¿½rculo) 0.01mA
+#512: B (opérculo) 0.01mA
 #513: C (lomo) 0.07mA
 #514: D (lomo caudal) 0.2mA
 #515: E (cola) 0.2mA
@@ -538,7 +539,7 @@ SUJETO 32  [220716] map
 #0 : blank
 
 #511: A (boca) 0.01mA
-#512: B (opï¿½rculo) 0.15mA
+#512: B (opérculo) 0.15mA
 #513: C (lomo) 0.2mA
 #514: D (lomo caudal) 0.2mA
 #515: E (cola) 0.3mA
@@ -559,12 +560,12 @@ SUJETO 33  [221004] map
 #0
 
 #511: A (boca) 0.01mA
-#512: B (opï¿½rculo) 0.02mA
+#512: B (opérculo) 0.02mA
 #513: C (lomo) 0.2mA
 #514: D (lomo caudal) 0.3mA
 #515: E (cola) 0.3mA
 
-#522: B (opï¿½rculo) 0.005 and 0.1mA mixed
+#522: B (opérculo) 0.005 and 0.1mA mixed
 #524: D (lomo caudal) 0.1 and 0.2mA mixed
 
 #800: blank final
@@ -575,7 +576,7 @@ SUJETO 34  [221020] map
 
 #0
 #511: A (boca) 0.005mA
-#512: B (opï¿½rculo) 0.005 fui subiendo hasta 0.1mA
+#512: B (opérculo) 0.005 fui subiendo hasta 0.1mA
 #513: C (lomo) 0.05mA
 #514: D (lomo caudal) 0.2mA
 #515: E (cola) 0.2mA

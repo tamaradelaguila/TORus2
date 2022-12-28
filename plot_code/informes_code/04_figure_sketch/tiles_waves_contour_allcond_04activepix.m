@@ -53,7 +53,7 @@ fact_clim= 1.3;
 thresh_mode = 'wavebased_thresh_max'; % 'moviebased_thresh_max' 'wavebased_thresh_max' 'wavebased_thresh_local' 'manual'. 'moviebased_thresh_max' is the one we have been using for tiles
 timerange_mode = 'auto_fixed100%' ; %'auto_localwave', 'manual', 'auto_fixed', 'auto_fixed75%', 'auto_fixed100%'
 
-analysisref = 'new4_group19_dolor_n5'; % 'new4_group19_dolor_n5' 'new4_group16_chorrito_n3'
+analysisref = 'new4_group20_3intens'; % 'new4_group19_dolor_n5' 'new4_group16_chorrito_n3' 'new4_group20_3intens'
 % auto_localwave - sets the timerange according to the condition's
 % reference wave
 

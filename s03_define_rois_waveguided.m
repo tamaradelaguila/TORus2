@@ -5,10 +5,10 @@ user_settings
 % movie to preview wave
 ref_movie= '_18filt6';% '_15filt5', '_17filt5' ; '_18filt6'
 
-nfish = 17; 
-condition = 404;
+nfish = 31; 
+condition = 303;
 
-reject_on =3;
+reject_on =0;
 
 % Time range (to fit all the waves so they span the same timewindow) !!!
 % all baselines should be also but to this range
@@ -20,6 +20,8 @@ preview_roilabels = {'dm4m_R2',...
     'dm1_R',...
     'dldm_R'};
 
+
+preview_roilabels = {'dm4m_R2', 'dm2_R2'};
 
 %% ----------------------------------------------------------------
 % LOAD DATA
@@ -75,7 +77,7 @@ timebase_adj = VSDI.timebase(idxrange);
 
 %% ROI LABELS
 
-newlabel{1} = 'new_dm4m_R2';
+newlabel{1} = 'new_dm2_R2';
 close all
 
 %STEP 1: select R and draw roi
@@ -152,7 +154,7 @@ sgtitle([num2str(VSDI.ref) '- cond' num2str(condition), '(units %F).'  newlabel{
  
 
 %% STEP 4: assign a roi number (idx) to store and save:
-newidx = 15;
+newidx = 16;
 
 VSDI.roi.labels_circ{newidx} = newlabel{1};
 VSDI.roi.circle.center(newidx,:) = circle.center;

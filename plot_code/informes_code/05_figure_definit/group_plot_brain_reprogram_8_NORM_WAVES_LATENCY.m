@@ -21,10 +21,10 @@ cd(W)
 % load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/groupplot_new.mat') % ATTENTION: select cases manually (there are repetitions)
 
 % FOR NEW BOXPLOTS (no-pain vs pain)
-load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
+% load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot4_boxplot.mat') % ATTENTION: select cases manually (there are repetitions)
 
 % ...FOR 'CHORRITO' BOXPLOT:
-% load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
+load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
 
 % ...FOR 'EFFECT OF INTENSITY' BOXPLOT:
 % load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot5_boxplot_Ieffect.mat') % ATTENTION: select cases manually (there are repetitions)
@@ -41,7 +41,7 @@ latency_thresh = 0.8; % 80% of the refroi value
 gain_refroi = 'dm4m_R2';%to normalize waves
 
 % downsampling factor
-downsamp = 5;
+downsamp = 0;
 
 roikind = 'circle'; %
 % roikind = 'anat';
@@ -53,13 +53,14 @@ switch dataunits
     case '%F'
         ref_movie = '_21filt6';
 end
+
 activ_unit = 'dF'; % @ MANUALLY SET (just for display purposes)
-analysisref = 'new4_group19_dolor_n4'; % new4_group16_chorrito_n3  new4_group19_dolor_n5 new4_group19_dolor_n4
+analysisref = 'new4_group16_chorrito_n3'; % new4_group16_chorrito_n3  new4_group19_dolor_n5 new4_group19_dolor_n4 new4_group20_3intens
 reject_on = 3; 
 
-getR = 0;
+getR = 1;
 
-savewaves = 0;
+savewaves = 1;
 % savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/groupplot_measures/Zscore' ;%@ SET
 % savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/04_figure_sketch/groupplot_measures/Zscore' ;%@ SET
 % savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/04_figure_sketch2/groupplot_measures/'; %10/09/22
@@ -119,47 +120,44 @@ setting.GSabsthres_reject = 0; %@ SET+
 setting.forcein = 0; %@ SET
 
 
-
 % SUBJECTS SELECTION (ROWSA FROM THE 'groupplot' CELL STRUCTURE
 % FOR NO-PAIN
 ...................
     
 % FOR PAIN
 ...................
-    if strcmpi( analysisref, 'new4_group17_pulsito') % del panel original: para dm2+dm4 vs blank
+    if strcmpi( analysisref, 'new4_group17_pulsito') %
     sel_subjects = [24 25 26 29 30];
-    elseif strcmpi( analysisref, 'new4_group19_dolor_n5') % del panel original: para dm2+dm4 vs blank
+    elseif strcmpi( analysisref, 'new4_group19_dolor_n5') % 
         sel_subjects = [31:35];
-    elseif strcmpi( analysisref, 'new4_group19_dolor_n4') % del panel original: para dm2+dm4 vs blank
+    elseif strcmpi( analysisref, 'new4_group19_dolor_n4') % 
         sel_subjects = [31:34];
         
         % FOR INTENSITY EFFECT BOXPLOTS
         ...................
             % from: load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot5_boxplot_Ieffect.mat') % ATTENTION: select cases manually (there are repetitions)
         
-    elseif strcmpi( analysisref, 'new4_group20_3intens') % del panel original: para dm2+dm4 vs blank (n=6)
+    elseif strcmpi( analysisref, 'new4_group20_3intens') % (n=6)
         sel_subjects = [11:16]; %n=4
         
         % FOR CHORRITO
         % ...................
         % from: load('/home/tamara/Documents/MATLAB/VSDI/TORus/plot_code/informes_code/04_figure_sketch/groupplot_measures/groupplot6_chorrito.mat') % ATTENTION: select cases manually (there are repetitions)
-    elseif strcmpi( analysisref, 'new4_group16_chorrito_n3') % del panel original: para dm2+dm4 vs blank
+    elseif strcmpi( analysisref, 'new4_group16_chorrito_n3') % 
         sel_subjects = 1:3;
-    elseif strcmpi( analysisref, 'new4_group16_chorrito_n4') % del panel original: para dm2+dm4 vs blank
+    elseif strcmpi( analysisref, 'new4_group16_chorrito_n4') % 
         sel_subjects = 1:4;
     end
-    
-    
     
     
     %% FIRST 'suji' LOOP :   GET WAVES (for each subject and roi)
 
 
-
-        %% LOOP TO GET AND STORE NORMALIZED WAVES 
-                ii=1; % counter for matrix with all waves
-
-    for suji  =  sel_subjects %1:size(groupplot,1) SELECT included fish+condition
+        % LOOP TO GET AND STORE NORMALIZED WAVES 
+                ii=1; % counter for matrix with all waves 
+                li = 1;  % counter for cell structure with all latencies from all fish and conditinos
+                
+    for suji  = makeRow(sel_subjects) %1:size(groupplot,1) SELECT included fish+condition
         
         nfish = groupplot{suji,1};
         cond_list = groupplot{suji,3};
@@ -351,10 +349,19 @@ setting.forcein = 0; %@ SET
             labels{1,coli+numel(selroi)} =  ['lat' roilabels{roi_i}];
             
             allwaves(:,ii,newroiidx)= roiNwave; 
+            
+            % Get matrix to later write in excel
+            fishlatencies{li,1} = num2str(nfish) ;
+            fishlatencies{li,2} = num2str(VSDI.ref) ;
+            fishlatencies{li,3} = num2str(condition) ;
+            fishlatencies{li,4} = num2str(ci);
+            fishlatencies{li,5} = roilabels{roi_i};
+            fishlatencies{li,6} = peaklat(roi_i,ci);
+            li = li+1;
+            
         end
         ii = ii+1;
 
-        
         legend
         hold off
         
@@ -396,16 +403,25 @@ setting.forcein = 0; %@ SET
                 labels{1,col}= labels{col};
             end
             
-            % write output (new sheet for each fish
+            % write output (new sheet for each fish)
             writematrix (fishwaves, excelname, 'sheet',  [num2str(VSDI.ref) '-' num2str(condition)])
-            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
             writecell (labels, excelname, 'sheet', 'labels')
             writecell (params, excelname, 'sheet','param')
             
             clear longF
+            
         end % if getR
         
+        clear fishwaves 
+       
     end % for suji
+    
+    % ADD ALL FISH LATENCIES TO THE PLOT
+    if getR
+        writecell (fishlatencies, excelname, 'sheet', 'latencies')
+    end
+    
     blob(); pause(0.1); blob();pause(0.1); blob()
     
 %% GET MEAN WAVES
@@ -425,12 +441,14 @@ for roi_i =1:numel(selroinames)
         xtime = timebase_adj;
     end
     
-    % PLOT MEAWAVES WITH STANDARD DEVIATION
+    % PLOT MEAWAVES WITH SEM
     % ......................................
     subplot(1,2,1)
     
-    err= std(roiwaves,[],2);
+    err= std(roiwaves,[],2)/sqrt(numel(sel_subjects));
     errorbar(xtime,mean(roiwaves,2),err,'Color',colorline(roi_i,:), 'linewidth', 1.3, 'displayname',  selroinames{roi_i});
+%     errorbar(xtime,mean(roiwaves,2),zeros(size(mean(roiwaves,2))),err,'Color',colorline(roi_i,:), 'linewidth', 1.3, 'displayname',  selroinames{roi_i});
+    
     hold on
     
     % PLOT EACH FISH'S WAVE WITH MEAN WAVE
@@ -450,9 +468,12 @@ title(analysisref)
     blob()
     
     % Update history
+    % 13/10/22 - add latencies for all fish and conditions in a separate
+    % excel sheet (ATT waves are calculated only for the last condition - fix when needed)
     % 29/10/22 - fixed bug related to the chosen roi
     % 27/10/22 - FIXED ISSUE WITH PEAK FINDING FOR THRESHOLD: should not be
-    % the peakminusbasel but the peak
+    % the peakminusbasel but the peak (it won't change much when the F0 is
+    % pre-stimulus frames
     % 16/02/22 - Add onset-latency measure and delete 'switch refcase' (so only
     % the normal dF condition is considered). To use blank-substraction
     % methods, go to the older versions of the code

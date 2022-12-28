@@ -30,8 +30,8 @@ cd(W)
 
 % TO SKIP THE LOOP
 % ....................................
-nfish =14;
-cond_codes = [401 402 403];
+nfish =28;
+cond_codes = [701];
 selroinames = {'dm4m_R2',  'dm2_R2' ,'dm1_R','dldm_R'};%dm3 ORIGINAL
 
 roikind = 'circle'; %  'anat' 'circle'
@@ -62,11 +62,11 @@ savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_defin
 
 % FOR TILES AND EARLY-PEAK FRAMES
 %---------------------------------------------------------------
-fact_thresh = 0.2; % @SET : limits parameters
-fact_clim= 1.3;
+fact_thresh = 0.6; % @SET : limits parameters
+fact_clim= 1.5;
 
 thresh_mode = 'wavebased_thresh_max'; % 'moviebased_thresh_max' 'wavebased_thresh_max' 'wavebased_thresh_local' 'manual'. 'moviebased_thresh_max' is the one we have been using for tiles
-timerange_mode = 'auto_fixed100%' ; %'auto_localwave', 'manual', 'auto_fixed', 'auto_fixed75%', 'auto_fixed100%'
+timerange_mode = 'auto_localwave' ; %'auto_localwave', 'manual', 'auto_fixed', 'auto_fixed75%', 'auto_fixed100%'
 
 % auto_localwave - sets the timerange according to the condition's
 % reference wave 
@@ -596,8 +596,8 @@ for condi = makeRow(cond_codes)
         if savewaves
             saveas(gcf, fullfile(savein, [savename '.jpg']), 'jpg')
             
-%             set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
-%             print(fullfile(savein, [savename '.svg']),'-r600','-dsvg', '-painters') % prints it as you see them %STILL TO TEST!
+            set(gcf,'units','normalized','outerposition',[0 0 1 1]) %set in total screen
+            print(fullfile(savein, [savename '.svg']),'-r600','-dsvg', '-painters') % prints it as you see them %STILL TO TEST!
             
             close all
         end

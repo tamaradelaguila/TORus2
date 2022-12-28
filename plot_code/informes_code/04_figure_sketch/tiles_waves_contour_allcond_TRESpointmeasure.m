@@ -31,8 +31,8 @@ cd(W)
 % ....................................
 % TO SKIP THE LOOP
 % ....................................
-nfish = 17;
-cond_codes = [401 402 403 404];
+nfish = 14;
+cond_codes = [402 403 404];
 
 % selroinames = {'dm4m_R2',  'dm2_R2' ,'dm1_R','dldm_R'};%dm3 ORIGINAL
 selroinames = {'dm4m_R2',  'dm2_R2'};%dm3 ORIGINAL
@@ -41,8 +41,8 @@ refroiname = 'dm4m_R2'; % respectb which the start/end time of the tiles will be
 roikind = 'circle'; %  'anat' 'circle'
 % ....................................
 
-plottiles = 0; %also plots early-peak
-savetiles = 0;
+plottiles = 1; %also plots early-peak
+savetiles = 1;
 
 plot_contour = 0;
 save_contour = 0;
@@ -70,11 +70,11 @@ savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_defin
 
 % FOR TILES AND EARLY-PEAK FRAMES
 %---------------------------------------------------------------
-fact_thresh = 0.35; % @SET : limits parameters
+fact_thresh = 0.4; % @SET : limits parameters
 fact_clim= 1.3;
 
 thresh_mode = 'wavebased_thresh_max'; % 'moviebased_thresh_max' 'wavebased_thresh_max' 'wavebased_thresh_local' 'manual'. 'moviebased_thresh_max' is the one we have been using for tiles
-timerange_mode = 'auto_fixed75%' ; %'auto_localwave', 'manual', 'auto_fixed', 'auto_fixed75%', 'auto_fixed100%'
+timerange_mode = 'manual' ; %'auto_localwave', 'manual', 'auto_fixed', 'auto_fixed75%', 'auto_fixed100%'
 
 % auto_localwave - sets the timerange according to the condition's
 % reference wave
@@ -105,8 +105,8 @@ manual.clims = [];
 manual.thresh = [];
 
 % if timerange_mode = 'manual' SET:
-manual.start_ms = [];
-manual.end_ms = [];
+manual.start_ms = [168];
+manual.end_ms = [198];
 
 %----------------------------------------------------------------
 % @SET: MEASURE (OR LOOP THROUGH ALL MEASURES)
@@ -305,11 +305,11 @@ back = VSDI.backgr(:,:,VSDI.nonanidx(1));
 maxmovie = mean(VSDmov.data(:,:,trange,sel_trials),4);
 maxmovie(:,:,end+1) = back; %clean non-blured background
 
+
 % CALCULATE max WAVE FOR dm4 TO ESTABLISH START-END TIMES
 % -------------------------------------------------------
 max_wave = roi_TSave(maxmovie,ref_roimask);
 max_wave = movmean(max_wave ,5);
-
 
 clear movie2plot  back sel_trials
 
@@ -458,11 +458,12 @@ for condi = makeRow(cond_codes)
                 tileset.end_ms = timebase_adj(idx.end);
                 %         tileset.peak_ms = timebase_adj(idx.peak);
             case 'manual'
-                tileset.start_ms = dsearchn(timebase_adj, manual.start_ms);
-                tileset.start_ms = (timebase_adj(tileset.start_ms));
+                idx.start = dsearchn(timebase_adj, manual.start_ms);
+                tileset.start_ms = (timebase_adj(idx.start));
                 
-                tileset.end_ms = dsearchn(timebase_adj, manual.end_ms);
-                tileset.end_ms = (timebase_adj(tileset.end_ms));
+                idx.end = dsearchn(timebase_adj, manual.end_ms);
+                tileset.end_ms = (timebase_adj(idx.end));
+                
                 
             case {'auto_fixed', 'auto_fixed75%' , 'auto_fixed100%'}
                 % gets as timerange the time that the maximum reference wave
@@ -498,7 +499,7 @@ for condi = makeRow(cond_codes)
     
     %----------------------------------------------------------------
     ... PLOT EARLY-PEAK
-        %----------------------------------------------------------------
+    %----------------------------------------------------------------
     
     % GET REPRESENTATION THRESHOLD ACCORDING TO THE MODE
     %----------------------------------------------------------------
@@ -542,7 +543,6 @@ for condi = makeRow(cond_codes)
     %----------------------------------------------------------------
     % WAVES
     %----------------------------------------------------------------
-    if plotwaves
         % -------------------------------------------------------
         % CALCULATE %F WAVE FOR EACH ROI
         % -------------------------------------------------------
@@ -574,7 +574,7 @@ for condi = makeRow(cond_codes)
         % RANGE
         % -------------------------------------------------------
         
-        wave.start_ms = 0; % time in ms for first tile
+        wave.start_ms = 0; % time in ms
         wave.end_ms = 1200;
         %           tileset.clims = [-0.9 0.9];
         wave.start= dsearchn(timebase_adj, wave.start_ms);
@@ -615,17 +615,24 @@ for condi = makeRow(cond_codes)
         
         for roii = makeRow(selroi)
             i = i+1;
+            
             newrange = wave.start:wave.end;
             waveroi = movmean(allroi_waves(:,roii),5);
-            plot(timebase_adj(newrange), waveroi(newrange) , 'linewidth', 3, 'Color', cmap(i,:));
+            timebase2 = timebase_adj(newrange);
+            waveroi2 = waveroi(newrange) ;
+            if plotwaves
+                plot(timebase2,waveroi2 , 'linewidth', 3, 'Color', cmap(i,:));
+            end
             %     legend(selroinames{:}, 'Location', 'northeast')
             
     
             % GET WAVE - POINT MEASURE TO EXPORT
             %..............................................
             if get_pointA
+                roimask = masks(:,:,roii);
+
                 act = waveroi(idx.end);
-                
+                act_fr = sum(movie2plot(:,:,idx.end) .*roimask)/sum(roimask);
                 % STORE
                 % factors
                 longF{rowi,1} = nfish ; %subject id
@@ -635,18 +642,17 @@ for condi = makeRow(cond_codes)
                 longF{rowi,5} = condi; % condition
                 % measure
                 longF{rowi,6} = round(act,2); % outputP(roi_i, condi)
-                
-                clear actidx act
+                longF{rowi,7} = round(act,2); % outputP(roi_i, condi)
+                clear actidx act act_fr roimask
                 rowi = rowi+1;
                 
             end %if get_pointA
             clear waveroi
         end
         
-        xlim([wave.start_ms wave.end_ms])
-        ylabel(wave_units)
-        
-        
+        if plotwaves
+                xlim([wave.start_ms wave.end_ms])
+                ylabel(wave_units)
         switch wave_units
             case 'dF'
                 if draw_thresh
@@ -670,8 +676,8 @@ for condi = makeRow(cond_codes)
             
             close all
             
-            
         end
+        end %if plotwaves
         
         backgr_hi = interp2(VSDI.backgr(:,:,VSDI.nonanidx(1)),5, 'cubic');
         imagesc(backgr_hi); colormap(bone); title([num2str(VSDI.ref) 'backgr']); axis image
@@ -681,11 +687,6 @@ for condi = makeRow(cond_codes)
         print(fullfile(savein, [savename '.svg']),'-r600','-dsvg', '-painters') % prints it as you see them %STILL TO TEST!
         close
         
-        
-        
-    end % if plotwaves
-    
-    
     
     %----------------------------------------------------------------
     % CONTOURS - STORE TO LATER PLOT
@@ -762,6 +763,7 @@ for condi = makeRow(cond_codes)
         
     end % if plot_contour
     
+    %
     clear idx tileset
     
 end % for condi
@@ -833,23 +835,30 @@ blob()
 % -------------------------------------------
 if get_pointA
     
-    params{1,1} = 'thresh_mode';
-    params{1,2} = thresh_mode;
+    params{1,1} = date;
+    params{1,3} = ['source:'  mfilename('fullpath')];
+
+    params{3,1} = 'thresh_mode';
+    params{3,2} = thresh_mode;
+
     
-    params{2,1} = 'timerange_mode';
-    params{2,2} = timerange_mode;
+    params{3,1} = 'thresh_mode';
+    params{3,2} = thresh_mode;
     
-    params{3,1} = 'fact_thresh';
-    params{3,2} = num2str(fact_thresh);
+    params{4,1} = 'timerange_mode';
+    params{4,2} = timerange_mode;
     
-    params{4,1} = 'fact_clim';
-    params{4,2} = num2str(fact_clim);
+    params{5,1} = 'fact_thresh';
+    params{5,2} = [num2str(fact_thresh) '%'];
+    
+    params{6,1} = 'fact_clim';
+    params{6,2} = num2str(fact_clim);
     
     % -------------------------------------------
     %
     % -------------------------------------------
     excelname = fullfile(savein, [num2str(VSDI.ref) thresh_mode '_' timerange_mode  'point_activity_forR' movie_ref '_rej' num2str(reject_on) '_' num2str(numel(selroi)) 'roi.xls']);
-    labels = {'id' 'roi' 'roi n' 'cond' 'cond_code' 'M'};
+    labels = {'id' 'roi' 'roi n' 'cond' 'cond_code' 'act_wave' 'act_frame'};
     
     for col = 1:numel(labels)
         longF{1,col}= labels{col};

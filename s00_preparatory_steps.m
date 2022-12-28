@@ -47,12 +47,16 @@ grouplist{27} = 'TORus_770608'; % COPY OF 220608. ADJUSTED VSDI.info.Sonset FOR 
 grouplist{28} = 'TORus_770622'; % 
 grouplist{29} = 'TORus_770531'; % 
 grouplist{30} = 'TORus_770518'; % 
+grouplist{31} = 'TORus_220610'; % 
+grouplist{32} = 'TORus_220716'; % 
+grouplist{33} = 'TORus_221004'; % 
+grouplist{34} = 'TORus_221020'; % 
 
 save(fullfile(path.data,'grouplist.mat'),'grouplist');
 
 % load(fullfile(path.data,'grouplist.mat'),'grouplist');
 %% 2. CREATE VSDI structure (FOR EACH FISH) 
-VSDI.ref = 221011 ; %@ SET
+VSDI.ref = 221020 ; %@ SET
 VSDI.expref = 'TORus';
 VSDI.info.stime = 6; %ms (sampling time) @ SET
 VSDI.info.Sonset = 300; % ms (from start of recording) %@ SET

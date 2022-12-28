@@ -22,8 +22,8 @@ import scipy.io
 from pathlib import Path
 
 rootpath = os.getcwd() #make sure the current folder is the root folder
-sourcepath = os.path.join(rootpath, 'data', 'temp_spyder', 'in221011') #where the dml files are
-output_path = os.path.join(rootpath, 'data', 'temp_spyder', 'out221011')#where to output the mat files
+sourcepath = os.path.join(rootpath, 'data', 'temp_spyder', 'in221020') #where the dml files are
+output_path = os.path.join(rootpath, 'data', 'temp_spyder', 'out221020')#where to output the mat files
 
 # GET FILES NAMES FROM FOLDER
 listdir = os.listdir(Path(sourcepath))
@@ -39,11 +39,11 @@ salida=  output_path
 
 # RUN THIS IN A SECOND STEP ..........................................
 for file in filelist:    # GET NAME OF FILE
-    filename =  file #[-14:-4]+'.dml'
+    filename = file  # [-14:-4]+'.dml'
     savename = file[-14:-4]
-    origen=  os.path.join(sourcepath,filename)
+    origen = os.path.join(sourcepath, filename)
     # substitute separators for the function
-    origen =  origen.replace(os.sep, '/')
+    origen = origen.replace(os.sep, '/')
     salida = salida.replace(os.sep, '/')
     variables = origen + ' ' + salida
 
@@ -51,9 +51,9 @@ for file in filelist:    # GET NAME OF FILE
     runfile(function, args=variables)
 
     # retry images from dictionary
-    data_act= original_data['images']
+    data_act = original_data['images']
 
     # Export to matfile
     savename = savename + '.mat'
     os.chdir(salida)
-    scipy.io.savemat(savename, dict(data_act= data_act))
+    scipy.io.savemat(savename, dict(data_act=data_act))

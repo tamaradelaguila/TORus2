@@ -28,8 +28,8 @@ cd(W)
 % ....................................
 % TO SKIP THE LOOP
 % ....................................
-nfish = 14;
-cond_codes = [702 403];
+nfish = 20;
+cond_codes = [511:515];
 selroinames = {'dm4m_R2',  'dm2_R2' ,'dm1_R','dldm_R'};%dm3 ORIGINAL
 
 roikind = 'circle'; %  'anat' 'circle'
@@ -37,20 +37,20 @@ refroiname = 'dm4m_R2'; % respectb which the start/end time of the tiles will be
 % ....................................
 
 plottiles = 1; %also plots early-peak
-savetiles = 1;
+savetiles = 0;
 
-plot_contour = 0;
+plot_contour = 1;
 save_contour = 0;
 
 highdefinition = 1;
 
-contour_of = 'peak'; % 'early' 'peak'
+contour_of = 'early'; % 'early' 'peak'
 
-plot_earlypeak = 0;
+plot_earlypeak = 1;
 save_earlypeak =0;
 
 plotwaves=1;
-savewaves =1;
+savewaves =0;
 
 keep_onlyNtrials = 0; %if >0, but keep the first 'keep_onlyNtrials' selected frames for the average
 
@@ -61,13 +61,13 @@ movie_ref = '_18filt6'; % input movie '_17filt5'
 % savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/03_figure_sketch/def_figs/tiles/'; %
 savein = '/home/tamara/Documents/MATLAB/VSDI/TORus/plot/informes/05_figure_definit/'; %
 
-% FOR TILES AND EARLY-PEAK FRAMES
+% FOR TILES AND EARLY-PEAK FRAMES (thresh will also be plot in waves)
 %---------------------------------------------------------------
-fact_thresh =  0.4; % @SET : limits parameters
+fact_thresh =  0.2; % @SET : limits parameters
 fact_clim= 1.5;
 
-thresh_mode = 'wavebased_thresh_max'; % 'moviebased_thresh_max' 'wavebased_thresh_max' 'wavebased_thresh_local' 'manual'. 'moviebased_thresh_max' is the one we have been using for tiles
-timerange_mode = 'manual' ; %'auto_localwave', 'manual', 'auto_fixed', 'auto_fixed75%', 'auto_fixed100%'
+thresh_mode = 'wavebased_thresh_local'; % 'moviebased_thresh_max' 'wavebased_thresh_max' 'wavebased_thresh_local' 'manual'. 'moviebased_thresh_max' is the one we have been using for tiles
+timerange_mode = 'auto_localwave' ; %'auto_localwave', 'manual', 'auto_fixed', 'auto_fixed75%', 'auto_fixed100%'
 
 % auto_localwave - sets the timerange according to the condition's
 % reference wave 
@@ -104,7 +104,7 @@ manual.end_ms = [1000];
 %----------------------------------------------------------------
 % @SET: MEASURE (OR LOOP THROUGH ALL MEASURES)
 %----------------------------------------------------------------
-reject_on=3;
+reject_on= 3 ;
 
 setting.manual_reject = 1; %
 setting.GSmethod_reject = 1;  %
@@ -579,7 +579,7 @@ for condi = makeRow(cond_codes)
         %           tileset.clims = [-0.9 0.9];
         wave.start= dsearchn(timebase_adj, wave.start_ms);
         wave.end = dsearchn(timebase_adj, wave.end_ms);
-        
+
         
         % PLOT
         figure
@@ -614,14 +614,33 @@ for condi = makeRow(cond_codes)
         i = 0;
         for roii = selroi
             i = i+1;
-            waveroi = allroi_waves(wave.start:wave.end,roii);
-            waveroi2 = lowpass(waveroi,10,fs);
+            timebaseW= timebase_adj(wave.start:wave.end);
 
-            plot(timebase_adj(wave.start:wave.end), waveroi , 'linewidth', 3, 'Color', cmap(i,:));
+            waveroi = allroi_waves(wave.start:wave.end,roii);
+            waveroi = movmean(waveroi, 5);
+%             waveroi = lowpass(waveroi(3:end-3),10,fs);
+%             timebaseW = timebaseW(3:end-3); 
+            
+            %---------------------------------------------------
+            % HACKING SNIPPET: detrend waves - only for 210509
+            %---------------------------------------------------
+%              warning ('CODE HACKED only for fish 210509 - detrends the waves')
+
+%             init = waveroi(1); 
+%             waveroi = detrend(waveroi, 2);
+%             initref= init-waveroi(1); 
+%             waveroi = waveroi + initref;
+
+            %---------------------------------------------------
+            % END OF HACKING SNIPPET
+            %---------------------------------------------------
+            
+            plot(timebaseW, waveroi , 'linewidth', 3, 'Color', cmap(i,:));
             clear waveroi
             
             %     legend(selroinames{:}, 'Location', 'northeast')
         end
+        
         xlim([wave.start_ms wave.end_ms])
         ylabel(wave_units)
         
@@ -807,7 +826,8 @@ blob()
 %     disp(local_reject)
 % end
 
-% Updates
+% Updates 
+
 % 21/10/22_ add 'keep...
 % 17/10/22:
 % -add 'autofixed100%'
@@ -818,7 +838,7 @@ blob()
 % 26/09/22: Fix bug: [sel_trials] = find(VSDI.condition(:,1)==cond_codes(maxcondi));
 % 24/09/22: Update plot early peak
 % 21/09/22: add timerange_mode to the code
-% 18/09/22: adapted from:
+% 18/09/22: Adapted from:--------------------
 % '/home/tamara/Documents/MATLAB/VSDI/MOT1x/plot_code/tiles_waves_earlypeak_contour.m'
 % 17/09/22: add 'manual' option for thresh_mode
 % 12/03/22 : compute_rejectidx function and improve 'cmap'

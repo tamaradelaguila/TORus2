@@ -187,8 +187,8 @@ w.baseline = w.baseline/1000;
 switch config.ibiproxy.pre
     case 'n'
         labelibi.pre = ['pre_n=', num2str(w.ibi.pre_n)];
-            case 'n'
-        labelibi.pre = ['pre_n*=', num2str(w.ibi.pre_n)];
+    case 'n*'
+        labelibi.pre = ['pre_n*=', num2str(w.ibi.pre_n), 'skip last'];
 
     case 's'
         labelibi.pre = ['pre in:', num2str(w.ibi.post), 's'];
@@ -483,8 +483,8 @@ for fili = 1:size(ref.filelist,1)
                 case 'n'
                     idx_pre = find(beats < stim(ii),w.ibi.pre_n, 'last');
                 case 'n*'
-                    idx_pre2 = find(beats < stim(ii),w.ibi.pre_n+1, 'last');
-                    idx_pre2 = idx_pre2(1:end-1);
+                    idx_pre = find(beats < stim(ii),w.ibi.pre_n+1, 'last');
+                    idx_pre = idx_pre(1:end-1);
 
 
                 case 's'
