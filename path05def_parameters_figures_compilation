@@ -1,4 +1,5 @@
-MEETING 21/09/22
+MEETING 21/09/22    Last update: 12/01/23
+
 ✘  ✔
 Common parameters settings at the end of the document.
 reject_on = 3;
@@ -216,7 +217,22 @@ Pegar manualmente en un excel los valores de todos los peces
 [13] 220611: [0 301 302] mA:[0.4 1]
 
 ...............................................
-CONTOUR MAP
+CONTOUR MAP - deprecated
 ...............................................
 source:
 MAP_CROP_tiles_waves_contour_allcondTORus/plot_code/informes_code/05_figure_definit/MAP_CROP_tiles_waves_contour_allcond.m
+
+...............................................
+MAPA- NUBES COORDENADAS
+...............................................
+1- Manual coordinates - manually into long format
+2- /home/tamara/Documents/MATLAB/VSDI/TORus/MAPS/test_dice.m >>> %% NON-OVERLAPPING PLOT (for R)
+3-~/Documents/THESIS/05mapas_dice/plot_pixels_backup.R *manually adjust proportions
+...............................................
+MAPA- MATRIZ DICE
+...............................................
+(1- Manual coordinates - manually into long format)
+2 -
+3 - manually copy dice matrix into excels (and add extra zeros column+row)
+(INDIVIDUALES) ~/Documents/THESIS/05mapas_dice/plot_pixels_dice.R >>> ## PLOT DICE MATRIX
+(GRUPO) /home/tamara/Documents/MATLAB/VSDI/TORus/MAPS/test_dice_group.m
